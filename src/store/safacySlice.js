@@ -6,9 +6,29 @@ export const getUserSafacy = createAsyncThunk(
   'safacy/getUserSafacy',
   async (id) => {
     const safacy = await axios.get(`http://localhost:8080/safacy/${id}`);
+
     return safacy.data;
   },
 );
+
+export const startPublic = createAsyncThunk(
+  'safacy/startPublic',
+  async (id) => {
+    const publicMode = await axios.put(
+      `http://localhost:8080/safacy/${id}/public`,
+    );
+
+    return publicMode.data;
+  },
+);
+
+export const stopPublic = createAsyncThunk('safacy/stopPublic', async (id) => {
+  const privacyMode = await axios.put(
+    `http://localhost:8080/safacy/${id}/privacy`,
+  );
+
+  return privacyMode.data;
+});
 
 const safacySlice = createSlice({
   name: 'safacy',
@@ -47,9 +67,18 @@ const safacySlice = createSlice({
       state.friendInvitationList = friendInvitationList;
       state.safacyHistory = safacyHistory;
       state.safacyInvitationList = safacyInvitationList;
+      state.status = 'success';
     },
     [getUserSafacy.rejected]: (state, action) => {
       state.status = 'failed';
+    },
+    [startPublic.fulfilled]: (state, action) => {
+      const { publicMode } = action.payload;
+      state.publicMode = publicMode;
+    },
+    [stopPublic.fulfilled]: (state, action) => {
+      const { publicMode } = action.payload;
+      state.publicMode = publicMode;
     },
   },
 });
