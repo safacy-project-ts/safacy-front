@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { signIn } from '../../store/userSlice';
 
 import FONTS from '../../common/constants/FONT';
-import COLOR from '../../common/constants/COLOR';
+import COLOR from '../../common/constants/COLORS';
 import LOGO from '../../../assets/img/logo.png';
 
 const config = {

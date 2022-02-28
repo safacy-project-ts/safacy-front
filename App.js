@@ -9,7 +9,7 @@ import AuthNavigator from './src/navigations/AuthNavigator';
 
 import store from './src/store/index';
 
-import COLOR from './src/common/constants/COLOR';
+import COLORS from './src/common/constants/COLORS';
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -44,7 +44,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.WHITE,
+    backgroundColor: COLORS.WHITE,
     justifyContent: 'center',
   },
 });

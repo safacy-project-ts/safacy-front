@@ -7,32 +7,37 @@ import { useDispatch, useSelector } from 'react-redux';
 import PRIVACY_LOCK from '../../assets/img/privacy.png';
 import PUBLIC_LOCK from '../../assets/img/public.png';
 
-import COLOR from '../common/constants/COLOR';
+import COLOR from '../common/constants/COLORS';
 
 import { getUserSafacy } from '../store/safacySlice';
 
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+
   const { id } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getUserSafacy(id));
   }, []);
-
-  const safacyInfo = useSelector((state) => state.safacy);
+  const safacy = useSelector((state) => state.safacy);
 
   const handleMySafacy = () => {
-    navigation.navigate('Private');
+    if (safacy.publicMode) {
+      navigation.navigate('Public');
+    } else {
+      navigation.navigate('Private');
+    }
   };
 
   const handleYourSafacy = () => {
     navigation.navigate('FriendList');
   };
+
   return (
     <View style={styles.container}>
       <Button title="My Safacy" onPress={handleMySafacy} />
       <Button title="Your Safacy" onPress={handleYourSafacy} />
-      {!safacyInfo.publicMode ? (
+      {!safacy.publicMode ? (
         <View>
           <Image source={PRIVACY_LOCK} />
           <Text>Private Mode</Text>
