@@ -4,7 +4,7 @@ import { GOOGLE_IOS_CLIENT_ID } from '@env';
 
 import { View, Text, Button, StyleSheet, Image } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { signIn } from '../../store/userSlice';
+import { signIn } from '../../store/authSlice';
 
 import FONTS from '../../common/constants/FONT';
 import COLOR from '../../common/constants/COLORS';

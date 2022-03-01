@@ -9,21 +9,22 @@ import PUBLIC_LOCK from '../../assets/img/public.png';
 
 import COLOR from '../common/constants/COLORS';
 
-import { getUserSafacy } from '../store/safacySlice';
+import { getUserInfo } from '../store/userSlice';
 
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { id } = useSelector((state) => state.user);
+  const { id } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getUserSafacy(id));
+    dispatch(getUserInfo(id));
   }, []);
-  const safacy = useSelector((state) => state.safacy);
+
+  const user = useSelector((state) => state.user);
 
   const handleMySafacy = () => {
-    if (safacy.publicMode) {
-      navigation.navigate('Public');
+    if (user.publicMode) {
+      navigation.navigate('Public', { id });
     } else {
       navigation.navigate('Private');
     }
@@ -37,7 +38,7 @@ const MainScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Button title="My Safacy" onPress={handleMySafacy} />
       <Button title="Your Safacy" onPress={handleYourSafacy} />
-      {!safacy.publicMode ? (
+      {!user?.publicMode ? (
         <View>
           <Image source={PRIVACY_LOCK} />
           <Text>Private Mode</Text>

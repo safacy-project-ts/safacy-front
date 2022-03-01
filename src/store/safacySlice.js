@@ -2,83 +2,38 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // import axios from '../api/axiosInstance';
 import axios from 'axios';
 
-export const getUserSafacy = createAsyncThunk(
-  'safacy/getUserSafacy',
+export const getCurrentSafacy = createAsyncThunk(
+  'safacy/getCurrentSafacy',
   async (id) => {
-    const safacy = await axios.get(`http://localhost:8080/safacy/${id}`);
+    const safacy = await axios.get(`http://localhost:8080/user/current/${id}`);
 
     return safacy.data;
   },
 );
 
-export const startPublic = createAsyncThunk(
-  'safacy/startPublic',
-  async (id) => {
-    const publicMode = await axios.put(
-      `http://localhost:8080/safacy/${id}/public`,
-    );
-
-    return publicMode.data;
-  },
-);
-
-export const stopPublic = createAsyncThunk('safacy/stopPublic', async (id) => {
-  const privacyMode = await axios.put(
-    `http://localhost:8080/safacy/${id}/privacy`,
-  );
-
-  return privacyMode.data;
-});
-
 const safacySlice = createSlice({
   name: 'safacy',
   initialState: {
-    _id: null,
-    email: null,
-    nickname: null,
-    publicMode: null,
-    myFriendList: null,
-    friendInvitationList: null,
-    safacyHistory: null,
-    safacyInvitationList: null,
+    id: null,
+    user: null,
+    destination: null,
+    radius: null,
+    time: null,
+    invitedFriendList: null,
   },
 
   extraReducers: {
-    [getUserSafacy.pending]: (state, action) => {
-      state.status = 'loading...';
-    },
-    [getUserSafacy.fulfilled]: (state, action) => {
-      const {
-        _id,
-        email,
-        nickname,
-        publicMode,
-        myFriendList,
-        friendInvitationList,
-        safacyHistory,
-        safacyInvitationList,
-      } = action.payload;
+    [getCurrentSafacy.fulfilled]: (state, action) => {
+      const { _id, user, destination, time, radius, invitedFriendList } =
+        action.payload;
 
       state.id = _id;
-      state.email = email;
-      state.nickname = nickname;
-      state.publicMode = publicMode;
-      state.myFriendList = myFriendList;
-      state.friendInvitationList = friendInvitationList;
-      state.safacyHistory = safacyHistory;
-      state.safacyInvitationList = safacyInvitationList;
+      state.user = user;
+      state.destination = destination;
+      state.radius = radius;
+      state.time = time;
+      state.invitedFriendList = invitedFriendList;
       state.status = 'success';
-    },
-    [getUserSafacy.rejected]: (state, action) => {
-      state.status = 'failed';
-    },
-    [startPublic.fulfilled]: (state, action) => {
-      const { publicMode } = action.payload;
-      state.publicMode = publicMode;
-    },
-    [stopPublic.fulfilled]: (state, action) => {
-      const { publicMode } = action.payload;
-      state.publicMode = publicMode;
     },
   },
 });

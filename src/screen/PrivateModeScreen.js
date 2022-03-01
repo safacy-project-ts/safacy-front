@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Switch } from 'react-native';
+import { StyleSheet, Text, View, Switch, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useDispatch, useSelector } from 'react-redux';
 import COLORS from '../common/constants/COLORS';
-import { startPublic } from '../store/safacySlice';
+
+import PRIVACY_LOCK from '../../assets/img/privacy.png';
+import PUBLIC_LOCK from '../../assets/img/public.png';
 
 const PrivateModeScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const { id } = useSelector((state) => state.user);
-  const { publicMode } = useSelector((state) => state.safacy);
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const toggleSwitch = () => {
-    if (!publicMode) {
-      dispatch(startPublic(id));
+    if (!isEnabled) {
       navigation.navigate('PublicSetting');
+    } else {
+      navigation.navigate('Main');
     }
   };
 
   return (
     <View style={styles.container}>
-      {!publicMode ? (
+      {!isEnabled ? (
         <View>
           <Text>Private Mode</Text>
           <MaterialIcons name="lock" size={24} color={COLORS.PINK} />
@@ -36,11 +36,20 @@ const PrivateModeScreen = ({ navigation }) => {
       <Text>Share my Location</Text>
       <Switch
         trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={publicMode ? '#fafafc' : '#f4f3f4'}
+        thumbColor={isEnabled ? '#fafafc' : '#f4f3f4'}
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch}
-        value={publicMode}
+        value={isEnabled}
       />
+      {!isEnabled ? (
+        <View>
+          <Image source={PRIVACY_LOCK} />
+        </View>
+      ) : (
+        <View>
+          <Image source={PUBLIC_LOCK} />
+        </View>
+      )}
     </View>
   );
 };
