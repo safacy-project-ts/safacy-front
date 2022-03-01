@@ -6,7 +6,7 @@ import SignInScreen from '../screen/Auth/SignInScreen';
 import MainNavigator from './MainNavigator';
 
 const AuthNavigator = () => {
-  const { id } = useSelector((state) => state.user);
+  const { id } = useSelector((state) => state.auth);
 
   return (
     <NavigationContainer>

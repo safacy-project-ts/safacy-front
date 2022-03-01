@@ -1,18 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { StyleSheet, Text, View, Switch } from 'react-native';
-import { stopPublic } from '../store/safacySlice';
+import { StyleSheet, Text, View, Switch, Button } from 'react-native';
+import { getUserInfo, stopPublic } from '../store/userSlice';
+import { getCurrentSafacy } from '../store/safacySlice';
 
-const PublicScreen = ({ navigation }) => {
+const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const { id } = useSelector((state) => state.user);
-  const { publicMode } = useSelector((state) => state.safacy);
+
+  const { id } = route.params;
+
+  useEffect(() => {
+    dispatch(getUserInfo(id));
+    dispatch(getCurrentSafacy(id));
+  }, []);
+
+  const { publicMode } = useSelector((state) => state.user);
+  const { id: safacyId } = useSelector((state) => state.safacy);
 
   const toggleSwitch = () => {
-    dispatch(stopPublic(id));
+    dispatch(stopPublic({ id, safacyId }));
+    dispatch(getUserInfo(id));
+    navigation.navigate('Main');
+  };
+
+  const handleMoveToMain = () => {
     navigation.navigate('Main');
   };
   return (
@@ -25,6 +39,7 @@ const PublicScreen = ({ navigation }) => {
         onValueChange={toggleSwitch}
         value={publicMode}
       />
+      <Button title="Main page" onPress={handleMoveToMain} />
     </View>
   );
 };
@@ -41,4 +56,9 @@ export default PublicScreen;
 
 PublicScreen.propTypes = {
   navigation: PropTypes.objectOf(PropTypes.func).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }),
+  }).isRequired,
 };
