@@ -18,24 +18,23 @@ import { createSafacy, getUserInfo } from '../store/userSlice';
 
 import Map from '../common/components/Map';
 import SearchBar from '../common/components/SearchBar';
-import TimePicker from '../common/components/TimePicker';
-import DropBox from '../common/components/DropBox';
-import Timer from '../common/components/Timer';
+import RadiusSelection from '../common/components/RadiusSelection';
+import TimeSelection from '../common/components/TimeSelection';
+import Selection from '../common/components/Selection';
+
 import COLORS from '../common/constants/COLORS';
 
 const PublicSettingScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [inputs, setInputs] = useState({
-    destination: 'seoul',
-    radius: 100,
-    time: 30,
-    invitedFriendList: ['bootcamp.ocn@gmail.com'],
-  });
+  const [destination, setDestination] = useState('seoul');
+  const [radius, setRadius] = useState(100);
+  const [time, setTime] = useState(30);
+  const [invitedFriendList, setInvitedFriendList] = useState([
+    'bootcamp.ocn@gmail.com',
+  ]);
 
   const { id } = useSelector((state) => state.auth);
-  const { destination, radius, time, invitedFriendList } = inputs;
-  const { publicMode } = useSelector((state) => state.user);
 
   const handleCreateSafacy = () => {
     dispatch(
@@ -60,13 +59,11 @@ const PublicSettingScreen = ({ navigation }) => {
       <Map />
       <Text>Destination</Text>
       <SearchBar style={styles.search} />
-
-      <Text>Radius</Text>
-      <DropBox />
-      <Text>Time</Text>
-      {/* <TimePicker /> */}
-      {/* <Timer /> */}
-      <Text>Friends</Text>
+      <Selection
+        setRadius={setRadius}
+        setTime={setTime}
+        setInvitedFriendList={setInvitedFriendList}
+      />
 
       <Button title="START" onPress={handleCreateSafacy} />
     </View>
@@ -76,6 +73,7 @@ const PublicSettingScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    zIndex: 1,
     alignItems: 'center',
   },
   map: {
@@ -89,6 +87,14 @@ const styles = StyleSheet.create({
   },
   selection: {
     flex: 1,
+  },
+  radius: {
+    zIndex: 1000,
+  },
+  timer: {
+    zIndex: 100,
+    width: 200,
+    height: 30,
   },
 });
 

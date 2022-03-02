@@ -23,7 +23,7 @@ const FriendListScreen = ({ navigation }) => {
               id: safacyInvitationList[index]._id,
             });
           }}
-          key={item.id}
+          key={item._id}
         />
       ))}
     </View>

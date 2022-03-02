@@ -9,12 +9,18 @@ import { getCurrentSafacy } from '../store/safacySlice';
 
 const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
+  const [disabled, setDisabled] = useState(true);
 
-  const { id } = route.params;
+  const { id } = useSelector((state) => state.auth);
+  const { id: parmsId } = route.params;
 
   useEffect(() => {
-    dispatch(getUserInfo(id));
-    dispatch(getCurrentSafacy(id));
+    dispatch(getUserInfo(parmsId));
+    dispatch(getCurrentSafacy(parmsId));
+
+    if (id === parmsId) {
+      setDisabled(false);
+    }
   }, []);
 
   const { publicMode } = useSelector((state) => state.user);
@@ -27,6 +33,7 @@ const PublicScreen = ({ navigation, route }) => {
   };
 
   const handleMoveToMain = () => {
+    dispatch(getUserInfo(id));
     navigation.navigate('Main');
   };
   return (
@@ -38,6 +45,7 @@ const PublicScreen = ({ navigation, route }) => {
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch}
         value={publicMode}
+        disabled={disabled}
       />
       <Button title="Main page" onPress={handleMoveToMain} />
     </View>

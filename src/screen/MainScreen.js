@@ -18,7 +18,7 @@ const MainScreen = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(getUserInfo(id));
-  }, []);
+  }, [dispatch]);
 
   const user = useSelector((state) => state.user);
 
