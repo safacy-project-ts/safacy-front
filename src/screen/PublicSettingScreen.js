@@ -2,25 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  Switch,
-  Button,
-  TextInput,
-} from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { MaterialIcons } from '@expo/vector-icons';
-
 import { createSafacy, getUserInfo } from '../store/userSlice';
 
 import Map from '../common/components/Map';
 import SearchBar from '../common/components/SearchBar';
-import RadiusSelection from '../common/components/RadiusSelection';
-import TimeSelection from '../common/components/TimeSelection';
-import Selection from '../common/components/Selection';
+import PublicSelection from '../common/components/PublicSelection';
 
 import COLORS from '../common/constants/COLORS';
 
@@ -28,11 +17,9 @@ const PublicSettingScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const [destination, setDestination] = useState('seoul');
-  const [radius, setRadius] = useState(100);
-  const [time, setTime] = useState(30);
-  const [invitedFriendList, setInvitedFriendList] = useState([
-    'bootcamp.ocn@gmail.com',
-  ]);
+  const [radius, setRadius] = useState('');
+  const [time, setTime] = useState('');
+  const [invitedFriendList, setInvitedFriendList] = useState([]);
 
   const { id } = useSelector((state) => state.auth);
 
@@ -56,10 +43,10 @@ const PublicSettingScreen = ({ navigation }) => {
       <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
       <Text>Share my location</Text>
 
-      <Map />
+      <Map setDestination={setDestination} />
       <Text>Destination</Text>
       <SearchBar style={styles.search} />
-      <Selection
+      <PublicSelection
         setRadius={setRadius}
         setTime={setTime}
         setInvitedFriendList={setInvitedFriendList}

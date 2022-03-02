@@ -9,6 +9,7 @@ import { getCurrentSafacy } from '../store/safacySlice';
 
 const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
+
   const [disabled, setDisabled] = useState(true);
 
   const { id } = useSelector((state) => state.auth);
@@ -24,10 +25,11 @@ const PublicScreen = ({ navigation, route }) => {
   }, []);
 
   const { publicMode } = useSelector((state) => state.user);
-  const { id: safacyId } = useSelector((state) => state.safacy);
+  const currentSafacy = useSelector((state) => state.safacy);
+  const currentSafacyId = currentSafacy.id;
 
   const toggleSwitch = () => {
-    dispatch(stopPublic({ id, safacyId }));
+    dispatch(stopPublic({ id, currentSafacyId }));
     dispatch(getUserInfo(id));
     navigation.navigate('Main');
   };

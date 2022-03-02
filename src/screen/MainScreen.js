@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+
 import PropTypes from 'prop-types';
 
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { getUserInfo } from '../store/userSlice';
+
 import PRIVACY_LOCK from '../../assets/img/privacy.png';
 import PUBLIC_LOCK from '../../assets/img/public.png';
-
 import COLOR from '../common/constants/COLORS';
-
-import { getUserInfo } from '../store/userSlice';
 
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();

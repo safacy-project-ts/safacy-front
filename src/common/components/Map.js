@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Switch, Button } from 'react-native';
 
+import PropTypes from 'prop-types';
+
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const Map = () => {
+const Map = ({ setDestination }) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -67,3 +69,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
 });
+
+Map.propTypes = {
+  setDestination: PropTypes.func.isRequired,
+};
