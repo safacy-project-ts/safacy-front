@@ -2,43 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  Switch,
-  Button,
-  TextInput,
-} from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { getCurrentSafacy } from '../store/safacySlice';
 import { createSafacy, getUserInfo } from '../store/userSlice';
+import { setTimer } from '../store/timerSlice';
 
 import Map from '../common/components/Map';
 import SearchBar from '../common/components/SearchBar';
-import TimePicker from '../common/components/TimePicker';
-import DropBox from '../common/components/DropBox';
-import Timer from '../common/components/Timer';
+import PublicSelection from '../common/components/PublicSelection';
+
 import COLORS from '../common/constants/COLORS';
 
 const PublicSettingScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [inputs, setInputs] = useState({
-    destination: 'seoul',
-    radius: 100,
-    time: 30,
-    invitedFriendList: ['bootcamp.ocn@gmail.com'],
-  });
+  const [destination, setDestination] = useState('seoul');
+  const [radius, setRadius] = useState('');
+  const [time, setTime] = useState('');
+  const [invitedFriendList, setInvitedFriendList] = useState([]);
+  const initialTime = time * 60;
+  console.log('====', time * 60);
 
   const { id } = useSelector((state) => state.auth);
-  const { destination, radius, time, invitedFriendList } = inputs;
-  const { publicMode } = useSelector((state) => state.user);
+  const timer = useSelector((state) => state.timer);
+  console.log('TIMER', timer);
 
-  const handleCreateSafacy = () => {
-    dispatch(
+  const handleCreateSafacy = async () => {
+    await dispatch(
       createSafacy({
         id,
         destination,
@@ -47,8 +39,11 @@ const PublicSettingScreen = ({ navigation }) => {
         invitedFriendList,
       }),
     );
+
+    await dispatch(setTimer({ sec: initialTime }));
+    await dispatch(getCurrentSafacy(id));
+    await dispatch(getUserInfo(id));
     navigation.navigate('Public', { id });
-    dispatch(getUserInfo(id));
   };
 
   return (
@@ -60,13 +55,11 @@ const PublicSettingScreen = ({ navigation }) => {
       <Map />
       <Text>Destination</Text>
       <SearchBar style={styles.search} />
-
-      <Text>Radius</Text>
-      <DropBox />
-      <Text>Time</Text>
-      {/* <TimePicker /> */}
-      {/* <Timer /> */}
-      <Text>Friends</Text>
+      <PublicSelection
+        setRadius={setRadius}
+        setTime={setTime}
+        setInvitedFriendList={setInvitedFriendList}
+      />
 
       <Button title="START" onPress={handleCreateSafacy} />
     </View>
@@ -76,6 +69,7 @@ const PublicSettingScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    zIndex: 1,
     alignItems: 'center',
   },
   map: {
@@ -89,6 +83,14 @@ const styles = StyleSheet.create({
   },
   selection: {
     flex: 1,
+  },
+  radius: {
+    zIndex: 1000,
+  },
+  timer: {
+    zIndex: 100,
+    width: 200,
+    height: 30,
   },
 });
 

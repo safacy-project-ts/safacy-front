@@ -24,13 +24,14 @@ const authSlice = createSlice({
 
   extraReducers: {
     [signIn.pending]: (state, action) => {
-      state.status = 'loading...';
+      state.status = 'loading';
     },
     [signIn.fulfilled]: (state, action) => {
       const { id, email, nickname } = action.payload;
       state.id = id;
       state.email = email;
       state.nickname = nickname;
+      state.status = 'success';
     },
     [signIn.rejected]: (state, action) => {
       state.status = 'failed';

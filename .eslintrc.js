@@ -31,6 +31,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'import/no-unresolved': 'off',
     'no-underscore-dangle': 'off',
+    'consistent-return': ['off', { treatUndefinedAsUnspecified: true }],
     'react/jsx-filename-extension': [
       1,
       {
