@@ -51,7 +51,8 @@
     "redux": "^4.1.2",
     "socket.io-client": "^4.4.1",
     "expo-background-fetch": "~10.1.0",
-    "expo-task-manager": "~10.1.0"
+    "expo-task-manager": "~10.1.0",
+    "expo-notifications": "~0.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

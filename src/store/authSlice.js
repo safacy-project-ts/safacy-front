@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// import axios from '../api/axiosInstance';
-import axios from 'axios';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { BASE_URI } from "@env";
 
 export const signIn = createAsyncThunk(
-  'auth/signIn',
+  "auth/signIn",
   async ({ email, nickname }) => {
-    const auth = await axios.post('http://localhost:8080/auth/signIn', {
+    const auth = await axios.post(`${BASE_URI}/auth/signIn`, {
       email,
       nickname,
     });
@@ -15,7 +15,7 @@ export const signIn = createAsyncThunk(
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
     id: null,
     email: null,
@@ -24,17 +24,17 @@ const authSlice = createSlice({
 
   extraReducers: {
     [signIn.pending]: (state, action) => {
-      state.status = 'loading';
+      state.status = "loading";
     },
     [signIn.fulfilled]: (state, action) => {
       const { id, email, nickname } = action.payload;
       state.id = id;
       state.email = email;
       state.nickname = nickname;
-      state.status = 'success';
+      state.status = "success";
     },
     [signIn.rejected]: (state, action) => {
-      state.status = 'failed';
+      state.status = "failed";
     },
   },
 });

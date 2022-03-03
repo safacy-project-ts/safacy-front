@@ -1,8 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './authSlice';
-import userReducer from './userSlice';
-import safacyReducer from './safacySlice';
-import timerReducer from './timerSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./authSlice";
+import userReducer from "./userSlice";
+import safacyReducer from "./safacySlice";
+import timerReducer from "./timerSlice";
+import chatReducer from "./chatSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     user: userReducer,
     safacy: safacyReducer,
     timer: timerReducer,
+    chat: chatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

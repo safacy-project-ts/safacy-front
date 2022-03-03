@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import PropTypes from "prop-types";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { StyleSheet, Text, View, Switch, Button } from 'react-native';
+import { useDispatch, useSelector } from "react-redux";
+import { StyleSheet, Text, View, Switch, Button } from "react-native";
 
-import Map from '../common/components/Map';
-import Timer from '../common/components/Timer';
-import SafacyBot from '../common/components/SafacyBot';
-import COLORS from '../common/constants/COLORS';
+import Map from "../common/components/Map";
+import Timer from "../common/components/Timer";
+import SafacyBot from "../common/components/SafacyBot";
+import SAFACY_BOT from "../common/constants/SAFACY_BOT";
+import COLORS from "../common/constants/COLORS";
 
-import { getUserInfo, stopPublic } from '../store/userSlice';
-import { getCurrentSafacy } from '../store/safacySlice';
+import { getUserInfo, stopPublic } from "../store/userSlice";
+import { getCurrentSafacy } from "../store/safacySlice";
+import { sendMessage } from "../store/chatSlice";
 
 const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -45,12 +47,14 @@ const PublicScreen = ({ navigation, route }) => {
         safacyId,
       }),
     );
+
+    await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
+    await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
     await dispatch(getUserInfo(id));
-    navigation.navigate('Main');
   };
 
   const handleMoveToMain = () => {
-    navigation.navigate('Main');
+    navigation.navigate("Main");
   };
 
   const handleStopPublic = async () => {
@@ -61,8 +65,8 @@ const PublicScreen = ({ navigation, route }) => {
       }),
     );
 
+    await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
     await dispatch(getUserInfo(id));
-    navigation.navigate('Main');
   };
 
   return (
@@ -70,12 +74,12 @@ const PublicScreen = ({ navigation, route }) => {
       <Text>Public page</Text>
       <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
       <Switch
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={publicMode ? '#fafafc' : '#f4f3f4'}
+        trackColor={{ false: "#767577", true: "#81b0ff" }}
+        thumbColor={publicMode ? "#fafafc" : "#f4f3f4"}
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch}
         value={publicMode}
-        disabled={disabled}
+        disabled={!publicMode}
       />
       <Button title="Main page" onPress={handleMoveToMain} />
       <Map />
@@ -90,13 +94,21 @@ const PublicScreen = ({ navigation, route }) => {
       ))}
       <Text>Destination</Text>
       <Text>{destination}</Text>
-      <Text>Timer</Text>
-      <Timer sec={remaining} />
+      {publicMode && (
+        <View>
+          <Text>Timer</Text>
+          <Timer sec={remaining} />
+        </View>
+      )}
 
       <SafacyBot />
       {!disabled ? (
         <View>
-          <Button title="STOP" onPress={handleStopPublic} />
+          <Button
+            title="STOP"
+            onPress={handleStopPublic}
+            disabled={!publicMode}
+          />
         </View>
       ) : (
         <View>
@@ -111,8 +123,8 @@ const PublicScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
