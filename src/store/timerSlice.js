@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const timerSlice = createSlice({
-  name: 'timer',
+  name: "timer",
   initialState: {
     initial: null,
     remaining: null,
@@ -9,7 +9,6 @@ const timerSlice = createSlice({
   reducers: {
     setTimer: (state, action) => {
       const { sec } = action.payload;
-      console.log('sec', action.payload.sec);
       state.initial = sec;
       state.remaining = sec;
     },

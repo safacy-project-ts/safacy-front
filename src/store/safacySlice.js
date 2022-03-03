@@ -1,18 +1,18 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// import axios from '../api/axiosInstance';
-import axios from 'axios';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { BASE_URI } from "@env";
 
 export const getCurrentSafacy = createAsyncThunk(
-  'safacy/getCurrentSafacy',
+  "safacy/getCurrentSafacy",
   async (id) => {
-    const safacy = await axios.get(`http://localhost:8080/user/current/${id}`);
+    const safacy = await axios.get(`${BASE_URI}/user/current/${id}`);
 
     return safacy.data;
   },
 );
 
 const safacySlice = createSlice({
-  name: 'safacy',
+  name: "safacy",
   initialState: {
     id: null,
     user: null,
@@ -33,7 +33,7 @@ const safacySlice = createSlice({
       state.radius = radius;
       state.time = time;
       state.invitedFriendList = invitedFriendList;
-      state.status = 'success';
+      state.status = "success";
     },
   },
 });

@@ -1,35 +1,34 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// import axios from '../api/axiosInstance';
-import axios from 'axios';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { BASE_URI } from "@env";
 
-export const getUserInfo = createAsyncThunk('user/getUserInfo', async (id) => {
-  const user = await axios.get(`http://localhost:8080/user/${id}`);
+export const getUserInfo = createAsyncThunk("user/getUserInfo", async (id) => {
+  const user = await axios.get(`${BASE_URI}/user/${id}`);
 
   return user.data;
 });
 
-export const startPublic = createAsyncThunk('user/startPublic', async (id) => {
-  const publicMode = await axios.put(`http://localhost:8080/user/${id}/public`);
+export const startPublic = createAsyncThunk("user/startPublic", async (id) => {
+  const publicMode = await axios.put(`${BASE_URI}/user/${id}/public`);
 
   return publicMode.data;
 });
 
 export const stopPublic = createAsyncThunk(
-  'user/stopPublic',
+  "user/stopPublic",
   async ({ id, safacyId }) => {
-    const privacyMode = await axios.put(
-      `http://localhost:8080/user/${id}/privacy`,
-      { safacyId },
-    );
+    const privacyMode = await axios.put(`${BASE_URI}/user/${id}/privacy`, {
+      safacyId,
+    });
 
     return privacyMode.data;
   },
 );
 
 export const createSafacy = createAsyncThunk(
-  'user/createSafacy',
+  "user/createSafacy",
   async ({ id, destination, radius, time, invitedFriendList }) => {
-    const newSafacy = await axios.post(`http://localhost:8080/user/${id}/new`, {
+    const newSafacy = await axios.post(`${BASE_URI}/user/${id}/new`, {
       destination,
       radius,
       time,
@@ -41,7 +40,7 @@ export const createSafacy = createAsyncThunk(
 );
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
     _id: null,
     email: null,
@@ -55,7 +54,7 @@ const userSlice = createSlice({
 
   extraReducers: {
     [getUserInfo.pending]: (state, action) => {
-      state.status = 'loading';
+      state.status = "loading";
     },
     [getUserInfo.fulfilled]: (state, action) => {
       const {
@@ -77,26 +76,26 @@ const userSlice = createSlice({
       state.friendInvitationList = friendInvitationList;
       state.safacyHistory = safacyHistory;
       state.safacyInvitationList = safacyInvitationList;
-      state.status = 'success';
+      state.status = "success";
     },
     [getUserInfo.rejected]: (state, action) => {
-      state.status = 'failed';
+      state.status = "failed";
     },
     [startPublic.fulfilled]: (state, action) => {
       const { publicMode } = action.payload;
       state.publicMode = publicMode;
     },
     [createSafacy.pending]: (state, action) => {
-      state.status = 'loading';
+      state.status = "loading";
     },
     [createSafacy.fulfilled]: (state, action) => {
-      state.status = 'success';
+      state.status = "success";
     },
     [stopPublic.pending]: (state, action) => {
-      state.status = 'loading';
+      state.status = "loading";
     },
     [stopPublic.fulfilled]: (state, action) => {
-      state.status = 'success';
+      state.status = "success";
     },
   },
 });

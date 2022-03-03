@@ -1,6 +1,6 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-import PropTypes from 'prop-types';
+import React from "react";
+import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import PropTypes from "prop-types";
 
 const CustomButton = ({ message, disabled, onPress, style }) => {
   const handlePressdbutton = () => {
@@ -22,7 +22,7 @@ export default CustomButton;
 
 const styles = StyleSheet.create({
   loginButton: {
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 
