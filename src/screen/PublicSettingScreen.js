@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { MaterialIcons } from '@expo/vector-icons';
+import { getCurrentSafacy } from '../store/safacySlice';
 import { createSafacy, getUserInfo } from '../store/userSlice';
+import { setTimer } from '../store/timerSlice';
 
 import Map from '../common/components/Map';
 import SearchBar from '../common/components/SearchBar';
@@ -20,11 +22,15 @@ const PublicSettingScreen = ({ navigation }) => {
   const [radius, setRadius] = useState('');
   const [time, setTime] = useState('');
   const [invitedFriendList, setInvitedFriendList] = useState([]);
+  const initialTime = time * 60;
+  console.log('====', time * 60);
 
   const { id } = useSelector((state) => state.auth);
+  const timer = useSelector((state) => state.timer);
+  console.log('TIMER', timer);
 
-  const handleCreateSafacy = () => {
-    dispatch(
+  const handleCreateSafacy = async () => {
+    await dispatch(
       createSafacy({
         id,
         destination,
@@ -33,8 +39,11 @@ const PublicSettingScreen = ({ navigation }) => {
         invitedFriendList,
       }),
     );
+
+    await dispatch(setTimer({ sec: initialTime }));
+    await dispatch(getCurrentSafacy(id));
+    await dispatch(getUserInfo(id));
     navigation.navigate('Public', { id });
-    dispatch(getUserInfo(id));
   };
 
   return (
@@ -43,7 +52,7 @@ const PublicSettingScreen = ({ navigation }) => {
       <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
       <Text>Share my location</Text>
 
-      <Map setDestination={setDestination} />
+      <Map />
       <Text>Destination</Text>
       <SearchBar style={styles.search} />
       <PublicSelection

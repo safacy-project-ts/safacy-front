@@ -55,7 +55,7 @@ const userSlice = createSlice({
 
   extraReducers: {
     [getUserInfo.pending]: (state, action) => {
-      state.status = 'loading...';
+      state.status = 'loading';
     },
     [getUserInfo.fulfilled]: (state, action) => {
       const {
@@ -86,7 +86,16 @@ const userSlice = createSlice({
       const { publicMode } = action.payload;
       state.publicMode = publicMode;
     },
-    [createSafacy.failed]: (state, action) => {
+    [createSafacy.pending]: (state, action) => {
+      state.status = 'loading';
+    },
+    [createSafacy.fulfilled]: (state, action) => {
+      state.status = 'success';
+    },
+    [stopPublic.pending]: (state, action) => {
+      state.status = 'loading';
+    },
+    [stopPublic.fulfilled]: (state, action) => {
       state.status = 'success';
     },
   },

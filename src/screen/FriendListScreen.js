@@ -7,8 +7,11 @@ import { useSelector } from 'react-redux';
 
 import { StyleSheet, Text, View, Button } from 'react-native';
 
+import Timer from '../common/components/Timer';
+
 const FriendListScreen = ({ navigation }) => {
   const { safacyInvitationList } = useSelector((state) => state.user);
+  const { remaining } = useSelector((state) => state.timer);
 
   return (
     <View style={styles.container}>
@@ -26,6 +29,7 @@ const FriendListScreen = ({ navigation }) => {
           key={item._id}
         />
       ))}
+      <Timer sec={remaining} />
     </View>
   );
 };

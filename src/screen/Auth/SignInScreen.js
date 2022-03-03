@@ -24,7 +24,7 @@ const SignInScreen = () => {
 
       if (type === 'success') {
         const { email, givenName: nickname } = user;
-        dispatch(signIn({ email, nickname }));
+        await dispatch(signIn({ email, nickname }));
       }
       return { cancelled: true };
     } catch (error) {

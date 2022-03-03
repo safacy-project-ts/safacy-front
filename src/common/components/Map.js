@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const Map = ({ setDestination }) => {
+const Map = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -66,10 +66,11 @@ export default Map;
 const styles = StyleSheet.create({
   map: {
     width: 350,
-    height: 200,
+    height: 150,
   },
 });
 
-Map.propTypes = {
-  setDestination: PropTypes.func.isRequired,
-};
+// Map.propTypes = {
+//   destination: PropTypes.string.isRequired,
+//   setDestination: PropTypes.func.isRequired,
+// };

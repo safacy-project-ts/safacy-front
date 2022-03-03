@@ -7,6 +7,7 @@ import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserInfo } from '../store/userSlice';
 
+import Timer from '../common/components/Timer';
 import PRIVACY_LOCK from '../../assets/img/privacy.png';
 import PUBLIC_LOCK from '../../assets/img/public.png';
 import COLOR from '../common/constants/COLORS';
@@ -15,10 +16,11 @@ const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const { id } = useSelector((state) => state.auth);
+  const { remaining } = useSelector((state) => state.timer);
 
   useEffect(() => {
     dispatch(getUserInfo(id));
-  }, [dispatch]);
+  }, []);
 
   const user = useSelector((state) => state.user);
 
@@ -38,7 +40,7 @@ const MainScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Button title="My Safacy" onPress={handleMySafacy} />
       <Button title="Your Safacy" onPress={handleYourSafacy} />
-      {!user?.publicMode ? (
+      {!user.publicMode ? (
         <View>
           <Image source={PRIVACY_LOCK} />
           <Text>Private Mode</Text>
@@ -47,6 +49,7 @@ const MainScreen = ({ navigation }) => {
         <View>
           <Image source={PUBLIC_LOCK} />
           <Text>Public Mode</Text>
+          <Timer sec={remaining} />
         </View>
       )}
     </View>
