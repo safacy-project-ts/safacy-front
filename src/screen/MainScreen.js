@@ -8,22 +8,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo, stopPublic } from "../store/userSlice";
 
 import Timer from "../common/components/Timer";
+import CustomButton from "../common/components/CustomButton";
 import PRIVACY_LOCK from "../../assets/img/privacy.png";
 import PUBLIC_LOCK from "../../assets/img/public.png";
-import COLOR from "../common/constants/COLORS";
 import { clearMessage } from "../store/chatSlice";
+import COLORS from "../common/constants/COLORS";
+import FONT from "../common/constants/FONT";
 
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const { id } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.user);
   const { id: safacyId } = useSelector((state) => state.safacy);
   const { remaining } = useSelector((state) => state.timer);
+  const chat = useSelector((state) => state.chat);
+
+  console.log(chat);
 
   useEffect(async () => {
-    await dispatch(getUserInfo(id));
-
-    if (!user.publicMode) {
+    const updatedUser = await dispatch(getUserInfo(id));
+    if (!updatedUser.publicMode) {
       await dispatch(clearMessage());
     }
   }, []);
@@ -39,8 +44,6 @@ const MainScreen = ({ navigation }) => {
   //   }
   // }, [AppState.currentState]);
 
-  const user = useSelector((state) => state.user);
-
   const handleMySafacy = () => {
     if (user.publicMode) {
       navigation.navigate("Public", { id });
@@ -55,20 +58,41 @@ const MainScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Button title="My Safacy" onPress={handleMySafacy} />
-      <Button title="Your Safacy" onPress={handleYourSafacy} />
-      {!user.publicMode ? (
-        <View>
-          <Image source={PRIVACY_LOCK} />
-          <Text>Private Mode</Text>
+      <View style={styles.title}>
+        <Text style={styles.titleText}>Main Page</Text>
+      </View>
+      <View style={styles.button}>
+        <View style={styles.mySafacyBtn}>
+          <CustomButton
+            title="My Safacy"
+            disabled={false}
+            style={styles.mySafacy}
+            onPress={handleMySafacy}
+          />
         </View>
-      ) : (
-        <View>
-          <Image source={PUBLIC_LOCK} />
-          <Text>Public Mode</Text>
-          <Timer sec={remaining} />
+        <View style={styles.yourSafacyBtn}>
+          <CustomButton
+            title="Your Safacy"
+            disabled={false}
+            style={styles.yourSafacy}
+            onPress={handleYourSafacy}
+          />
         </View>
-      )}
+      </View>
+      <View style={styles.status}>
+        {!user.publicMode ? (
+          <View>
+            <Text style={styles.privacy}>PRIVACY MODE</Text>
+            <Image style={styles.lock} source={PRIVACY_LOCK} />
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.public}>PUBLIC MODE</Text>
+            <Timer style={styles.timer} sec={remaining} />
+            <Image style={styles.lock} source={PUBLIC_LOCK} />
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -76,9 +100,69 @@ const MainScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.WHITE,
+    backgroundColor: COLORS.WHITE,
     alignItems: "center",
-    justifyContent: "center",
+  },
+  title: {
+    flex: 1,
+    width: 300,
+    borderBottomColor: COLORS.GREY,
+    borderBottomWidth: 1,
+    alignItems: "center",
+    paddingBottom: 15,
+  },
+  titleText: {
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.XL,
+    color: COLORS.BLACK,
+    paddingTop: 50,
+  },
+  button: {
+    flex: 4,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  status: {
+    flex: 3,
+    alignItems: "center",
+  },
+
+  mySafacyBtn: {
+    paddingTop: 50,
+  },
+  yourSafacyBtn: {
+    paddingTop: 40,
+  },
+  mySafacy: {
+    height: 90,
+    lineHeight: 85,
+    fontSize: 22,
+    backgroundColor: COLORS.RED,
+  },
+  yourSafacy: {
+    height: 90,
+    lineHeight: 85,
+    fontSize: 22,
+    backgroundColor: COLORS.YELLOW,
+  },
+  lock: {
+    width: 100,
+    height: 100,
+    overflow: "visible",
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  timer: {
+    fontFamily: FONT.REGULAR_FONT,
+    paddingTop: 20,
+  },
+  privacy: {
+    fontFamily: FONT.BOLD_FONT,
+    color: COLORS.RED,
+  },
+  public: {
+    fontFamily: FONT.BOLD_FONT,
+    color: COLORS.BLUE,
   },
 });
 

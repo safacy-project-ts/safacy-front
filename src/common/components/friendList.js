@@ -1,7 +1,7 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { useSelector } from "react-redux";
 
-const friendList = () => {
+const FriendList = () => {
   const { myFriendList } = useSelector((state) => state.user);
 
   const friendListConstants = [];
@@ -19,4 +19,4 @@ const friendList = () => {
   return friendListConstants;
 };
 
-export default friendList;
+export default FriendList;

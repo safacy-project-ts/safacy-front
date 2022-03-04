@@ -28,6 +28,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "host.exp.exponent",
+      "config": {
+        "googleMapsApiKey": "AIzaSyCsyO5XkV-EdhUDZqTWeYT5liY6f1K85QA"
+      },
       "supportsTablet": true,
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
