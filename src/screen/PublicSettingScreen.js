@@ -146,27 +146,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   friendSelection: { flex: 2, overflow: "visible" },
-
-  // map: {
-  //   width: 350,
-  //   height: 200,
-  // },
-  // search: {
-  //   width: 300,
-  //   height: 100,
-  //   flex: 0.5,
-  // },
-  // selection: {
-  //   flex: 1,
-  // },
-  // radius: {
-  //   zIndex: 1000,
-  // },
-  // timer: {
-  //   zIndex: 100,
-  //   width: 200,
-  //   height: 30,
-  // },
 });
 
 export default PublicSettingScreen;

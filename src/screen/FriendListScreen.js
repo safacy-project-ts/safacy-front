@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    flex: 1,
+    flex: 0.8,
     alignItems: "center",
     width: 300,
     borderBottomColor: COLORS.GREY,
@@ -84,6 +84,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 30,
   },
+  freinds: {
+    width: 300,
+    height: 50,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: COLORS.LIGHT_BLACK,
+    padding: 10,
+  },
   timer: {
     flex: 1,
     alignItems: "center",
@@ -93,21 +103,6 @@ const styles = StyleSheet.create({
     fontSize: FONT.XL,
     color: COLORS.BLACK,
     paddingTop: 50,
-  },
-  freinds: {
-    width: 300,
-    height: 50,
-    flexDirection: "row",
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: COLORS.LIGHT_BLACK,
-    lineHeight: 40,
-    fontSize: FONT.L,
-    fontFamily: FONT.BOLD_FONT,
-    textAlign: "center",
-    color: COLORS.WHITE,
-    backgroundColor: COLORS.RED,
-    overflow: "hidden",
   },
 });
 
