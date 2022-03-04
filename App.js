@@ -26,7 +26,7 @@ const App = () => {
         onFinish={() => {
           setFontLoaded(true);
         }}
-        onError={() => console.log("error")}
+        onError={() => console.log("Error happend while loading font")}
       />
     );
   }

@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { BASE_URI } from "@env";
+import { BASE_URI, TEST_URI } from "@env";
 
 export const getCurrentSafacy = createAsyncThunk(
   "safacy/getCurrentSafacy",
   async (id) => {
-    const safacy = await axios.get(`${BASE_URI}/user/current/${id}`);
+    const safacy = await axios.get(`${TEST_URI}/user/current/${id}`);
 
     return safacy.data;
   },

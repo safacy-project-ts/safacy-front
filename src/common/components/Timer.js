@@ -1,14 +1,14 @@
 /* eslint-disable no-shadow */
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, StyleSheet, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect, useRef } from "react";
+import { Text, StyleSheet, Modal } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserInfo, stopPublic } from '../../store/userSlice';
-import { setTimer, countDownTimer } from '../../store/timerSlice';
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserInfo, stopPublic } from "../../store/userSlice";
+import { setTimer, countDownTimer } from "../../store/timerSlice";
 
-import COLORS from '../constants/COLORS';
+import COLORS from "../constants/COLORS";
 
 const Timer = ({ sec }) => {
   const dispatch = useDispatch();

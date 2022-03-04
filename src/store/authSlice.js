@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 import axios from "axios";
-import { BASE_URI } from "@env";
+import { BASE_URI, TEST_URI } from "@env";
 
 export const signIn = createAsyncThunk(
   "auth/signIn",
   async ({ email, nickname }) => {
-    const auth = await axios.post(`${BASE_URI}/auth/signIn`, {
+    const auth = await axios.post(`${TEST_URI}/auth/signIn`, {
       email,
       nickname,
     });

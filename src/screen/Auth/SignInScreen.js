@@ -1,18 +1,19 @@
-import React, { useEffect } from 'react';
-import * as Google from 'expo-google-app-auth';
-import { GOOGLE_IOS_CLIENT_ID } from '@env';
+import React, { useEffect } from "react";
+import * as Google from "expo-google-app-auth";
+import { GOOGLE_IOS_CLIENT_ID } from "@env";
 
-import { View, Text, Button, StyleSheet, Image } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { signIn } from '../../store/authSlice';
+import { View, Text, Button, StyleSheet, Image } from "react-native";
+import { useDispatch } from "react-redux";
+import { signIn } from "../../store/authSlice";
 
-import FONTS from '../../common/constants/FONT';
-import COLOR from '../../common/constants/COLORS';
-import LOGO from '../../../assets/img/logo.png';
+import CustomButton from "../../common/components/CustomButton";
+import FONTS from "../../common/constants/FONT";
+import LOGO from "../../../assets/img/logo.png";
+import COLORS from "../../common/constants/COLORS";
 
 const config = {
   iosClientId: GOOGLE_IOS_CLIENT_ID,
-  scopes: ['profile', 'email'],
+  scopes: ["profile", "email"],
 };
 
 const SignInScreen = () => {
@@ -22,7 +23,7 @@ const SignInScreen = () => {
     try {
       const { type, accessToken, user } = await Google.logInAsync(config);
 
-      if (type === 'success') {
+      if (type === "success") {
         const { email, givenName: nickname } = user;
         await dispatch(signIn({ email, nickname }));
       }
@@ -33,15 +34,23 @@ const SignInScreen = () => {
   };
 
   return (
-    <View style={styles.screen}>
-      <Image style={styles.logo} source={LOGO} />
-      <Text style={styles.title}>Safacy</Text>
-      <Text style={styles.description}>for your safacy & privacy</Text>
-      <Button
-        style={styles.button}
-        title="Google SignIn"
-        onPress={() => signInWithGoogleAsync()}
-      />
+    <View style={styles.container}>
+      <View style={styles.header} />
+      <View style={styles.main}>
+        <Image style={styles.logo} source={LOGO} />
+        <Text style={styles.title}>Safacy</Text>
+        <Text style={styles.description}>for your safacy & privacy</Text>
+      </View>
+      <View style={styles.btnContainer}>
+        <View style={styles.signInBtn}>
+          <CustomButton
+            title="Google SingIn"
+            disabled={false}
+            onPress={() => signInWithGoogleAsync()}
+            style={styles.button}
+          />
+        </View>
+      </View>
     </View>
   );
 };
@@ -49,24 +58,47 @@ const SignInScreen = () => {
 export default SignInScreen;
 
 const styles = StyleSheet.create({
-  screen: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 50,
+    backgroundColor: COLORS.WHITE,
+  },
+  header: {
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.LIGHT_BLACK,
+    backgroundColor: COLORS.LIGHT_BLUE,
+  },
+  main: {
+    flex: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: 20,
+  },
+  btnContainer: {
+    flex: 2,
+    alignItems: "center",
+  },
+  signInBtn: {
+    width: 300,
+    paddingTop: 30,
+    borderTopColor: COLORS.GREY,
+    borderTopWidth: 1,
+    alignItems: "center",
   },
   logo: {
-    width: '50%',
-    height: '50%',
-    resizeMode: 'contain',
+    width: "60%",
+    height: "50%",
+    resizeMode: "contain",
   },
   title: {
     fontFamily: FONTS.BOLD_FONT,
     fontSize: FONTS.XXL,
-    color: '#75a9f9',
+    color: "#75a9f9",
   },
-  description: {},
+  description: {
+    fontFamily: FONTS.REGULAR_FONT,
+  },
   button: {
-    backgroundColor: COLOR.RED,
+    borderRadius: 10,
   },
 });

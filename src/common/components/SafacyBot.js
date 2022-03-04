@@ -7,6 +7,7 @@ import { StyleSheet, Text, View, Button, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import COLORS from "../constants/COLORS";
+import FONT from "../constants/FONT";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -17,12 +18,8 @@ Notifications.setNotificationHandler({
 });
 
 const SafacyBot = () => {
-  // 이상행동에 대한 감지를 하면 safacyBot store에 저장하고,
-  // 저장한 내용들을 렌더링해주기
   const dispatch = useDispatch();
   const { message } = useSelector((state) => state.chat);
-
-  console.log(message);
 
   const [safacyBotMsg, setSafacyBotMsg] = useState(message);
   const [expoPushToken, setExpoPushToken] = useState("");
@@ -54,7 +51,7 @@ const SafacyBot = () => {
     <View style={styles.container}>
       {message?.map((msg, index) => (
         <View key={index}>
-          <Text>{msg}</Text>
+          <Text style={styles.safacyInfo}>{msg}</Text>
         </View>
       ))}
       {/* <Button
@@ -117,9 +114,17 @@ export default SafacyBot;
 
 const styles = StyleSheet.create({
   container: {
-    width: 350,
-    height: 150,
+    width: 180,
+    height: "80%",
+    borderWidth: 1,
     borderColor: COLORS.BLACK,
     backgroundColor: COLORS.GREY,
+    borderRadius: 9,
+    padding: 5,
+  },
+  safacyInfo: {
+    margin: 2,
+    fontFamily: FONT.REGULAR_FONT,
+    fontSize: FONT.S,
   },
 });

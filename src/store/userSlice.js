@@ -1,15 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { BASE_URI } from "@env";
+import { BASE_URI, TEST_URI } from "@env";
 
 export const getUserInfo = createAsyncThunk("user/getUserInfo", async (id) => {
-  const user = await axios.get(`${BASE_URI}/user/${id}`);
+  const user = await axios.get(`${TEST_URI}/user/${id}`);
 
   return user.data;
 });
 
 export const startPublic = createAsyncThunk("user/startPublic", async (id) => {
-  const publicMode = await axios.put(`${BASE_URI}/user/${id}/public`);
+  const publicMode = await axios.put(`${TEST_URI}/user/${id}/public`);
 
   return publicMode.data;
 });
@@ -17,7 +17,7 @@ export const startPublic = createAsyncThunk("user/startPublic", async (id) => {
 export const stopPublic = createAsyncThunk(
   "user/stopPublic",
   async ({ id, safacyId }) => {
-    const privacyMode = await axios.put(`${BASE_URI}/user/${id}/privacy`, {
+    const privacyMode = await axios.put(`${TEST_URI}/user/${id}/privacy`, {
       safacyId,
     });
 
@@ -28,7 +28,7 @@ export const stopPublic = createAsyncThunk(
 export const createSafacy = createAsyncThunk(
   "user/createSafacy",
   async ({ id, destination, radius, time, invitedFriendList }) => {
-    const newSafacy = await axios.post(`${BASE_URI}/user/${id}/new`, {
+    const newSafacy = await axios.post(`${TEST_URI}/user/${id}/new`, {
       destination,
       radius,
       time,
