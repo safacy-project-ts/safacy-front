@@ -28,7 +28,7 @@ export const stopPublic = createAsyncThunk(
 export const createSafacy = createAsyncThunk(
   "user/createSafacy",
   async ({ id, destination, radius, time, invitedFriendList }) => {
-    const newSafacy = await axios.post(`${TEST_URI}/user/${id}/new`, {
+    const newSafacy = await axios.post(`${BASE_URI}/user/${id}/new`, {
       destination,
       radius,
       time,
@@ -36,6 +36,17 @@ export const createSafacy = createAsyncThunk(
     });
 
     return newSafacy.data;
+  },
+);
+
+export const addFriend = createAsyncThunk(
+  "user/addFriend",
+  async ({ id, email }) => {
+    const newFriend = await axios.put(`${BASE_URI}/user/${id}/friend/new`, {
+      email,
+    });
+
+    return newFriend.data;
   },
 );
 
@@ -53,9 +64,6 @@ const userSlice = createSlice({
   },
 
   extraReducers: {
-    [getUserInfo.pending]: (state, action) => {
-      state.status = "loading";
-    },
     [getUserInfo.fulfilled]: (state, action) => {
       const {
         _id,
@@ -78,23 +86,18 @@ const userSlice = createSlice({
       state.safacyInvitationList = safacyInvitationList;
       state.status = "success";
     },
-    [getUserInfo.rejected]: (state, action) => {
-      state.status = "failed";
-    },
     [startPublic.fulfilled]: (state, action) => {
       const { publicMode } = action.payload;
       state.publicMode = publicMode;
     },
-    [createSafacy.pending]: (state, action) => {
-      state.status = "loading";
-    },
     [createSafacy.fulfilled]: (state, action) => {
       state.status = "success";
     },
-    [stopPublic.pending]: (state, action) => {
-      state.status = "loading";
-    },
     [stopPublic.fulfilled]: (state, action) => {
+      state.status = "success";
+    },
+    [addFriend.fulfilled]: (state, action) => {
+      console.log("======", action.payload);
       state.status = "success";
     },
   },

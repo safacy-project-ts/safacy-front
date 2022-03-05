@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
-import PropTypes from "prop-types";
-
+import React from "react";
 import { useSelector } from "react-redux";
-
 import { StyleSheet, Text, View, Button } from "react-native";
-
 import { TouchableOpacity } from "react-native-gesture-handler";
+
+import PropTypes from "prop-types";
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+
 import Timer from "../common/components/Timer";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";

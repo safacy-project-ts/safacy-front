@@ -17,8 +17,6 @@ const timerSlice = createSlice({
       state.remaining = prevRemaining - 1;
     },
   },
-
-  extraReducers: {},
 });
 
 export const { setTimer, countDownTimer } = timerSlice.actions;

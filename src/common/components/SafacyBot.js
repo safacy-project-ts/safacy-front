@@ -1,10 +1,10 @@
-import Constants from "expo-constants";
-import * as Notifications from "expo-notifications";
-
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Button, Platform } from "react-native";
 
-import { useSelector, useDispatch } from "react-redux";
+import { ScrollView } from "react-native-gesture-handler";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
 
 import COLORS from "../constants/COLORS";
 import FONT from "../constants/FONT";
@@ -48,7 +48,7 @@ const SafacyBot = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {message?.map((msg, index) => (
         <View key={index}>
           <Text style={styles.safacyInfo}>{msg}</Text>
@@ -60,7 +60,7 @@ const SafacyBot = () => {
           await schedulePushNotification({ message });
         }}
       /> */}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -115,12 +115,12 @@ export default SafacyBot;
 const styles = StyleSheet.create({
   container: {
     width: 180,
-    height: "80%",
     borderWidth: 1,
     borderColor: COLORS.BLACK,
     backgroundColor: COLORS.GREY,
     borderRadius: 9,
     padding: 5,
+    overflow: "hidden",
   },
   safacyInfo: {
     margin: 2,

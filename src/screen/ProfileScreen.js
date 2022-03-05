@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  ScrollView,
-  Image,
-} from "react-native";
 import { useSelector } from "react-redux";
+import { StyleSheet, Text, View, ScrollView, Image } from "react-native";
+
 import {
   MaterialIcons,
   MaterialCommunityIcons,
@@ -16,10 +9,10 @@ import {
 } from "@expo/vector-icons";
 
 import Timer from "../common/components/Timer";
-import footer from "../../assets/img/footer.png";
+import AddFriendModal from "../common/components/Modal/AddFriendModal";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import AddModal from "../common/constants/Modal/AddModal";
+import footer from "../../assets/img/footer.png";
 
 const ProfileScreen = () => {
   const [inviteModalVisible, setInviteModalVisible] = useState(false);
@@ -75,7 +68,7 @@ const ProfileScreen = () => {
             ))}
           </ScrollView>
         </View>
-        <AddModal
+        <AddFriendModal
           inviteModalVisible={inviteModalVisible}
           closeInviteModal={closeInviteModal}
         />

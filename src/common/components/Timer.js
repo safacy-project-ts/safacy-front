@@ -1,12 +1,12 @@
 /* eslint-disable no-shadow */
 import React, { useState, useEffect, useRef } from "react";
-import { Text, StyleSheet, Modal } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { Text, StyleSheet } from "react-native";
 
 import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+
 import { getUserInfo, stopPublic } from "../../store/userSlice";
-import { setTimer, countDownTimer } from "../../store/timerSlice";
+import { countDownTimer } from "../../store/timerSlice";
 
 import COLORS from "../constants/COLORS";
 

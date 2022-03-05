@@ -1,15 +1,15 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { useSelector } from "react-redux";
+import { NavigationContainer } from "@react-navigation/native";
+import MainNavigator from "./MainNavigator";
 
-import LoadingScreen from '../screen/Auth/LoadingScreen';
-import SignInScreen from '../screen/Auth/SignInScreen';
-import MainNavigator from './MainNavigator';
+import LoadingScreen from "../screen/Auth/LoadingScreen";
+import SignInScreen from "../screen/Auth/SignInScreen";
 
 const AuthNavigator = () => {
   const { id, status } = useSelector((state) => state.auth);
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return <LoadingScreen />;
   }
 
