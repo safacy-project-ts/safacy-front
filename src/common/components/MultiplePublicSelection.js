@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import SelectBox from "react-native-multi-selectbox";
-import { size, xorBy } from "lodash";
+import { xorBy } from "lodash";
 
 import PropTypes from "prop-types";
 
-import FriendList from "./FriendList";
+import friendList from "./friendList";
 import COLORS from "../constants/COLORS";
 
 const MultiplePublicSelection = ({ setInvitedFriendList }) => {
@@ -33,7 +33,7 @@ const MultiplePublicSelection = ({ setInvitedFriendList }) => {
         selectedItemStyle={{ color: COLORS.LIGHT_BLUE }}
         multiOptionContainerStyle={{ backgroundColor: COLORS.LIGHT_BLUE }}
         label="Friends (max 3)"
-        options={FriendList()}
+        options={friendList()}
         selectedValues={selectedFriends}
         onMultiSelect={onMultiChange}
         onTapClose={onMultiChange}

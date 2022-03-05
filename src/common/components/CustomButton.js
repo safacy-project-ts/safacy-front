@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, Text, Image } from "react-native";
+
 import PropTypes from "prop-types";
 
 import FONT from "../constants/FONT";

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet, Text, View, Switch, Image } from "react-native";
+
 import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
+
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-
 import PRIVACY_LOCK from "../../assets/img/privacy.png";
 import PUBLIC_LOCK from "../../assets/img/public.png";
 

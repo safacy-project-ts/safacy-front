@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
+import { useDispatch, useSelector } from "react-redux";
+import { StyleSheet, Text, View, Image, AppState } from "react-native";
 
 import PropTypes from "prop-types";
 
-import { StyleSheet, Text, View, Button, Image, AppState } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserInfo, stopPublic } from "../store/userSlice";
+import { getUserInfo } from "../store/userSlice";
+import { clearMessage } from "../store/chatSlice";
 
 import Timer from "../common/components/Timer";
 import CustomButton from "../common/components/CustomButton";
-import PRIVACY_LOCK from "../../assets/img/privacy.png";
-import PUBLIC_LOCK from "../../assets/img/public.png";
-import { clearMessage } from "../store/chatSlice";
 import COLORS from "../common/constants/COLORS";
 import FONT from "../common/constants/FONT";
+import PRIVACY_LOCK from "../../assets/img/privacy.png";
+import PUBLIC_LOCK from "../../assets/img/public.png";
 
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -24,7 +23,7 @@ const MainScreen = ({ navigation }) => {
   const { remaining } = useSelector((state) => state.timer);
   const chat = useSelector((state) => state.chat);
 
-  console.log(chat);
+  // console.log(chat);
 
   useEffect(async () => {
     const updatedUser = await dispatch(getUserInfo(id));

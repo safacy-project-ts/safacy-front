@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-
-import PropTypes from "prop-types";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+
 import { GOOGLE_MAP_API } from "@env";
+import PropTypes from "prop-types";
 
 import { setUserDestination } from "../../store/locationSlice";
 

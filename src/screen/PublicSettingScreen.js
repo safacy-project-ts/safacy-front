@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
-import PropTypes from "prop-types";
-
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -10,24 +8,24 @@ import {
   ScrollView,
   SafeAreaView,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+
+import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
+
+import { setTimer } from "../store/timerSlice";
+import { sendMessage } from "../store/chatSlice";
 import { getCurrentSafacy } from "../store/safacySlice";
 import { createSafacy, getUserInfo } from "../store/userSlice";
-import { setTimer } from "../store/timerSlice";
 
-import CustomButton from "../common/components/CustomButton";
 import Map from "../common/components/Map";
 import SearchBar from "../common/components/SearchBar";
+import CustomButton from "../common/components/CustomButton";
 import PublicSelection from "../common/components/PublicSelection";
+import MultiplePublicSelection from "../common/components/MultiplePublicSelection";
 
-import { sendMessage } from "../store/chatSlice";
-import SAFACY_BOT from "../common/constants/SAFACY_BOT";
-
-import LoadingScreen from "./Auth/LoadingScreen";
 import FONTS from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import MultiplePublicSelection from "../common/components/MultiplePublicSelection";
+import SAFACY_BOT from "../common/constants/SAFACY_BOT";
 
 const PublicSettingScreen = ({ navigation }) => {
   const dispatch = useDispatch();

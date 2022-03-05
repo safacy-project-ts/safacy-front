@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import SelectBox from "react-native-multi-selectbox";
-import { size, xorBy } from "lodash";
+import { size } from "lodash";
 
 import PropTypes from "prop-types";
 
-import FriendList from "./FriendList";
 import TIME from "../constants/TIME";
 import RADIUS from "../constants/RADIUS";
 import COLORS from "../constants/COLORS";

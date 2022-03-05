@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
-import * as Google from "expo-google-app-auth";
-import { GOOGLE_IOS_CLIENT_ID } from "@env";
-
-import { View, Text, Button, StyleSheet, Image } from "react-native";
 import { useDispatch } from "react-redux";
+import { View, Text, Button, StyleSheet, Image } from "react-native";
+
+import { GOOGLE_IOS_CLIENT_ID } from "@env";
+import * as Google from "expo-google-app-auth";
+
 import { signIn } from "../../store/authSlice";
 
 import CustomButton from "../../common/components/CustomButton";
 import FONTS from "../../common/constants/FONT";
-import LOGO from "../../../assets/img/logo.png";
 import COLORS from "../../common/constants/COLORS";
+import LOGO from "../../../assets/img/logo.png";
 
 const config = {
   iosClientId: GOOGLE_IOS_CLIENT_ID,

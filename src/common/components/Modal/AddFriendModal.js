@@ -1,17 +1,26 @@
 import React, { useState } from "react";
-import { View, Modal, Button, Text, TextInput, StyleSheet } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { View, Modal, Text, TextInput, StyleSheet } from "react-native";
 
 import PropTypes from "prop-types";
 
-import CustomButton from "../../components/CustomButton";
-import COLORS from "../COLORS";
-import FONT from "../FONT";
+import { addFriend } from "../../../store/userSlice";
 
-const AddModal = ({ inviteModalVisible, closeInviteModal }) => {
+import CustomButton from "../CustomButton";
+import COLORS from "../../constants/COLORS";
+import FONT from "../../constants/FONT";
+
+const AddFriendModal = ({ inviteModalVisible, closeInviteModal }) => {
+  const dispatch = useDispatch();
   const [invitedEmail, setInvitedEmail] = useState("");
+  const { id } = useSelector((state) => state.user);
 
   const handleEmailInput = (email) => {
     setInvitedEmail(email);
+  };
+
+  const handleAddFriend = async () => {
+    await dispatch(addFriend({ id, email: invitedEmail }));
   };
 
   return (
@@ -26,10 +35,10 @@ const AddModal = ({ inviteModalVisible, closeInviteModal }) => {
         />
         <View style={styles.buttons}>
           <CustomButton
-            title="Add"
+            title="Send"
             disabled={false}
             style={styles.inviteBtn}
-            onPress={handleEmailInput}
+            onPress={handleAddFriend}
           />
           <CustomButton
             title="Close"
@@ -43,9 +52,9 @@ const AddModal = ({ inviteModalVisible, closeInviteModal }) => {
   );
 };
 
-export default AddModal;
+export default AddFriendModal;
 
-AddModal.propTypes = {
+AddFriendModal.propTypes = {
   inviteModalVisible: PropTypes.bool.isRequired,
   closeInviteModal: PropTypes.func.isRequired,
 };

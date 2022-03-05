@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
+import { useDispatch, useSelector } from "react-redux";
+import { StyleSheet, Text, View, Switch, Button } from "react-native";
+
 import {
   MaterialCommunityIcons,
   MaterialIcons,
@@ -7,8 +9,9 @@ import {
 } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 
-import { useDispatch, useSelector } from "react-redux";
-import { StyleSheet, Text, View, Switch, Button } from "react-native";
+import { getUserInfo, stopPublic } from "../store/userSlice";
+import { getCurrentSafacy } from "../store/safacySlice";
+import { sendMessage } from "../store/chatSlice";
 
 import CustomButton from "../common/components/CustomButton";
 import Map from "../common/components/Map";
@@ -17,10 +20,6 @@ import SafacyBot from "../common/components/SafacyBot";
 import SAFACY_BOT from "../common/constants/SAFACY_BOT";
 import COLORS from "../common/constants/COLORS";
 import FONT from "../common/constants/FONT";
-
-import { getUserInfo, stopPublic } from "../store/userSlice";
-import { getCurrentSafacy } from "../store/safacySlice";
-import { sendMessage } from "../store/chatSlice";
 
 const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -240,6 +239,7 @@ const styles = StyleSheet.create({
   },
   safacy: {
     width: "50%",
+    height: 230,
   },
   safacyTitle: {
     fontFamily: FONT.BOLD_FONT,
