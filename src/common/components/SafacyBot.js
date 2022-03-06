@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, Button, Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { clearMessage } from "../../store/chatSlice";
 
 import COLORS from "../constants/COLORS";
 import FONT from "../constants/FONT";
@@ -20,7 +21,6 @@ Notifications.setNotificationHandler({
 const SafacyBot = () => {
   const dispatch = useDispatch();
   const { message } = useSelector((state) => state.chat);
-
   const [safacyBotMsg, setSafacyBotMsg] = useState(message);
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
@@ -49,7 +49,7 @@ const SafacyBot = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {message?.map((msg, index) => (
+      {message.map((msg, index) => (
         <View key={index}>
           <Text style={styles.safacyInfo}>{msg}</Text>
         </View>

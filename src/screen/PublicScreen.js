@@ -9,17 +9,18 @@ import {
 } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 
-import { getUserInfo, stopPublic } from "../store/userSlice";
-import { getCurrentSafacy } from "../store/safacySlice";
 import { sendMessage } from "../store/chatSlice";
+import { getCurrentSafacy } from "../store/safacySlice";
+import { clearDestination } from "../store/locationSlice";
+import { getUserInfo, stopPublic } from "../store/userSlice";
 
-import CustomButton from "../common/components/CustomButton";
 import Map from "../common/components/Map";
-import Timer from "../common/components/Timer";
-import SafacyBot from "../common/components/SafacyBot";
-import SAFACY_BOT from "../common/constants/SAFACY_BOT";
-import COLORS from "../common/constants/COLORS";
 import FONT from "../common/constants/FONT";
+import COLORS from "../common/constants/COLORS";
+import Timer from "../common/components/Timer";
+import SAFACY_BOT from "../common/constants/SAFACY_BOT";
+import SafacyBot from "../common/components/SafacyBot";
+import CustomButton from "../common/components/CustomButton";
 
 const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const PublicScreen = ({ navigation, route }) => {
   const { remaining } = useSelector((state) => state.timer);
   const currentSafacy = useSelector((state) => state.safacy);
   const safacyId = currentSafacy.id;
+  const { radius } = currentSafacy;
 
   const [destination, setDestination] = useState(currentSafacy.destination);
 
@@ -55,6 +57,7 @@ const PublicScreen = ({ navigation, route }) => {
 
     await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
     await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+    await dispatch(clearDestination());
     await dispatch(getUserInfo(id));
   };
 
@@ -67,6 +70,8 @@ const PublicScreen = ({ navigation, route }) => {
     );
 
     await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+    await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
+    await dispatch(clearDestination());
     await dispatch(getUserInfo(id));
   };
 
@@ -79,7 +84,6 @@ const PublicScreen = ({ navigation, route }) => {
         </Text>
       </View>
       <View style={styles.location}>
-        <Text style={styles.locationText}>Share my Location</Text>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={publicMode ? "#fafafc" : "#f4f3f4"}
@@ -90,7 +94,7 @@ const PublicScreen = ({ navigation, route }) => {
         />
       </View>
       <View style={styles.map}>
-        <Map />
+        <Map radius={radius} />
       </View>
       <View style={styles.friends}>
         <View>
@@ -148,7 +152,7 @@ const PublicScreen = ({ navigation, route }) => {
           </View>
         ) : (
           <View>
-            <Text>Emergency</Text>
+            <Text style={styles.emergency}>Emergency</Text>
             <CustomButton
               title="SOS"
               style={styles.sosBtn}
@@ -167,7 +171,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    flex: 1,
+    flex: 0.8,
     alignItems: "center",
   },
   titleText: {
@@ -177,8 +181,10 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   location: {
-    flex: 1,
+    flex: 0.5,
     alignItems: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   locationText: {
     fontFamily: FONT.BOLD_FONT,
@@ -186,14 +192,13 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   map: {
-    flex: 2,
+    flex: 2.5,
     alignItems: "center",
   },
   friends: {
     flex: 0.5,
     alignItems: "flex-start",
     flexDirection: "row",
-    // justifyContent: "center",
     marginLeft: 25,
     marginTop: 30,
     marginRight: 20,
