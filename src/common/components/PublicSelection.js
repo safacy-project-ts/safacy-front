@@ -42,12 +42,14 @@ const PublicSelection = ({ setRadius, setTime, setInvitedFriendList }) => {
       <View style={styles.radius}>
         <SelectBox
           label="Radius"
-          arrowIconColor={COLORS.LIGHT_BLUE}
-          labelStyle={{ fontSize: 15, paddingBottom: 10, color: COLORS.BLACK }}
           options={RADIUS}
           value={selectedRadius}
           onChange={onChangeRadius}
           hideInputFilter={false}
+          arrowIconColor={COLORS.LIGHT_BLUE}
+          optionsLabelStyle={{ fontSize: 13 }}
+          selectedItemStyle={{ fontSize: 13 }}
+          labelStyle={{ fontSize: 15, paddingBottom: 10, color: COLORS.BLACK }}
         />
       </View>
 
@@ -55,6 +57,8 @@ const PublicSelection = ({ setRadius, setTime, setInvitedFriendList }) => {
         <SelectBox
           label="Time"
           labelStyle={{ fontSize: 15, paddingBottom: 10, color: COLORS.BLACK }}
+          optionsLabelStyle={{ fontSize: 13 }}
+          selectedItemStyle={{ fontSize: 13 }}
           arrowIconColor={COLORS.LIGHT_BLUE}
           options={TIME}
           value={selectedTime}
@@ -69,8 +73,11 @@ const PublicSelection = ({ setRadius, setTime, setInvitedFriendList }) => {
           toggleIconColor={COLORS.LIGHT_BLUE}
           searchIconColor={COLORS.LIGHT_BLUE}
           labelStyle={{ fontSize: 15, paddingBottom: 10, color: COLORS.BLACK }}
-          selectedItemStyle={{ color: COLORS.LIGHT_BLUE }}
-          multiOptionContainerStyle={{ backgroundColor: COLORS.RED }}
+          optionsLabelStyle={{ fontSize: 13 }}
+          multiOptionContainerStyle={{
+            backgroundColor: COLORS.RED,
+          }}
+          selectedItemStyle={{ fontSize: 13 }}
           label="Friends"
           options={FriendList()}
           selectedValues={selectedFriends}
@@ -99,14 +106,15 @@ const styles = StyleSheet.create({
     width: "95%",
   },
   radius: {
-    width: "30%",
+    width: "25%",
     marginRight: 10,
   },
   time: {
-    width: "35%",
+    width: "27%",
     marginRight: 10,
   },
   friends: {
+    width: "43%",
     marginLeft: 5,
     overflow: "scroll",
   },

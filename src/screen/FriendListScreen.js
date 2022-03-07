@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -6,6 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import FriendSafacyModal from "../common/components/Modal/FriendSafacyModal";
 import Timer from "../common/components/Timer";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
@@ -13,6 +14,16 @@ import { getUserInfo } from "../store/userSlice";
 
 const FriendListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+
+  const [safacyModalVisible, setSafacyModalVisible] = useState(false);
+
+  const openFriendSafayModal = () => {
+    setSafacyModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setSafacyModalVisible(false);
+  };
 
   useEffect(async () => {
     await dispatch(getUserInfo(id));
@@ -31,6 +42,7 @@ const FriendListScreen = ({ navigation }) => {
           <FontAwesome5 name="user-friends" size={24} color="black" />
         </Text>
       </View>
+
       <View style={styles.friendList}>
         {safacyInvitationList?.map((item, index) => (
           <View key={item._id}>
@@ -38,12 +50,7 @@ const FriendListScreen = ({ navigation }) => {
               style={styles.freinds}
               title={item.nickname}
               disabled={false}
-              onPress={() => {
-                navigation.navigate("Public", {
-                  id: safacyInvitationList[index]._id,
-                });
-              }}
-              key={item._id}
+              onPress={openFriendSafayModal}
             >
               <View>
                 <MaterialCommunityIcons
@@ -62,6 +69,10 @@ const FriendListScreen = ({ navigation }) => {
           </View>
         ))}
       </View>
+      <FriendSafacyModal
+        safacyModalVisible={safacyModalVisible}
+        closeModal={closeModal}
+      />
       {publicMode && (
         <View style={styles.timer}>
           <Text>Public Mode</Text>

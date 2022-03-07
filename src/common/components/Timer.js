@@ -23,6 +23,7 @@ const Timer = ({ sec, setIsStopped }) => {
   const [delay, setDelay] = useState(1000);
 
   useEffect(async () => {
+    await dispatch(countDownTimer());
     if (second === 0 && typeof setIsStopped === "function") {
       await setIsStopped(true);
     }

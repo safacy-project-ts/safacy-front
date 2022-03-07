@@ -44,7 +44,7 @@ const MainScreen = ({ navigation }) => {
 
   const handleMySafacy = () => {
     if (user.publicMode) {
-      navigation.navigate("Public", { id });
+      navigation.navigate("Public");
     } else {
       navigation.navigate("Private");
     }

@@ -22,29 +22,22 @@ import SAFACY_BOT from "../common/constants/SAFACY_BOT";
 import SafacyBot from "../common/components/SafacyBot";
 import CustomButton from "../common/components/CustomButton";
 
-const PublicScreen = ({ navigation, route }) => {
+const PublicScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [isMine, setIsMine] = useState(true);
   const [isStopped, setIsStopped] = useState(false);
   const [distance, setDistance] = useState(0);
 
   const { id } = useSelector((state) => state.auth);
-  const { id: parmsId } = route.params;
 
   const { remaining } = useSelector((state) => state.timer);
   const { publicMode } = useSelector((state) => state.user);
   const currentSafacy = useSelector((state) => state.safacy);
   const { radius, id: safacyId, time } = currentSafacy;
 
-  console.log("퍼블릭모드", publicMode);
-
   useEffect(async () => {
-    if (id === parmsId) {
-      setIsMine(false);
-    }
-    await dispatch(getUserInfo(parmsId));
-    await dispatch(getCurrentSafacy(parmsId));
+    await dispatch(getUserInfo(id));
+    await dispatch(getCurrentSafacy(id));
   }, []);
 
   useEffect(async () => {
@@ -180,26 +173,14 @@ const PublicScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.button}>
-        {!isMine ? (
-          <View>
-            <CustomButton
-              title="STOP"
-              style={styles.stopBtn}
-              onPress={handleStopPublic}
-              disabled={!publicMode}
-            />
-          </View>
-        ) : (
-          <View>
-            <Text style={styles.emergency}>Emergency</Text>
-            <CustomButton
-              title="SOS"
-              style={styles.sosBtn}
-              disabled={false}
-              onPress={handleStopPublic}
-            />
-          </View>
-        )}
+        <View>
+          <CustomButton
+            title="STOP"
+            style={styles.stopBtn}
+            onPress={handleStopPublic}
+            disabled={!publicMode}
+          />
+        </View>
       </View>
     </View>
   );

@@ -32,7 +32,6 @@ const SearchBar = ({ setDestination }) => {
           }),
         );
       }}
-      // byPlacesAPI="GooglePlacesSearch"
       GooglePlacesSearchQuery={{
         rankby: "distance",
       }}
@@ -61,9 +60,6 @@ const SearchBar = ({ setDestination }) => {
         },
         row: { height: 35 },
         description: { fontSize: 10, color: "#5d5d5d" },
-        // predefinedPlacesDescription: {
-        //   color: "red",
-        // },
       }}
     />
   );
