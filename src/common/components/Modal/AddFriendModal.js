@@ -13,7 +13,7 @@ import FONT from "../../constants/FONT";
 const AddFriendModal = ({ inviteModalVisible, closeInviteModal }) => {
   const dispatch = useDispatch();
   const [invitedEmail, setInvitedEmail] = useState("");
-  const { id } = useSelector((state) => state.user);
+  const { id, result, error } = useSelector((state) => state.user);
 
   const handleEmailInput = (email) => {
     setInvitedEmail(email);
@@ -21,6 +21,24 @@ const AddFriendModal = ({ inviteModalVisible, closeInviteModal }) => {
 
   const handleAddFriend = async () => {
     await dispatch(addFriend({ id, email: invitedEmail }));
+
+    if (error?.code === 400) {
+      alert("email이 올바르지 않습니다");
+      return;
+    }
+
+    if (result === "Already in Friend List") {
+      alert("이미 친구입니다");
+      return;
+    }
+
+    if (result === "Already Invited") {
+      alert("이미 초대된 유저입니다");
+      return;
+    }
+
+    setInvitedEmail("");
+    closeInviteModal();
   };
 
   return (

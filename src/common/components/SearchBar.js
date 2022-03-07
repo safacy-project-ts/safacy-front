@@ -14,7 +14,6 @@ const SearchBar = ({ setDestination }) => {
   const dispatch = useDispatch();
 
   const { userDestination } = useSelector((state) => state.location);
-  console.log("1111", userDestination);
 
   return (
     <GooglePlacesAutocomplete

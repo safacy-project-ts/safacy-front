@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, AppState } from "react-native";
 
 import PropTypes from "prop-types";
 
-import { getUserInfo } from "../store/userSlice";
+import { getUserInfo, stopPublic } from "../store/userSlice";
 import { clearMessage } from "../store/chatSlice";
 
 import Timer from "../common/components/Timer";
@@ -23,10 +23,9 @@ const MainScreen = ({ navigation }) => {
   const { remaining } = useSelector((state) => state.timer);
   const chat = useSelector((state) => state.chat);
 
-  // console.log(chat);
-
   useEffect(async () => {
     const updatedUser = await dispatch(getUserInfo(id));
+
     if (!updatedUser.publicMode) {
       await dispatch(clearMessage());
     }

@@ -25,27 +25,48 @@ import CustomButton from "../common/components/CustomButton";
 const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
-  const [disabled, setDisabled] = useState(true);
+  const [isMine, setIsMine] = useState(true);
+  const [isStopped, setIsStopped] = useState(false);
+  const [distance, setDistance] = useState(0);
 
   const { id } = useSelector((state) => state.auth);
   const { id: parmsId } = route.params;
 
-  const { publicMode } = useSelector((state) => state.user);
   const { remaining } = useSelector((state) => state.timer);
+  const { publicMode } = useSelector((state) => state.user);
   const currentSafacy = useSelector((state) => state.safacy);
-  const safacyId = currentSafacy.id;
-  const { radius } = currentSafacy;
+  const { radius, id: safacyId, time } = currentSafacy;
 
-  const [destination, setDestination] = useState(currentSafacy.destination);
+  console.log("퍼블릭모드", publicMode);
 
   useEffect(async () => {
     if (id === parmsId) {
-      setDisabled(false);
+      setIsMine(false);
     }
-
+    await dispatch(getUserInfo(parmsId));
     await dispatch(getCurrentSafacy(parmsId));
-    await dispatch(getUserInfo(id));
   }, []);
+
+  useEffect(async () => {
+    if (isStopped) {
+      if (distance > radius) {
+        await dispatch(sendMessage({ message: SAFACY_BOT.DANGER_TWO }));
+        await dispatch(sendMessage({ message: SAFACY_BOT.END_DANGER }));
+      } else {
+        await dispatch(sendMessage({ message: SAFACY_BOT.TIMEOVER_SAFE }));
+        await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+      }
+
+      await dispatch(clearDestination());
+      await dispatch(
+        stopPublic({
+          id,
+          safacyId,
+        }),
+      );
+      await dispatch(getUserInfo(id));
+    }
+  }, [isStopped]);
 
   const toggleSwitch = async () => {
     await dispatch(
@@ -55,8 +76,14 @@ const PublicScreen = ({ navigation, route }) => {
       }),
     );
 
-    await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
-    await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+    if (distance > radius) {
+      await dispatch(sendMessage({ message: SAFACY_BOT.DANGER_THREE }));
+      await dispatch(sendMessage({ message: SAFACY_BOT.END_DANGER }));
+    } else {
+      await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
+      await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+    }
+
     await dispatch(clearDestination());
     await dispatch(getUserInfo(id));
   };
@@ -69,8 +96,14 @@ const PublicScreen = ({ navigation, route }) => {
       }),
     );
 
-    await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
-    await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
+    if (distance > radius) {
+      await dispatch(sendMessage({ message: SAFACY_BOT.DANGER_THREE }));
+      await dispatch(sendMessage({ message: SAFACY_BOT.END_DANGER }));
+    } else {
+      await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
+      await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+    }
+
     await dispatch(clearDestination());
     await dispatch(getUserInfo(id));
   };
@@ -83,6 +116,7 @@ const PublicScreen = ({ navigation, route }) => {
           <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
         </Text>
       </View>
+
       <View style={styles.location}>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -93,9 +127,11 @@ const PublicScreen = ({ navigation, route }) => {
           disabled={!publicMode}
         />
       </View>
+
       <View style={styles.map}>
-        <Map radius={radius} />
+        <Map radius={radius} setDistance={setDistance} />
       </View>
+
       <View style={styles.friends}>
         <View>
           <Text style={styles.friendsTitle}>Who are checking now : </Text>
@@ -113,11 +149,12 @@ const PublicScreen = ({ navigation, route }) => {
           </View>
         ))}
       </View>
+
       <View style={styles.information}>
         <View style={styles.detail}>
           <View style={styles.destination}>
             <Text style={styles.destinationTitle}>Destination</Text>
-            <Text>{destination}</Text>
+            <Text>{currentSafacy.destination}</Text>
           </View>
           <View style={styles.radius}>
             <Text style={styles.radiusTitle}>radius</Text>
@@ -127,11 +164,12 @@ const PublicScreen = ({ navigation, route }) => {
             {publicMode && (
               <View>
                 <Text style={styles.timerTitle}>Timer</Text>
-                <Timer sec={remaining} />
+                <Timer sec={remaining} setIsStopped={setIsStopped} />
               </View>
             )}
           </View>
         </View>
+
         <View style={styles.safacy}>
           <Text style={styles.safacyTitle}>
             Safacy Bot{" "}
@@ -140,8 +178,9 @@ const PublicScreen = ({ navigation, route }) => {
           <SafacyBot />
         </View>
       </View>
+
       <View style={styles.button}>
-        {!disabled ? (
+        {!isMine ? (
           <View>
             <CustomButton
               title="STOP"
@@ -169,6 +208,7 @@ const PublicScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.WHITE,
   },
   title: {
     flex: 0.8,
@@ -224,21 +264,30 @@ const styles = StyleSheet.create({
   },
   destination: {
     marginBottom: 20,
+    marginLeft: 5,
   },
   destinationTitle: {
     fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
     paddingTop: 5,
     paddingBottom: 5,
   },
-  radius: {},
+  radius: {
+    marginLeft: 5,
+    marginBottom: 20,
+  },
   radiusTitle: {
     fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
     paddingTop: 5,
     paddingBottom: 5,
   },
-  timer: {},
+  timer: {
+    marginLeft: 5,
+  },
   timerTitle: {
     fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
     paddingTop: 5,
     paddingBottom: 5,
   },

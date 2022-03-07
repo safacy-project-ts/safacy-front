@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -9,9 +9,16 @@ import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import Timer from "../common/components/Timer";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
+import { getUserInfo } from "../store/userSlice";
 
 const FriendListScreen = ({ navigation }) => {
-  const { safacyInvitationList, publicMode } = useSelector(
+  const dispatch = useDispatch();
+
+  useEffect(async () => {
+    await dispatch(getUserInfo(id));
+  }, []);
+
+  const { safacyInvitationList, publicMode, id } = useSelector(
     (state) => state.user,
   );
   const { remaining } = useSelector((state) => state.timer);

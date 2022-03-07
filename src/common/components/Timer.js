@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-shadow */
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,11 +10,12 @@ import { getUserInfo, stopPublic } from "../../store/userSlice";
 import { countDownTimer } from "../../store/timerSlice";
 
 import COLORS from "../constants/COLORS";
+import FONTS from "../constants/FONT";
 
-const Timer = ({ sec }) => {
+const Timer = ({ sec, setIsStopped }) => {
   const dispatch = useDispatch();
 
-  const { id } = useSelector((state) => state.user);
+  const { id, publicMode } = useSelector((state) => state.user);
   const { id: safacyId } = useSelector((state) => state.safacy);
   const { initial, remaining } = useSelector((state) => state.timer);
 
@@ -21,16 +23,8 @@ const Timer = ({ sec }) => {
   const [delay, setDelay] = useState(1000);
 
   useEffect(async () => {
-    await dispatch(countDownTimer());
-
-    if (second === 0) {
-      await dispatch(
-        stopPublic({
-          id,
-          safacyId,
-        }),
-      );
-      await dispatch(getUserInfo(id));
+    if (second === 0 && typeof setIsStopped === "function") {
+      await setIsStopped(true);
     }
   }, [second]);
 
@@ -69,7 +63,8 @@ const useInterval = (remainingSecFunc, delay) => {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 13,
+    fontFamily: FONTS.BOLD_FONT,
+    fontSize: FONTS.M,
     color: COLORS.PINK,
   },
 });
@@ -78,4 +73,5 @@ export default Timer;
 
 Timer.propTypes = {
   sec: PropTypes.number.isRequired,
+  setIsStopped: PropTypes.func,
 };

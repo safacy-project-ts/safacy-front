@@ -1,10 +1,9 @@
+/* eslint-disable react/require-default-props */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet } from "react-native";
-
+import { getDistance, getPreciseDistance } from "geolib";
 import PropTypes from "prop-types";
-import axios from "axios";
-import { MAPBOX_ACCESS_TOKEN } from "@env";
 
 import MapView, {
   PROVIDER_GOOGLE,
@@ -13,36 +12,47 @@ import MapView, {
   Polyline,
 } from "react-native-maps";
 import * as Location from "expo-location";
+import mapBoxAPI from "../../api/mapBox";
 
 import LoadingScreen from "../../screen/Auth/LoadingScreen";
 import COLORS from "../constants/COLORS";
 import { setCurrentLocation } from "../../store/locationSlice";
+import { socket } from "../../api/socket";
 
-const Map = ({ radius }) => {
+const calculateDistance = (
+  currentLat,
+  currentLng,
+  destinationLat,
+  destinationLng,
+) => {
+  const distance = getDistance(
+    { latitude: currentLat, longitude: currentLng },
+    { latitude: destinationLat, longitude: destinationLng },
+  );
+  return distance;
+};
+
+const Map = ({ radius, isStopped, setDistance }) => {
   const dispatch = useDispatch();
   const [location, setLocation] = useState(null);
   const [locations, setLocations] = useState([]);
   const [desLocation, setDesLocation] = useState([]);
+  const [currentDistance, setCurrentDistance] = useState(0);
 
   const { publicMode } = useSelector((state) => state.user);
-  const { current } = useSelector((state) => state.location);
-  const { userDestination } = useSelector((state) => state.location);
+  const { current, userDestination } = useSelector((state) => state.location);
 
-  function direction() {
-    axios(
-      `https://api.mapbox.com/directions/v5/mapbox/cycling/${current[1]},${current[0]};${userDestination[1]},${userDestination[0]}?geometries=geojson&access_token=pk.eyJ1IjoiY2hvaXN5OTYxOSIsImEiOiJjbDBkdTN0eTQwY295M2pueWw0NzFkNTF4In0.3JQT1triQAhL8KmN9U53zQ`,
-    )
-      .then((res) => {
-        const coords = res.data.routes[0].geometry.coordinates.map((item) => {
-          return { latitude: item[1], longitude: item[0] };
-        });
-        setDesLocation(coords);
-        console.log("=====", desLocation);
-      })
-      .catch((err) => console.log(err));
-  }
-
-  useEffect(() => direction(), [userDestination]);
+  // useEffect(() => {
+  //   if (publicMode) {
+  //     mapBoxAPI(
+  //       current[1],
+  //       current[0],
+  //       userDestination[1],
+  //       userDestination[0],
+  //       setDesLocation,
+  //     );
+  //   }
+  // }, [publicMode]);
 
   useEffect(() => {
     (async () => {
@@ -54,6 +64,7 @@ const Map = ({ radius }) => {
       }
 
       const { coords } = await Location.getCurrentPositionAsync({});
+
       await dispatch(
         setCurrentLocation({
           latitude: coords.latitude,
@@ -68,10 +79,28 @@ const Map = ({ radius }) => {
           distanceInterval: 1000,
         },
         (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
+          socket.emit("position", {
+            data: position,
           });
+
+          socket.on("myposition", (positionData) => {
+            setLocation({
+              latitude: positionData.coords.latitude,
+              longitude: positionData.coords.longitude,
+            });
+          });
+
+          if (userDestination[0] && typeof setDistance === "function") {
+            const distance = calculateDistance(
+              position.coords.latitude,
+              position.coords.longitude,
+              userDestination[0],
+              userDestination[1],
+            );
+            setCurrentDistance(distance);
+            setDistance(distance);
+          }
+
           setLocations([
             ...locations,
             {
@@ -80,12 +109,11 @@ const Map = ({ radius }) => {
             },
           ]);
         },
+
         (error) => console.log(error),
       );
     })();
   }, []);
-
-  const originLocation = useSelector((state) => state.location);
 
   return location ? (
     <MapView
@@ -96,8 +124,8 @@ const Map = ({ radius }) => {
       ScrollEnabled
       showsMyLocationButton
       initialRegion={{
-        latitude: originLocation.current[0],
-        longitude: originLocation.current[1],
+        latitude: current[0],
+        longitude: current[1],
         latitudeDelta: 0.009,
         longitudeDelta: 0.009,
       }}
@@ -110,8 +138,8 @@ const Map = ({ radius }) => {
     >
       <Marker
         coordinate={{
-          latitude: originLocation.current[0],
-          longitude: originLocation.current[1],
+          latitude: current[0],
+          longitude: current[1],
         }}
         title="start point!"
       />
@@ -122,13 +150,7 @@ const Map = ({ radius }) => {
         }}
         title="Here"
       />
-      <Marker
-        coordinate={{
-          latitude: userDestination[0],
-          longitude: userDestination[1],
-        }}
-        title="destination"
-      />
+
       <Circle
         key="1"
         center={{
@@ -152,6 +174,15 @@ const Map = ({ radius }) => {
           strokeColor={COLORS.LIGHT_BLACK}
         />
       )}
+      {userDestination[0] && (
+        <Marker
+          coordinate={{
+            latitude: userDestination[0],
+            longitude: userDestination[1],
+          }}
+          title="destination"
+        />
+      )}
     </MapView>
   ) : (
     <LoadingScreen />
@@ -168,6 +199,7 @@ const styles = StyleSheet.create({
 });
 
 Map.propTypes = {
-  // eslint-disable-next-line react/require-default-props
+  isStopped: PropTypes.bool,
+  setDistance: PropTypes.func,
   radius: PropTypes.number,
 };

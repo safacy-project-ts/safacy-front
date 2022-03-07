@@ -5,61 +5,32 @@ import { StyleSheet, Text, View, Button, Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
-import { clearMessage } from "../../store/chatSlice";
-
+import { socket } from "../../api/socket";
 import COLORS from "../constants/COLORS";
 import FONT from "../constants/FONT";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: true,
-  }),
-});
 
 const SafacyBot = () => {
   const dispatch = useDispatch();
   const { message } = useSelector((state) => state.chat);
   const [safacyBotMsg, setSafacyBotMsg] = useState(message);
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
 
   useEffect(() => {
-    // registerForPushNotificationsAsync().then((token) =>
-    //   setExpoPushToken(token),
-    // );
-    // notificationListener.current =
-    //   Notifications.addNotificationReceivedListener((notification) => {
-    //     setNotification(notification);
-    //   });
-    // responseListener.current =
-    //   Notifications.addNotificationResponseReceivedListener((response) => {
-    //     console.log(response);
-    //   });
-    // return () => {
-    //   Notifications.removeNotificationSubscription(
-    //     notificationListener.current,
-    //   );
-    //   Notifications.removeNotificationSubscription(responseListener.current);
-    // };
-  }, []);
+    socket.emit("safacyBot", {
+      data: message,
+    });
+
+    socket.on("safacyMsg", (message) => {
+      setSafacyBotMsg(message);
+    });
+  }, [message]);
 
   return (
     <ScrollView style={styles.container}>
-      {message.map((msg, index) => (
+      {safacyBotMsg.map((msg, index) => (
         <View key={index}>
           <Text style={styles.safacyInfo}>{msg}</Text>
         </View>
       ))}
-      {/* <Button
-        title="Press to schedule a notification"
-        onPress={async () => {
-          await schedulePushNotification({ message });
-        }}
-      /> */}
     </ScrollView>
   );
 };

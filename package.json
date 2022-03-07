@@ -38,6 +38,7 @@
     "expo-random": "^12.1.2",
     "expo-status-bar": "~1.2.0",
     "expo-task-manager": "~10.1.0",
+    "geolib": "^3.3.3",
     "lodash": "^4.17.21",
     "prop-types": "^15.8.1",
     "react": "17.0.1",

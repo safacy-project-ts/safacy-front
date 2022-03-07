@@ -40,7 +40,7 @@ const SignInScreen = () => {
       <View style={styles.main}>
         <Image style={styles.logo} source={LOGO} />
         <Text style={styles.title}>Safacy</Text>
-        <Text style={styles.description}>for your safacy & privacy</Text>
+        <Text style={styles.description}>for your safety & privacy</Text>
       </View>
       <View style={styles.btnContainer}>
         <View style={styles.signInBtn}>

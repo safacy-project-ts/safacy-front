@@ -22,17 +22,18 @@ import SearchBar from "../common/components/SearchBar";
 import CustomButton from "../common/components/CustomButton";
 import PublicSelection from "../common/components/PublicSelection";
 
-import FONTS from "../common/constants/FONT";
+import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
 import SAFACY_BOT from "../common/constants/SAFACY_BOT";
 
 const PublicSettingScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [destination, setDestination] = useState("서울");
+  const [destination, setDestination] = useState("현재위치");
   const [radius, setRadius] = useState("");
   const [time, setTime] = useState("");
   const [invitedFriendList, setInvitedFriendList] = useState([]);
+
   const initialTime = time * 60;
   const { id } = useSelector((state) => state.auth);
 
@@ -116,8 +117,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleText: {
-    fontFamily: FONTS.BOLD_FONT,
-    fontSize: FONTS.XL,
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.XL,
     color: COLORS.BLACK,
     paddingTop: 20,
   },
@@ -143,8 +144,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   Destinationtext: {
-    fontFamily: FONTS.BOLD_FONT,
-    fontSize: FONTS.M,
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
   },
   others: {
     width: "100%",
