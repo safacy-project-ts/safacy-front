@@ -1,10 +1,15 @@
+/* eslint-disable react/require-default-props */
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Button, Platform } from "react-native";
 
+import PropTypes from "prop-types";
+
 import { ScrollView } from "react-native-gesture-handler";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { getSafacyMsg, updateSafacyMsg } from "../../store/chatSlice";
+import { getCurrentSafacy } from "../../store/safacySlice";
 import { socket } from "../../api/socket";
 import COLORS from "../constants/COLORS";
 import FONT from "../constants/FONT";
@@ -17,9 +22,23 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SafacyBot = () => {
+const SafacyBot = ({ id }) => {
+  const dispatch = useDispatch();
+
+  const safacy = useSelector((state) => state.safacy);
+  const { email } = useSelector((state) => state.auth);
+
+  // useEffect(async () => {
+  //   await dispatch(getCurrentSafacy(id));
+  // }, []);
+
+  // setInterval(async () => {
+  //   await dispatch(getCurrentSafacy(id));
+  // }, 5000);
+
   const { message } = useSelector((state) => state.chat);
-  const [safacyBotMsg, setSafacyBotMsg] = useState(message);
+
+  const [safacyBotMsg, setSafacyBotMsg] = useState(safacy.safacyBotMsg);
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
 
@@ -57,11 +76,9 @@ const SafacyBot = () => {
     };
   }, [message]);
 
-  const Msg = message[0];
-
   return (
     <ScrollView style={styles.container}>
-      {safacyBotMsg.map((msg, index) => (
+      {safacy.safacyBotMsg?.map((msg, index) => (
         <View key={index}>
           <Text style={styles.safacyInfo}>{msg}</Text>
         </View>
@@ -136,3 +153,7 @@ const styles = StyleSheet.create({
     fontSize: FONT.S,
   },
 });
+
+SafacyBot.propTypes = {
+  id: PropTypes.string,
+};

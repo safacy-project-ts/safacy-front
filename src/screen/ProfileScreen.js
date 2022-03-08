@@ -32,6 +32,7 @@ const ProfileScreen = () => {
 
   useEffect(async () => {
     await dispatch(getUserInfo(id));
+    return () => console.log("stop");
   }, []);
 
   return (

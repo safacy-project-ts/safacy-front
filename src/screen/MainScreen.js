@@ -5,7 +5,6 @@ import { StyleSheet, Text, View, Image, AppState } from "react-native";
 import PropTypes from "prop-types";
 
 import { getUserInfo, stopPublic } from "../store/userSlice";
-import { clearMessage } from "../store/chatSlice";
 
 import Timer from "../common/components/Timer";
 import CustomButton from "../common/components/CustomButton";
@@ -25,10 +24,7 @@ const MainScreen = ({ navigation }) => {
 
   useEffect(async () => {
     const updatedUser = await dispatch(getUserInfo(id));
-
-    if (!updatedUser.publicMode) {
-      await dispatch(clearMessage());
-    }
+    return () => console.log("stop");
   }, []);
 
   // useEffect(async () => {
@@ -40,6 +36,7 @@ const MainScreen = ({ navigation }) => {
   //       }),
   //     );
   //   }
+  // return () => console.log("stop");
   // }, [AppState.currentState]);
 
   const handleMySafacy = () => {

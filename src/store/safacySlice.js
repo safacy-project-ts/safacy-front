@@ -3,7 +3,7 @@ import axios from "axios";
 import { BASE_URI, TEST_URI } from "@env";
 
 export const getCurrentSafacy = createAsyncThunk(
-  "safacy/getCurrentSafacy",
+  "user/getCurrentSafacy",
   async (id) => {
     const safacy = await axios.get(`${TEST_URI}/user/current/${id}`);
 
@@ -24,8 +24,15 @@ const safacySlice = createSlice({
 
   extraReducers: {
     [getCurrentSafacy.fulfilled]: (state, action) => {
-      const { _id, user, destination, time, radius, invitedFriendList } =
-        action.payload;
+      const {
+        _id,
+        user,
+        destination,
+        time,
+        radius,
+        invitedFriendList,
+        safacyBotMsg,
+      } = action.payload;
 
       state.id = _id;
       state.user = user;
@@ -33,6 +40,7 @@ const safacySlice = createSlice({
       state.radius = radius;
       state.time = time;
       state.invitedFriendList = invitedFriendList;
+      state.safacyBotMsg = safacyBotMsg;
       state.status = "success";
     },
   },

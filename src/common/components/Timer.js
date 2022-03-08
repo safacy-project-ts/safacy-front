@@ -27,6 +27,7 @@ const Timer = ({ sec, setIsStopped }) => {
     if (second === 0 && typeof setIsStopped === "function") {
       await setIsStopped(true);
     }
+    return () => console.log("stop");
   }, [second]);
 
   useInterval(
@@ -52,6 +53,7 @@ const useInterval = (remainingSecFunc, delay) => {
 
   useEffect(() => {
     savedCallback.current = remainingSecFunc;
+    return () => console.log("stop");
   }, [remainingSecFunc]);
 
   useEffect(() => {
@@ -59,6 +61,7 @@ const useInterval = (remainingSecFunc, delay) => {
       const timerId = setInterval(() => savedCallback.current(), delay);
       return () => clearInterval(timerId);
     }
+    return () => console.log("stop");
   }, [delay]);
 };
 

@@ -7,6 +7,8 @@ const SAFACY_BOT = {
   DANGER_TWO: "- ⚠️ Time over outside border",
   DANGER_THREE: "- ⚠️ stopped outside border",
   END_DANGER: "- Abnormally stopped, please consider 🆘 ",
+  MOVING_SAFE: "- Currently moving in safe zone",
+  MOVINg_DANGER: "- Currently moving ouside border",
 };
 
 export default SAFACY_BOT;

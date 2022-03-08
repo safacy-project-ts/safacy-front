@@ -9,7 +9,7 @@ import {
 } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 
-import { sendMessage } from "../store/chatSlice";
+import { getSafacyMsg, updateSafacyMsg } from "../store/chatSlice";
 import { getCurrentSafacy } from "../store/safacySlice";
 import { clearDestination } from "../store/locationSlice";
 import { getUserInfo, stopPublic } from "../store/userSlice";
@@ -37,17 +37,34 @@ const PublicScreen = ({ navigation }) => {
 
   useEffect(async () => {
     await dispatch(getUserInfo(id));
+    await dispatch(
+      updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.START }),
+    );
+    await dispatch(getSafacyMsg({ id: safacyId }));
     await dispatch(getCurrentSafacy(id));
+    return () => console.log("stop");
   }, []);
 
   useEffect(async () => {
     if (isStopped) {
       if (distance > radius) {
-        await dispatch(sendMessage({ message: SAFACY_BOT.DANGER_TWO }));
-        await dispatch(sendMessage({ message: SAFACY_BOT.END_DANGER }));
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_TWO }),
+        );
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+        );
+        await dispatch(getSafacyMsg({ id: safacyId }));
+        await dispatch(getCurrentSafacy(id));
       } else {
-        await dispatch(sendMessage({ message: SAFACY_BOT.TIMEOVER_SAFE }));
-        await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.TIMEOVER_SAFE }),
+        );
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+        );
+        await dispatch(getSafacyMsg({ id: safacyId }));
+        await dispatch(getCurrentSafacy(id));
       }
 
       await dispatch(clearDestination());
@@ -59,6 +76,7 @@ const PublicScreen = ({ navigation }) => {
       );
       await dispatch(getUserInfo(id));
     }
+    return () => console.log("stop");
   }, [isStopped]);
 
   const toggleSwitch = async () => {
@@ -70,11 +88,23 @@ const PublicScreen = ({ navigation }) => {
     );
 
     if (distance > radius) {
-      await dispatch(sendMessage({ message: SAFACY_BOT.DANGER_THREE }));
-      await dispatch(sendMessage({ message: SAFACY_BOT.END_DANGER }));
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+      );
+      await dispatch(getSafacyMsg({ id: safacyId }));
+      await dispatch(getCurrentSafacy(id));
     } else {
-      await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
-      await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+      );
+      await dispatch(getSafacyMsg({ id: safacyId }));
+      await dispatch(getCurrentSafacy(id));
     }
 
     await dispatch(clearDestination());
@@ -90,11 +120,21 @@ const PublicScreen = ({ navigation }) => {
     );
 
     if (distance > radius) {
-      await dispatch(sendMessage({ message: SAFACY_BOT.DANGER_THREE }));
-      await dispatch(sendMessage({ message: SAFACY_BOT.END_DANGER }));
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+      );
+      // await dispatch(getSafacyMsg({ id: safacyId }));
     } else {
-      await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
-      await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+      );
+      // await dispatch(getSafacyMsg({ id: safacyId }));
     }
 
     await dispatch(clearDestination());
@@ -122,7 +162,7 @@ const PublicScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.map}>
-        <Map radius={radius} setDistance={setDistance} />
+        <Map radius={radius} setDistance={setDistance} id={id} />
       </View>
 
       <View style={styles.friends}>
@@ -168,7 +208,7 @@ const PublicScreen = ({ navigation }) => {
             Safacy Bot{" "}
             <Ionicons name="md-logo-android" size={17} color="black" />
           </Text>
-          <SafacyBot />
+          <SafacyBot id={id} />
         </View>
       </View>
 

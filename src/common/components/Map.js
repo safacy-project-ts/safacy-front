@@ -13,6 +13,7 @@ import MapView, {
 } from "react-native-maps";
 import * as Location from "expo-location";
 import mapBoxAPI from "../../api/mapBox";
+import { getUserInfo } from "../../store/userSlice";
 
 import LoadingScreen from "../../screen/Auth/LoadingScreen";
 import COLORS from "../constants/COLORS";
@@ -32,27 +33,37 @@ const calculateDistance = (
   return distance;
 };
 
-const Map = ({ radius, isStopped, setDistance }) => {
+const Map = ({ radius, setDistance, id }) => {
   const dispatch = useDispatch();
   const [location, setLocation] = useState(null);
   const [locations, setLocations] = useState([]);
   const [desLocation, setDesLocation] = useState([]);
   const [currentDistance, setCurrentDistance] = useState(0);
+  const [isPublic, setIsPublic] = useState(false);
 
-  const { publicMode } = useSelector((state) => state.user);
+  useEffect(async () => {
+    if (currentUser !== email) {
+      setIsPublic(true);
+    }
+  }, []);
+
+  const { email: currentUser } = useSelector((state) => state.auth);
+
+  const { email, publicMode } = useSelector((state) => state.user);
+
   const { current, userDestination } = useSelector((state) => state.location);
 
-  // useEffect(() => {
-  //   if (publicMode) {
-  //     mapBoxAPI(
-  //       current[1],
-  //       current[0],
-  //       userDestination[1],
-  //       userDestination[0],
-  //       setDesLocation,
-  //     );
-  //   }
-  // }, [publicMode]);
+  useEffect(() => {
+    if (isPublic || publicMode) {
+      mapBoxAPI(
+        current[1],
+        current[0],
+        userDestination[1],
+        userDestination[0],
+        setDesLocation,
+      );
+    }
+  }, [isPublic]);
 
   useEffect(() => {
     (async () => {
@@ -199,7 +210,7 @@ const styles = StyleSheet.create({
 });
 
 Map.propTypes = {
-  isStopped: PropTypes.bool,
   setDistance: PropTypes.func,
   radius: PropTypes.number,
+  id: PropTypes.string,
 };

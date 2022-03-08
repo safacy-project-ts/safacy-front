@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Button } from "react-native";
@@ -27,6 +28,7 @@ const FriendListScreen = ({ navigation }) => {
 
   useEffect(async () => {
     await dispatch(getUserInfo(id));
+    return () => console.log("stop");
   }, []);
 
   const { safacyInvitationList, publicMode, id } = useSelector(
@@ -50,7 +52,7 @@ const FriendListScreen = ({ navigation }) => {
               style={styles.freinds}
               title={item.nickname}
               disabled={false}
-              onPress={openFriendSafayModal}
+              onPress={() => navigation.navigate("Public")}
             >
               <View>
                 <MaterialCommunityIcons
@@ -59,20 +61,23 @@ const FriendListScreen = ({ navigation }) => {
                   color="black"
                 />
               </View>
-              <View>
+              {/* <View>
                 <Text>{item.email}</Text>
-              </View>
+              </View> */}
               <View>
-                <Text>{item.nickname}</Text>
+                <Text style={styles.nickname}>{item.nickname}'s Safacy</Text>
               </View>
             </TouchableOpacity>
+            <FriendSafacyModal
+              safacyModalVisible={safacyModalVisible}
+              closeModal={closeModal}
+              nickname={item.nickname}
+              id={item._id}
+            />
           </View>
         ))}
       </View>
-      <FriendSafacyModal
-        safacyModalVisible={safacyModalVisible}
-        closeModal={closeModal}
-      />
+
       {publicMode && (
         <View style={styles.timer}>
           <Text>Public Mode</Text>
@@ -105,11 +110,16 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "flex-start",
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: COLORS.LIGHT_BLACK,
     padding: 10,
+  },
+  nickname: {
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
+    paddingLeft: 20,
   },
   timer: {
     flex: 1,

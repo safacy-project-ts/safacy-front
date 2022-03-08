@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { MaterialIcons, Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
 import { setTimer } from "../store/timerSlice";
-import { clearMessage, sendMessage } from "../store/chatSlice";
+import { getSafacyMsg, updateSafacyMsg } from "../store/chatSlice";
 import { getCurrentSafacy } from "../store/safacySlice";
 import { createSafacy, getUserInfo } from "../store/userSlice";
 
@@ -44,8 +44,8 @@ const PublicSettingScreen = ({ navigation }) => {
     await dispatch(setTimer({ sec: initialTime }));
     await dispatch(getCurrentSafacy(id));
     await dispatch(getUserInfo(id));
-    await dispatch(clearMessage());
-    await dispatch(sendMessage({ message: SAFACY_BOT.START }));
+    // await dispatch(clearMessage());
+    // await dispatch(updateSafacyMsg({ id, message: SAFACY_BOT.START }));
     navigation.navigate("Public");
   };
 
