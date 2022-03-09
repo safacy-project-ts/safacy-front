@@ -1,17 +1,37 @@
-import React from "react";
-import { useSelector } from "react-redux";
+/* eslint-disable react/no-unescaped-entities */
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import PropTypes from "prop-types";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import FriendSafacyModal from "../common/components/Modal/FriendSafacyModal";
 import Timer from "../common/components/Timer";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
+import { getUserInfo } from "../store/userSlice";
 
 const FriendListScreen = ({ navigation }) => {
-  const { safacyInvitationList, publicMode } = useSelector(
+  const dispatch = useDispatch();
+
+  const [safacyModalVisible, setSafacyModalVisible] = useState(false);
+
+  const openFriendSafayModal = () => {
+    setSafacyModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setSafacyModalVisible(false);
+  };
+
+  useEffect(async () => {
+    await dispatch(getUserInfo(id));
+    return () => console.log("stop");
+  }, []);
+
+  const { safacyInvitationList, publicMode, id } = useSelector(
     (state) => state.user,
   );
   const { remaining } = useSelector((state) => state.timer);
@@ -24,6 +44,7 @@ const FriendListScreen = ({ navigation }) => {
           <FontAwesome5 name="user-friends" size={24} color="black" />
         </Text>
       </View>
+
       <View style={styles.friendList}>
         {safacyInvitationList?.map((item, index) => (
           <View key={item._id}>
@@ -31,12 +52,7 @@ const FriendListScreen = ({ navigation }) => {
               style={styles.freinds}
               title={item.nickname}
               disabled={false}
-              onPress={() => {
-                navigation.navigate("Public", {
-                  id: safacyInvitationList[index]._id,
-                });
-              }}
-              key={item._id}
+              onPress={() => navigation.navigate("Public")}
             >
               <View>
                 <MaterialCommunityIcons
@@ -45,16 +61,23 @@ const FriendListScreen = ({ navigation }) => {
                   color="black"
                 />
               </View>
-              <View>
+              {/* <View>
                 <Text>{item.email}</Text>
-              </View>
+              </View> */}
               <View>
-                <Text>{item.nickname}</Text>
+                <Text style={styles.nickname}>{item.nickname}'s Safacy</Text>
               </View>
             </TouchableOpacity>
+            <FriendSafacyModal
+              safacyModalVisible={safacyModalVisible}
+              closeModal={closeModal}
+              nickname={item.nickname}
+              id={item._id}
+            />
           </View>
         ))}
       </View>
+
       {publicMode && (
         <View style={styles.timer}>
           <Text>Public Mode</Text>
@@ -87,11 +110,16 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "flex-start",
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: COLORS.LIGHT_BLACK,
     padding: 10,
+  },
+  nickname: {
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
+    paddingLeft: 20,
   },
   timer: {
     flex: 1,

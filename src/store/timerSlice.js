@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const timerSlice = createSlice({
   name: "timer",
   initialState: {
-    initial: null,
-    remaining: null,
+    initial: 0,
+    remaining: 0,
   },
   reducers: {
     setTimer: (state, action) => {

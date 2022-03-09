@@ -12,6 +12,7 @@ import {
   MainHeaderOption,
   DefaultHeaderOption,
   ProfileHeaderOption,
+  InvitationHeaderOption,
 } from "../common/components/NavigationOptions/headerOption";
 
 const MainStackNavigator = createStackNavigator();
@@ -52,6 +53,7 @@ const MainNavigator = () => {
       <MainStackNavigator.Screen
         name="Invitation"
         component={InvitationScreen}
+        options={InvitationHeaderOption}
       />
     </MainStackNavigator.Navigator>
   );

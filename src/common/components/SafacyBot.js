@@ -1,11 +1,16 @@
+/* eslint-disable react/require-default-props */
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Button, Platform } from "react-native";
 
+import PropTypes from "prop-types";
+
 import { ScrollView } from "react-native-gesture-handler";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
-
+import { getSafacyMsg, updateSafacyMsg } from "../../store/chatSlice";
+import { getCurrentSafacy } from "../../store/safacySlice";
+import { socket } from "../../api/socket";
 import COLORS from "../constants/COLORS";
 import FONT from "../constants/FONT";
 
@@ -17,61 +22,80 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SafacyBot = () => {
+const SafacyBot = ({ id }) => {
   const dispatch = useDispatch();
+
+  const safacy = useSelector((state) => state.safacy);
+  const { email } = useSelector((state) => state.auth);
+
+  // useEffect(async () => {
+  //   await dispatch(getCurrentSafacy(id));
+  // }, []);
+
+  // setInterval(async () => {
+  //   await dispatch(getCurrentSafacy(id));
+  // }, 5000);
+
   const { message } = useSelector((state) => state.chat);
 
-  const [safacyBotMsg, setSafacyBotMsg] = useState(message);
+  const [safacyBotMsg, setSafacyBotMsg] = useState(safacy.safacyBotMsg);
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
+
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  useEffect(() => {
-    // registerForPushNotificationsAsync().then((token) =>
-    //   setExpoPushToken(token),
-    // );
-    // notificationListener.current =
-    //   Notifications.addNotificationReceivedListener((notification) => {
-    //     setNotification(notification);
-    //   });
-    // responseListener.current =
-    //   Notifications.addNotificationResponseReceivedListener((response) => {
-    //     console.log(response);
-    //   });
-    // return () => {
-    //   Notifications.removeNotificationSubscription(
-    //     notificationListener.current,
-    //   );
-    //   Notifications.removeNotificationSubscription(responseListener.current);
-    // };
-  }, []);
+  useEffect(async () => {
+    socket.emit("safacyBot", {
+      data: message,
+    });
+
+    socket.on("safacyMsg", (message) => {
+      setSafacyBotMsg(message);
+    });
+
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token),
+    );
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    await schedulePushNotification(message[message.length - 1]);
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current,
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, [message]);
 
   return (
     <ScrollView style={styles.container}>
-      {message?.map((msg, index) => (
+      {safacy.safacyBotMsg?.map((msg, index) => (
         <View key={index}>
           <Text style={styles.safacyInfo}>{msg}</Text>
         </View>
       ))}
-      {/* <Button
-        title="Press to schedule a notification"
-        onPress={async () => {
-          await schedulePushNotification({ message });
-        }}
-      /> */}
     </ScrollView>
   );
 };
 
-const schedulePushNotification = async ({ message }) => {
+const schedulePushNotification = async (message) => {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "You've got Safacy Info! 📬",
-      body: { message },
+      title: "You've got Safacy Info!",
+      body: message,
       data: { data: "goes here" },
     },
-    trigger: { seconds: 2 },
+    to: [],
+    trigger: { seconds: 1 },
   });
 };
 
@@ -92,6 +116,7 @@ const registerForPushNotificationsAsync = async () => {
       alert("Failed to get push token for push notification!");
       return;
     }
+
     token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log(token);
   } else {
@@ -128,3 +153,7 @@ const styles = StyleSheet.create({
     fontSize: FONT.S,
   },
 });
+
+SafacyBot.propTypes = {
+  id: PropTypes.string,
+};

@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 
 import PropTypes from "prop-types";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
 import { setTimer } from "../store/timerSlice";
-import { sendMessage } from "../store/chatSlice";
+import { getSafacyMsg, updateSafacyMsg } from "../store/chatSlice";
 import { getCurrentSafacy } from "../store/safacySlice";
 import { createSafacy, getUserInfo } from "../store/userSlice";
 
@@ -21,23 +14,21 @@ import Map from "../common/components/Map";
 import SearchBar from "../common/components/SearchBar";
 import CustomButton from "../common/components/CustomButton";
 import PublicSelection from "../common/components/PublicSelection";
-import MultiplePublicSelection from "../common/components/MultiplePublicSelection";
 
-import FONTS from "../common/constants/FONT";
+import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
 import SAFACY_BOT from "../common/constants/SAFACY_BOT";
 
 const PublicSettingScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [destination, setDestination] = useState("서울");
+  const [destination, setDestination] = useState("현재위치");
   const [radius, setRadius] = useState("");
   const [time, setTime] = useState("");
   const [invitedFriendList, setInvitedFriendList] = useState([]);
+
   const initialTime = time * 60;
   const { id } = useSelector((state) => state.auth);
-  const timer = useSelector((state) => state.timer);
-  const { current } = useSelector((state) => state.location);
 
   const handleCreateSafacy = async () => {
     await dispatch(
@@ -53,24 +44,29 @@ const PublicSettingScreen = ({ navigation }) => {
     await dispatch(setTimer({ sec: initialTime }));
     await dispatch(getCurrentSafacy(id));
     await dispatch(getUserInfo(id));
-    await dispatch(sendMessage({ message: SAFACY_BOT.START }));
-    navigation.navigate("Public", { id });
+    // await dispatch(clearMessage());
+    // await dispatch(updateSafacyMsg({ id, message: SAFACY_BOT.START }));
+    navigation.navigate("Public");
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.titleText}>
           Public Mode{" "}
           <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
         </Text>
       </View>
+
       <View style={styles.map}>
         <Map />
       </View>
+
       <View style={styles.setting}>
         <View style={styles.destination}>
-          <Text style={styles.text}>Destination</Text>
+          <Text style={styles.Destinationtext}>
+            <FontAwesome5 name="map-pin" size={14} color="black" /> Destination
+          </Text>
           <SearchBar
             style={styles.search}
             destination={destination}
@@ -78,13 +74,17 @@ const PublicSettingScreen = ({ navigation }) => {
           />
         </View>
         <View style={styles.others}>
-          <Text style={styles.text}>Setting</Text>
-          <PublicSelection setRadius={setRadius} setTime={setTime} />
+          <Text style={styles.othersText}>
+            <Ionicons name="settings-outline" size={14} color="black" /> Setting
+          </Text>
+          <PublicSelection
+            setRadius={setRadius}
+            setTime={setTime}
+            setInvitedFriendList={setInvitedFriendList}
+          />
         </View>
       </View>
-      <View style={styles.friendSelection}>
-        <MultiplePublicSelection setInvitedFriendList={setInvitedFriendList} />
-      </View>
+
       <View style={styles.button}>
         <CustomButton
           title="START"
@@ -93,44 +93,78 @@ const PublicSettingScreen = ({ navigation }) => {
           onPress={handleCreateSafacy}
         />
       </View>
-    </ScrollView>
+    </View>
   );
+};
+
+export default PublicSettingScreen;
+
+PublicSettingScreen.propTypes = {
+  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.WHITE,
+    justifyContent: "center",
     alignItems: "center",
   },
   title: {
-    flex: 0.8,
+    flex: 0.4,
     alignItems: "center",
   },
   titleText: {
-    fontFamily: FONTS.BOLD_FONT,
-    fontSize: FONTS.XL,
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.XL,
     color: COLORS.BLACK,
     paddingTop: 20,
   },
   map: {
-    flex: 1.5,
+    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
+    justifyContent: "center",
   },
-  destination: {
-    justifyContent: "flex-start",
-    width: "50%",
-    height: 200,
-  },
+
   setting: {
-    flex: 3,
-    flexDirection: "row",
+    flex: 2,
     alignItems: "center",
+    justifyContent: "flex-start",
     width: "90%",
   },
-  button: {
+  destination: {
     flex: 1,
+    justifyContent: "flex-start",
+    width: "100%",
+    height: "50%",
+    paddingTop: 10,
+    paddingBottom: 5,
+  },
+  search: {
+    height: "100%",
+  },
+  Destinationtext: {
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  others: {
+    width: "100%",
+    height: "50%",
+    overflow: "hidden",
+  },
+  othersText: {
+    fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
+    paddingBottom: 10,
+  },
+  button: {
+    flex: 0.5,
     alignItems: "center",
+    justifyContent: "flex-start",
   },
   startBtn: {
     width: 150,
@@ -138,16 +172,4 @@ const styles = StyleSheet.create({
     lineHeight: 40,
     backgroundColor: COLORS.BLUE,
   },
-  others: {
-    width: "50%",
-    height: 300,
-    overflow: "hidden",
-  },
-  friendSelection: { flex: 2, overflow: "visible" },
 });
-
-export default PublicSettingScreen;
-
-PublicSettingScreen.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
-};

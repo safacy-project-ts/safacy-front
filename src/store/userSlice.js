@@ -28,7 +28,7 @@ export const stopPublic = createAsyncThunk(
 export const createSafacy = createAsyncThunk(
   "user/createSafacy",
   async ({ id, destination, radius, time, invitedFriendList }) => {
-    const newSafacy = await axios.post(`${BASE_URI}/user/${id}/new`, {
+    const newSafacy = await axios.post(`${TEST_URI}/user/${id}/new`, {
       destination,
       radius,
       time,
@@ -42,11 +42,25 @@ export const createSafacy = createAsyncThunk(
 export const addFriend = createAsyncThunk(
   "user/addFriend",
   async ({ id, email }) => {
-    const newFriend = await axios.put(`${BASE_URI}/user/${id}/friend/new`, {
+    const newFriend = await axios.put(`${TEST_URI}/user/${id}/friend/new`, {
       email,
     });
 
     return newFriend.data;
+  },
+);
+
+export const acceptInvitation = createAsyncThunk(
+  "user/acceptInvitation",
+  async ({ id, email }) => {
+    const newFriendList = await axios.put(
+      `${TEST_URI}/user/${id}/friend/invitation`,
+      {
+        email,
+      },
+    );
+
+    return newFriendList.data;
   },
 );
 
@@ -97,7 +111,11 @@ const userSlice = createSlice({
       state.status = "success";
     },
     [addFriend.fulfilled]: (state, action) => {
-      console.log("======", action.payload);
+      // state.error = action.payload.error;
+      state.result = action.payload.result;
+      state.status = "success";
+    },
+    [acceptInvitation.fulfilled]: (state, action) => {
       state.status = "success";
     },
   },

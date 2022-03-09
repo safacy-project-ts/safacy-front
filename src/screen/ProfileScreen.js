@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View, ScrollView, Image } from "react-native";
-
 import {
   MaterialIcons,
   MaterialCommunityIcons,
   AntDesign,
 } from "@expo/vector-icons";
+import { getUserInfo } from "../store/userSlice";
 
 import Timer from "../common/components/Timer";
 import AddFriendModal from "../common/components/Modal/AddFriendModal";
@@ -15,6 +15,7 @@ import COLORS from "../common/constants/COLORS";
 import footer from "../../assets/img/footer.png";
 
 const ProfileScreen = () => {
+  const dispatch = useDispatch();
   const [inviteModalVisible, setInviteModalVisible] = useState(false);
 
   const openInviteModal = () => {
@@ -25,9 +26,14 @@ const ProfileScreen = () => {
     setInviteModalVisible(false);
   };
 
-  const { nickname, email, publicMode, myFriendList, safacyHistory } =
+  const { id, nickname, email, publicMode, myFriendList, safacyHistory } =
     useSelector((state) => state.user);
   const { remaining } = useSelector((state) => state.timer);
+
+  useEffect(async () => {
+    await dispatch(getUserInfo(id));
+    return () => console.log("stop");
+  }, []);
 
   return (
     <View style={styles.container}>

@@ -9,41 +9,75 @@ import {
 } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 
-import { getUserInfo, stopPublic } from "../store/userSlice";
+import { getSafacyMsg, updateSafacyMsg } from "../store/chatSlice";
 import { getCurrentSafacy } from "../store/safacySlice";
-import { sendMessage } from "../store/chatSlice";
+import { clearDestination } from "../store/locationSlice";
+import { getUserInfo, stopPublic } from "../store/userSlice";
 
-import CustomButton from "../common/components/CustomButton";
 import Map from "../common/components/Map";
-import Timer from "../common/components/Timer";
-import SafacyBot from "../common/components/SafacyBot";
-import SAFACY_BOT from "../common/constants/SAFACY_BOT";
-import COLORS from "../common/constants/COLORS";
 import FONT from "../common/constants/FONT";
+import COLORS from "../common/constants/COLORS";
+import Timer from "../common/components/Timer";
+import SAFACY_BOT from "../common/constants/SAFACY_BOT";
+import SafacyBot from "../common/components/SafacyBot";
+import CustomButton from "../common/components/CustomButton";
 
-const PublicScreen = ({ navigation, route }) => {
+const PublicScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [disabled, setDisabled] = useState(true);
+  const [isStopped, setIsStopped] = useState(false);
+  const [distance, setDistance] = useState(0);
 
   const { id } = useSelector((state) => state.auth);
-  const { id: parmsId } = route.params;
 
-  const { publicMode } = useSelector((state) => state.user);
   const { remaining } = useSelector((state) => state.timer);
+  const { publicMode } = useSelector((state) => state.user);
   const currentSafacy = useSelector((state) => state.safacy);
-  const safacyId = currentSafacy.id;
-
-  const [destination, setDestination] = useState(currentSafacy.destination);
+  const { radius, id: safacyId, time } = currentSafacy;
 
   useEffect(async () => {
-    if (id === parmsId) {
-      setDisabled(false);
-    }
-
-    await dispatch(getCurrentSafacy(parmsId));
     await dispatch(getUserInfo(id));
+    await dispatch(
+      updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.START }),
+    );
+    await dispatch(getSafacyMsg({ id: safacyId }));
+    await dispatch(getCurrentSafacy(id));
+    return () => console.log("stop");
   }, []);
+
+  useEffect(async () => {
+    if (isStopped) {
+      if (distance > radius) {
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_TWO }),
+        );
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+        );
+        await dispatch(getSafacyMsg({ id: safacyId }));
+        await dispatch(getCurrentSafacy(id));
+      } else {
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.TIMEOVER_SAFE }),
+        );
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+        );
+        await dispatch(getSafacyMsg({ id: safacyId }));
+        await dispatch(getCurrentSafacy(id));
+      }
+
+      await dispatch(clearDestination());
+      await dispatch(
+        stopPublic({
+          id,
+          safacyId,
+        }),
+      );
+      await dispatch(getUserInfo(id));
+    }
+    return () => console.log("stop");
+  }, [isStopped]);
 
   const toggleSwitch = async () => {
     await dispatch(
@@ -53,8 +87,27 @@ const PublicScreen = ({ navigation, route }) => {
       }),
     );
 
-    await dispatch(sendMessage({ message: SAFACY_BOT.STOPBTN_SAFE }));
-    await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+    if (distance > radius) {
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+      );
+      await dispatch(getSafacyMsg({ id: safacyId }));
+      await dispatch(getCurrentSafacy(id));
+    } else {
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+      );
+      await dispatch(getSafacyMsg({ id: safacyId }));
+      await dispatch(getCurrentSafacy(id));
+    }
+
+    await dispatch(clearDestination());
     await dispatch(getUserInfo(id));
   };
 
@@ -66,7 +119,25 @@ const PublicScreen = ({ navigation, route }) => {
       }),
     );
 
-    await dispatch(sendMessage({ message: SAFACY_BOT.END_SAFE }));
+    if (distance > radius) {
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+      );
+      // await dispatch(getSafacyMsg({ id: safacyId }));
+    } else {
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+      );
+      await dispatch(
+        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+      );
+      // await dispatch(getSafacyMsg({ id: safacyId }));
+    }
+
+    await dispatch(clearDestination());
     await dispatch(getUserInfo(id));
   };
 
@@ -78,8 +149,8 @@ const PublicScreen = ({ navigation, route }) => {
           <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
         </Text>
       </View>
+
       <View style={styles.location}>
-        <Text style={styles.locationText}>Share my Location</Text>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={publicMode ? "#fafafc" : "#f4f3f4"}
@@ -89,9 +160,11 @@ const PublicScreen = ({ navigation, route }) => {
           disabled={!publicMode}
         />
       </View>
+
       <View style={styles.map}>
-        <Map />
+        <Map radius={radius} setDistance={setDistance} id={id} />
       </View>
+
       <View style={styles.friends}>
         <View>
           <Text style={styles.friendsTitle}>Who are checking now : </Text>
@@ -109,11 +182,12 @@ const PublicScreen = ({ navigation, route }) => {
           </View>
         ))}
       </View>
+
       <View style={styles.information}>
         <View style={styles.detail}>
           <View style={styles.destination}>
             <Text style={styles.destinationTitle}>Destination</Text>
-            <Text>{destination}</Text>
+            <Text>{currentSafacy.destination}</Text>
           </View>
           <View style={styles.radius}>
             <Text style={styles.radiusTitle}>radius</Text>
@@ -123,40 +197,30 @@ const PublicScreen = ({ navigation, route }) => {
             {publicMode && (
               <View>
                 <Text style={styles.timerTitle}>Timer</Text>
-                <Timer sec={remaining} />
+                <Timer sec={remaining} setIsStopped={setIsStopped} />
               </View>
             )}
           </View>
         </View>
+
         <View style={styles.safacy}>
           <Text style={styles.safacyTitle}>
             Safacy Bot{" "}
             <Ionicons name="md-logo-android" size={17} color="black" />
           </Text>
-          <SafacyBot />
+          <SafacyBot id={id} />
         </View>
       </View>
+
       <View style={styles.button}>
-        {!disabled ? (
-          <View>
-            <CustomButton
-              title="STOP"
-              style={styles.stopBtn}
-              onPress={handleStopPublic}
-              disabled={!publicMode}
-            />
-          </View>
-        ) : (
-          <View>
-            <Text>Emergency</Text>
-            <CustomButton
-              title="SOS"
-              style={styles.sosBtn}
-              disabled={false}
-              onPress={handleStopPublic}
-            />
-          </View>
-        )}
+        <View>
+          <CustomButton
+            title="STOP"
+            style={styles.stopBtn}
+            onPress={handleStopPublic}
+            disabled={!publicMode}
+          />
+        </View>
       </View>
     </View>
   );
@@ -165,9 +229,10 @@ const PublicScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.WHITE,
   },
   title: {
-    flex: 1,
+    flex: 0.8,
     alignItems: "center",
   },
   titleText: {
@@ -177,8 +242,10 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   location: {
-    flex: 1,
+    flex: 0.5,
     alignItems: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   locationText: {
     fontFamily: FONT.BOLD_FONT,
@@ -186,14 +253,13 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   map: {
-    flex: 2,
+    flex: 2.5,
     alignItems: "center",
   },
   friends: {
     flex: 0.5,
     alignItems: "flex-start",
     flexDirection: "row",
-    // justifyContent: "center",
     marginLeft: 25,
     marginTop: 30,
     marginRight: 20,
@@ -219,21 +285,30 @@ const styles = StyleSheet.create({
   },
   destination: {
     marginBottom: 20,
+    marginLeft: 5,
   },
   destinationTitle: {
     fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
     paddingTop: 5,
     paddingBottom: 5,
   },
-  radius: {},
+  radius: {
+    marginLeft: 5,
+    marginBottom: 20,
+  },
   radiusTitle: {
     fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
     paddingTop: 5,
     paddingBottom: 5,
   },
-  timer: {},
+  timer: {
+    marginLeft: 5,
+  },
   timerTitle: {
     fontFamily: FONT.BOLD_FONT,
+    fontSize: FONT.M,
     paddingTop: 5,
     paddingBottom: 5,
   },

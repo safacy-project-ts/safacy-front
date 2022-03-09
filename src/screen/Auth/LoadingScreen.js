@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import COLORS from "../../common/constants/COLORS";
 
 const LoadingScreen = () => {
   return (
@@ -12,7 +13,7 @@ const LoadingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.WHITE,
     alignItems: "center",
     justifyContent: "center",
   },

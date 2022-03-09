@@ -1,7 +1,11 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  MaterialCommunityIcons,
+  Ionicons,
+} from "@expo/vector-icons";
 
 import COLORS from "../../constants/COLORS";
 
@@ -60,7 +64,26 @@ const ProfileHeaderOption = ({ navigation }) => ({
   headerStyle: styles.optionStyle,
 });
 
-export { MainHeaderOption, DefaultHeaderOption, ProfileHeaderOption };
+const InvitationHeaderOption = ({ navigation }) => ({
+  title: "",
+  headerLeft: () => (
+    <TouchableOpacity
+      style={{ paddingLeft: 15, paddingTop: 10 }}
+      onPress={() => navigation.navigate("Profile")}
+    >
+      <Ionicons name="ios-arrow-back-circle" size={36} color="black" />
+    </TouchableOpacity>
+  ),
+
+  headerStyle: styles.optionStyle,
+});
+
+export {
+  MainHeaderOption,
+  DefaultHeaderOption,
+  ProfileHeaderOption,
+  InvitationHeaderOption,
+};
 
 const styles = StyleSheet.create({
   optionStyle: {

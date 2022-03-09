@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { setUserDestination } from "../../store/locationSlice";
 
 import COLORS from "../constants/COLORS";
+import FONTS from "../constants/FONT";
 
 const SearchBar = ({ setDestination }) => {
   const dispatch = useDispatch();
@@ -31,7 +32,6 @@ const SearchBar = ({ setDestination }) => {
           }),
         );
       }}
-      byPlacesAPI="GooglePlacesSearch"
       GooglePlacesSearchQuery={{
         rankby: "distance",
       }}
@@ -41,29 +41,25 @@ const SearchBar = ({ setDestination }) => {
       }}
       styles={{
         container: {
-          height: "100%",
           zIndex: 1,
         },
         textInputContainer: {
-          width: "90%",
+          width: "100%",
+          borderBottomColor: COLORS.LIGHT_BLACK,
+          borderBottomWidth: 1,
         },
         textInput: {
-          height: 38,
-          color: "#5d5d5d",
+          height: 30,
+          color: COLORS.LIGHT_BLACK,
           fontSize: 13,
-          borderRadius: 10,
-          paddingLeft: 20,
+          fontFamily: FONTS.REGULAR_FONT,
         },
         listView: {
           width: "90%",
           zIndex: 20,
-          backgroundColor: COLORS.GREY,
         },
         row: { height: 35 },
         description: { fontSize: 10, color: "#5d5d5d" },
-        // predefinedPlacesDescription: {
-        //   color: "red",
-        // },
       }}
     />
   );
