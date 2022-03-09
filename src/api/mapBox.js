@@ -6,17 +6,21 @@ const mapBoxAPI = async (
   currentLat,
   destinationLng,
   destinationLat,
-  setDesLocation,
+  setDestinationLocation,
 ) => {
-  const res = await axios(
-    `https://api.mapbox.com/directions/v5/mapbox/cycling/${currentLng},${currentLat};${destinationLng},${destinationLat}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`,
-  );
+  try {
+    const res = await axios(
+      `https://api.mapbox.com/directions/v5/mapbox/cycling/${currentLng},${currentLat};${destinationLng},${destinationLat}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`,
+    );
 
-  const coords = res.data.routes[0].geometry.coordinates.map((item) => {
-    return { latitude: item[1], longitude: item[0] };
-  });
+    const coords = res.data.routes[0].geometry.coordinates.map((item) => {
+      return { latitude: item[1], longitude: item[0] };
+    });
 
-  setDesLocation(coords);
+    setDestinationLocation(coords);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default mapBoxAPI;

@@ -13,11 +13,12 @@ import PUBLIC_LOCK from "../../assets/img/public.png";
 const PrivateScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
+  const { id } = useSelector((state) => state.auth);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const toggleSwitch = () => {
     if (!isEnabled) {
-      navigation.navigate("PublicSetting");
+      navigation.navigate("PublicSetting", { id });
     } else {
       navigation.navigate("Main");
     }

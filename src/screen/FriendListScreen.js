@@ -7,11 +7,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import FriendSafacyModal from "../common/components/Modal/FriendSafacyModal";
-import Timer from "../common/components/Timer";
+import { getUserInfo } from "../store/userSlice";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import { getUserInfo } from "../store/userSlice";
+import FriendSafacyModal from "../common/components/Modal/FriendSafacyModal";
 
 const FriendListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -52,7 +51,11 @@ const FriendListScreen = ({ navigation }) => {
               style={styles.freinds}
               title={item.nickname}
               disabled={false}
-              onPress={() => navigation.navigate("Public")}
+              onPress={() => {
+                navigation.navigate("Public", {
+                  id: item._id,
+                });
+              }}
             >
               <View>
                 <MaterialCommunityIcons
@@ -61,9 +64,6 @@ const FriendListScreen = ({ navigation }) => {
                   color="black"
                 />
               </View>
-              {/* <View>
-                <Text>{item.email}</Text>
-              </View> */}
               <View>
                 <Text style={styles.nickname}>{item.nickname}'s Safacy</Text>
               </View>
@@ -77,15 +77,14 @@ const FriendListScreen = ({ navigation }) => {
           </View>
         ))}
       </View>
-
-      {publicMode && (
-        <View style={styles.timer}>
-          <Text>Public Mode</Text>
-          <Timer sec={remaining} />
-        </View>
-      )}
     </View>
   );
+};
+
+export default FriendListScreen;
+
+FriendListScreen.propTypes = {
+  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -132,9 +131,3 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
 });
-
-export default FriendListScreen;
-
-FriendListScreen.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
-};

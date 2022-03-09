@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet, Text, View, Image, AppState } from "react-native";
 
@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 
 import { getUserInfo, stopPublic } from "../store/userSlice";
 
-import Timer from "../common/components/Timer";
 import CustomButton from "../common/components/CustomButton";
 import COLORS from "../common/constants/COLORS";
 import FONT from "../common/constants/FONT";
@@ -19,29 +18,45 @@ const MainScreen = ({ navigation }) => {
   const { id } = useSelector((state) => state.auth);
   const user = useSelector((state) => state.user);
   const { id: safacyId } = useSelector((state) => state.safacy);
-  const { remaining } = useSelector((state) => state.timer);
   const chat = useSelector((state) => state.chat);
 
   useEffect(async () => {
-    const updatedUser = await dispatch(getUserInfo(id));
-    return () => console.log("stop");
+    await dispatch(getUserInfo(id));
   }, []);
 
-  // useEffect(async () => {
-  //   if (AppState.currentState === 'inactive') {
-  //     await dispatch(
-  //       stopPublic({
-  //         id,
-  //         safacyId,
-  //       }),
-  //     );
-  //   }
-  // return () => console.log("stop");
-  // }, [AppState.currentState]);
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  useEffect(async () => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      if (appState.current === "inactive") {
+        dispatch(
+          stopPublic({
+            id,
+            safacyId,
+          }),
+        );
+      }
+      console.log("AppState", appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const handleMySafacy = () => {
     if (user.publicMode) {
-      navigation.navigate("Public");
+      navigation.navigate("Public", { id });
     } else {
       navigation.navigate("Private");
     }
@@ -83,7 +98,6 @@ const MainScreen = ({ navigation }) => {
         ) : (
           <View>
             <Text style={styles.public}>PUBLIC MODE</Text>
-            <Timer style={styles.timer} sec={remaining} />
             <Image style={styles.lock} source={PUBLIC_LOCK} />
           </View>
         )}

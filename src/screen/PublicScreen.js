@@ -1,114 +1,131 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet, Text, View, Switch, Button } from "react-native";
+import * as SMS from "expo-sms";
 
+import PropTypes from "prop-types";
 import {
   MaterialCommunityIcons,
   MaterialIcons,
   Ionicons,
 } from "@expo/vector-icons";
-import PropTypes from "prop-types";
+import { socket } from "../api/socket";
 
-import { getSafacyMsg, updateSafacyMsg } from "../store/chatSlice";
-import { getCurrentSafacy } from "../store/safacySlice";
-import { clearDestination } from "../store/locationSlice";
 import { getUserInfo, stopPublic } from "../store/userSlice";
+import { getCurrentSafacy, updateSafacyMsg } from "../store/safacySlice";
 
 import Map from "../common/components/Map";
-import FONT from "../common/constants/FONT";
-import COLORS from "../common/constants/COLORS";
 import Timer from "../common/components/Timer";
-import SAFACY_BOT from "../common/constants/SAFACY_BOT";
 import SafacyBot from "../common/components/SafacyBot";
 import CustomButton from "../common/components/CustomButton";
 
-const PublicScreen = ({ navigation }) => {
+import FONT from "../common/constants/FONT";
+import COLORS from "../common/constants/COLORS";
+import SAFACY_BOT from "../common/constants/SAFACY_BOT";
+
+const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
-  const [isStopped, setIsStopped] = useState(false);
-  const [distance, setDistance] = useState(0);
-
   const { id } = useSelector((state) => state.auth);
+  const { id: paramsId } = route.params;
+
+  const [isMine, setIsMine] = useState(true);
+  const [distance, setDistance] = useState(0);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [isStopped, setIsStopped] = useState(false);
+  const [sosLocation, setSosLocation] = useState([]);
+  const [smsServiceAvailable, setSmsServiceAvailable] = useState(false);
 
   const { remaining } = useSelector((state) => state.timer);
   const { publicMode } = useSelector((state) => state.user);
   const currentSafacy = useSelector((state) => state.safacy);
-  const { radius, id: safacyId, time } = currentSafacy;
+  const { radius, id: safacyId, safacyBotMsg } = currentSafacy;
 
   useEffect(async () => {
-    await dispatch(getUserInfo(id));
+    if (id !== paramsId) {
+      setIsMine(false);
+    }
+    await dispatch(getCurrentSafacy(paramsId));
     await dispatch(
       updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.START }),
     );
-    await dispatch(getSafacyMsg({ id: safacyId }));
-    await dispatch(getCurrentSafacy(id));
-    return () => console.log("stop");
+    socket.emit("safacyBot", SAFACY_BOT.START);
+    checkIfServiceAvailable();
   }, []);
 
   useEffect(async () => {
-    if (isStopped) {
-      if (distance > radius) {
+    try {
+      if (isStopped) {
         await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_TWO }),
+          stopPublic({
+            id,
+            safacyId,
+          }),
         );
-        await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
-        );
-        await dispatch(getSafacyMsg({ id: safacyId }));
-        await dispatch(getCurrentSafacy(id));
-      } else {
-        await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.TIMEOVER_SAFE }),
-        );
-        await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
-        );
-        await dispatch(getSafacyMsg({ id: safacyId }));
-        await dispatch(getCurrentSafacy(id));
-      }
 
-      await dispatch(clearDestination());
+        if (distance > radius) {
+          await dispatch(
+            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+          );
+          socket.emit("safacyBot", SAFACY_BOT.DANGER_THREE);
+          await dispatch(
+            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+          );
+          socket.emit("safacyBot", SAFACY_BOT.END_DANGER);
+        } else {
+          await dispatch(
+            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+          );
+          socket.emit("safacyBot", SAFACY_BOT.STOPBTN_SAFE);
+          await dispatch(
+            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+          );
+          socket.emit("safacyBot", SAFACY_BOT.END_SAFE);
+        }
+        await dispatch(getCurrentSafacy(id));
+        await dispatch(getUserInfo(id));
+
+        socket.emit("safacyBot", {
+          data: safacyBotMsg,
+        });
+      }
+    } catch (error) {
+      setErrorMsg(error);
+    }
+  }, [isStopped]);
+
+  const toggleSwitch = async () => {
+    try {
       await dispatch(
         stopPublic({
           id,
           safacyId,
         }),
       );
+      if (distance > radius) {
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+        );
+        socket.emit("safacyBot", SAFACY_BOT.DANGER_THREE);
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+        );
+        socket.emit("safacyBot", SAFACY_BOT.END_DANGER);
+      } else {
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+        );
+        socket.emit("safacyBot", SAFACY_BOT.STOPBTN_SAFE);
+        await dispatch(
+          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+        );
+        socket.emit("safacyBot", SAFACY_BOT.END_SAFE);
+      }
+      await dispatch(getCurrentSafacy(id));
       await dispatch(getUserInfo(id));
+    } catch (error) {
+      setErrorMsg(error);
     }
-    return () => console.log("stop");
-  }, [isStopped]);
-
-  const toggleSwitch = async () => {
-    await dispatch(
-      stopPublic({
-        id,
-        safacyId,
-      }),
-    );
-
-    if (distance > radius) {
-      await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
-      );
-      await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
-      );
-      await dispatch(getSafacyMsg({ id: safacyId }));
-      await dispatch(getCurrentSafacy(id));
-    } else {
-      await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
-      );
-      await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
-      );
-      await dispatch(getSafacyMsg({ id: safacyId }));
-      await dispatch(getCurrentSafacy(id));
-    }
-
-    await dispatch(clearDestination());
-    await dispatch(getUserInfo(id));
   };
 
   const handleStopPublic = async () => {
@@ -123,22 +140,38 @@ const PublicScreen = ({ navigation }) => {
       await dispatch(
         updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
       );
+      socket.emit("safacyBot", SAFACY_BOT.DANGER_THREE);
       await dispatch(
         updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
       );
-      // await dispatch(getSafacyMsg({ id: safacyId }));
+      socket.emit("safacyBot", SAFACY_BOT.END_DANGER);
     } else {
       await dispatch(
         updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
       );
+      socket.emit("safacyBot", SAFACY_BOT.STOPBTN_SAFE);
       await dispatch(
         updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
       );
-      // await dispatch(getSafacyMsg({ id: safacyId }));
+      socket.emit("safacyBot", SAFACY_BOT.END_SAFE);
     }
-
-    await dispatch(clearDestination());
+    await dispatch(getCurrentSafacy(id));
     await dispatch(getUserInfo(id));
+  };
+
+  const checkIfServiceAvailable = async () => {
+    const isAvailable = await SMS.isAvailableAsync();
+    if (isAvailable) {
+      setSmsServiceAvailable(true);
+    }
+  };
+
+  const SOSMsg = `<SOS -  현재 친구 위치> 도와주세요!`;
+
+  const onComposeSms = async () => {
+    if (smsServiceAvailable) {
+      await SMS.sendSMSAsync("119", SOSMsg);
+    }
   };
 
   return (
@@ -151,18 +184,35 @@ const PublicScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.location}>
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={publicMode ? "#fafafc" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={publicMode}
-          disabled={!publicMode}
-        />
+        {isMine ? (
+          <Switch
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={publicMode ? "#fafafc" : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={publicMode}
+            disabled={!publicMode}
+          />
+        ) : (
+          <CustomButton
+            title="◀︎ Friend List"
+            onPress={() => {
+              dispatch(getUserInfo(id));
+              navigation.navigate("FriendList");
+            }}
+            disabled={false}
+            style={styles.backBtn}
+          />
+        )}
       </View>
 
       <View style={styles.map}>
-        <Map radius={radius} setDistance={setDistance} id={id} />
+        <Map
+          radius={radius}
+          setDistance={setDistance}
+          id={paramsId}
+          setSosLocation={setSosLocation}
+        />
       </View>
 
       <View style={styles.friends}>
@@ -194,7 +244,7 @@ const PublicScreen = ({ navigation }) => {
             <Text>{currentSafacy.radius}</Text>
           </View>
           <View style={styles.timer}>
-            {publicMode && (
+            {isMine && publicMode && (
               <View>
                 <Text style={styles.timerTitle}>Timer</Text>
                 <Timer sec={remaining} setIsStopped={setIsStopped} />
@@ -208,19 +258,31 @@ const PublicScreen = ({ navigation }) => {
             Safacy Bot{" "}
             <Ionicons name="md-logo-android" size={17} color="black" />
           </Text>
-          <SafacyBot id={id} />
+          <SafacyBot id={paramsId} />
         </View>
       </View>
 
       <View style={styles.button}>
-        <View>
-          <CustomButton
-            title="STOP"
-            style={styles.stopBtn}
-            onPress={handleStopPublic}
-            disabled={!publicMode}
-          />
-        </View>
+        {isMine ? (
+          <View>
+            <CustomButton
+              title="STOP"
+              style={styles.stopBtn}
+              onPress={handleStopPublic}
+              disabled={!publicMode}
+            />
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.sosText}>Emergency</Text>
+            <CustomButton
+              title="SOS"
+              style={styles.sosBtn}
+              disabled={false}
+              onPress={onComposeSms}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -244,7 +306,6 @@ const styles = StyleSheet.create({
   location: {
     flex: 0.5,
     alignItems: "center",
-    paddingTop: 10,
     paddingBottom: 10,
   },
   locationText: {
@@ -280,7 +341,6 @@ const styles = StyleSheet.create({
   },
   detail: {
     width: "50%",
-
     paddingLeft: 20,
   },
   destination: {
@@ -324,6 +384,16 @@ const styles = StyleSheet.create({
     flex: 1.5,
     alignItems: "center",
   },
+  backBtn: {
+    width: 150,
+    height: 30,
+    lineHeight: 35,
+    backgroundColor: COLORS.WHITE,
+    color: COLORS.LIGHT_BLACK,
+    fontSize: FONT.M,
+    borderColor: COLORS.WHITE,
+    marginBottom: 5,
+  },
   stopBtn: {
     width: 150,
     height: 40,
@@ -331,7 +401,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.RED,
   },
   sosBtn: {
+    width: 200,
+    height: 40,
     backgroundColor: COLORS.SOS_RED,
+  },
+  sosText: {
+    fontFamily: FONT.BOLD_FONT,
+    color: COLORS.SOS_RED,
+    paddingBottom: 5,
   },
 });
 

@@ -27,12 +27,20 @@ export const stopPublic = createAsyncThunk(
 
 export const createSafacy = createAsyncThunk(
   "user/createSafacy",
-  async ({ id, destination, radius, time, invitedFriendList }) => {
+  async ({
+    id,
+    destination,
+    radius,
+    time,
+    invitedFriendList,
+    userDestination,
+  }) => {
     const newSafacy = await axios.post(`${TEST_URI}/user/${id}/new`, {
       destination,
       radius,
       time,
       invitedFriendList,
+      userDestination,
     });
 
     return newSafacy.data;
