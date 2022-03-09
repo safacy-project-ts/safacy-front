@@ -2,68 +2,69 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet } from "react-native";
-import { getDistance, getPreciseDistance } from "geolib";
-import PropTypes from "prop-types";
-
 import MapView, {
   PROVIDER_GOOGLE,
   Marker,
   Circle,
   Polyline,
 } from "react-native-maps";
-import * as Location from "expo-location";
-import mapBoxAPI from "../../api/mapBox";
-import { getUserInfo } from "../../store/userSlice";
 
-import LoadingScreen from "../../screen/Auth/LoadingScreen";
-import COLORS from "../constants/COLORS";
-import { setCurrentLocation } from "../../store/locationSlice";
+import PropTypes from "prop-types";
+import * as Location from "expo-location";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+
+import mapBoxAPI from "../../api/mapBox";
 import { socket } from "../../api/socket";
 
-const calculateDistance = (
-  currentLat,
-  currentLng,
-  destinationLat,
-  destinationLng,
-) => {
-  const distance = getDistance(
-    { latitude: currentLat, longitude: currentLng },
-    { latitude: destinationLat, longitude: destinationLng },
-  );
-  return distance;
-};
+import {
+  getCurrentSafacy,
+  updateOriginLocation,
+  updateDeslocation,
+} from "../../store/safacySlice";
+import { setCurrentLocation } from "../../store/locationSlice";
+import calculateDistance from "../../utils/distanceController";
+import LoadingScreen from "../../screen/Auth/LoadingScreen";
+import COLORS from "../constants/COLORS";
 
-const Map = ({ radius, setDistance, id }) => {
+const Map = ({ setDistance, id, setSosLocation }) => {
   const dispatch = useDispatch();
-  const [location, setLocation] = useState(null);
+
+  const [isMine, setIsMine] = useState(false);
   const [locations, setLocations] = useState([]);
-  const [desLocation, setDesLocation] = useState([]);
-  const [currentDistance, setCurrentDistance] = useState(0);
-  const [isPublic, setIsPublic] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [destinationLocation, setDestinationLocation] = useState([]);
+
+  const { id: userId } = useSelector((state) => state.auth);
+  const { publicMode } = useSelector((state) => state.user);
+  const { current } = useSelector((state) => state.location);
+  const {
+    id: safacyId,
+    userDestination,
+    originLocation,
+    desLocation,
+    publicMode: safacyPublicMode,
+  } = useSelector((state) => state.safacy);
 
   useEffect(async () => {
-    if (currentUser !== email) {
-      setIsPublic(true);
-    }
-  }, []);
-
-  const { email: currentUser } = useSelector((state) => state.auth);
-
-  const { email, publicMode } = useSelector((state) => state.user);
-
-  const { current, userDestination } = useSelector((state) => state.location);
-
-  useEffect(() => {
-    if (isPublic || publicMode) {
-      mapBoxAPI(
-        current[1],
-        current[0],
-        userDestination[1],
-        userDestination[0],
-        setDesLocation,
+    if (publicMode && isMine) {
+      await mapBoxAPI(
+        originLocation[0] ? originLocation[0].longitude : current[1],
+        originLocation[0] ? originLocation[0].latitude : current[0],
+        userDestination[0].longitude,
+        userDestination[0].latitude,
+        setDestinationLocation,
       );
     }
-  }, [isPublic]);
+  }, [isMine]);
+
+  useEffect(async () => {
+    if (destinationLocation?.length !== 0) {
+      await dispatch(
+        updateDeslocation({ id: safacyId, deslocation: destinationLocation }),
+      );
+      await dispatch(getCurrentSafacy(id));
+    }
+  }, [destinationLocation]);
 
   useEffect(() => {
     (async () => {
@@ -75,15 +76,23 @@ const Map = ({ radius, setDistance, id }) => {
       }
 
       const { coords } = await Location.getCurrentPositionAsync({});
+      await dispatch(getCurrentSafacy(id));
 
-      await dispatch(
-        setCurrentLocation({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-        }),
-      );
+      if (id === userId) {
+        setIsMine(true);
+        await dispatch(
+          updateOriginLocation({
+            id: safacyId,
+            location: coords,
+          }),
+        );
+      } else {
+        await dispatch(getCurrentSafacy(id));
+      }
 
-      const newLoc = await Location.watchPositionAsync(
+      await dispatch(setCurrentLocation(coords));
+
+      const newLocation = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
           timeInterval: 10000,
@@ -105,10 +114,9 @@ const Map = ({ radius, setDistance, id }) => {
             const distance = calculateDistance(
               position.coords.latitude,
               position.coords.longitude,
-              userDestination[0],
-              userDestination[1],
+              userDestination[0]?.latitude,
+              userDestination[0]?.longitude,
             );
-            setCurrentDistance(distance);
             setDistance(distance);
           }
 
@@ -123,7 +131,14 @@ const Map = ({ radius, setDistance, id }) => {
 
         (error) => console.log(error),
       );
+      return () => {
+        newLocation.remove();
+      };
     })();
+  }, []);
+
+  useEffect(() => {
+    return () => console.log("cleanUp");
   }, []);
 
   return location ? (
@@ -135,10 +150,16 @@ const Map = ({ radius, setDistance, id }) => {
       ScrollEnabled
       showsMyLocationButton
       initialRegion={{
-        latitude: current[0],
-        longitude: current[1],
-        latitudeDelta: 0.009,
-        longitudeDelta: 0.009,
+        latitude:
+          originLocation?.length === 1
+            ? originLocation[0]?.latitude
+            : current[0],
+        longitude:
+          originLocation?.length === 1
+            ? originLocation[0]?.longitude
+            : current[1],
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02,
       }}
       onRegionChangeComplete={(region) => {
         setLocation({
@@ -149,18 +170,26 @@ const Map = ({ radius, setDistance, id }) => {
     >
       <Marker
         coordinate={{
-          latitude: current[0],
-          longitude: current[1],
+          latitude:
+            originLocation?.length === 1
+              ? originLocation[0]?.latitude
+              : current[0],
+          longitude:
+            originLocation?.length === 1
+              ? originLocation[0]?.longitude
+              : current[1],
         }}
-        title="start point!"
+        title="start point"
       />
       <Marker
         coordinate={{
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude: location?.latitude,
+          longitude: location?.longitude,
         }}
         title="Here"
-      />
+      >
+        <FontAwesome name="location-arrow" size={24} color={COLORS.SOS_RED} />
+      </Marker>
 
       <Circle
         key="1"
@@ -169,7 +198,7 @@ const Map = ({ radius, setDistance, id }) => {
           longitude: location.longitude,
         }}
         fillColor={COLORS.YELLOW}
-        radius={radius || 150}
+        radius={150}
         strokeWidth={1}
         strokeColor={COLORS.GREY}
       />
@@ -178,21 +207,24 @@ const Map = ({ radius, setDistance, id }) => {
         strokeWidth={2}
         strokeColor={COLORS.RED}
       />
-      {publicMode && (
+      {safacyPublicMode && (
         <Polyline
-          coordinates={desLocation}
+          coordinates={desLocation?.length ? desLocation : destinationLocation}
           strokeWidth={3}
           strokeColor={COLORS.LIGHT_BLACK}
         />
       )}
-      {userDestination[0] && (
+
+      {safacyPublicMode && userDestination && (
         <Marker
           coordinate={{
-            latitude: userDestination[0],
-            longitude: userDestination[1],
+            latitude: userDestination[0]?.latitude,
+            longitude: userDestination[0]?.longitude,
           }}
           title="destination"
-        />
+        >
+          <Ionicons name="flag" size={40} color={COLORS.RED} />
+        </Marker>
       )}
     </MapView>
   ) : (
@@ -211,6 +243,6 @@ const styles = StyleSheet.create({
 
 Map.propTypes = {
   setDistance: PropTypes.func,
-  radius: PropTypes.number,
+  setSosLocation: PropTypes.func,
   id: PropTypes.string,
 };

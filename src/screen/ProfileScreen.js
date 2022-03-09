@@ -8,7 +8,6 @@ import {
 } from "@expo/vector-icons";
 import { getUserInfo } from "../store/userSlice";
 
-import Timer from "../common/components/Timer";
 import AddFriendModal from "../common/components/Modal/AddFriendModal";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
@@ -52,7 +51,6 @@ const ProfileScreen = () => {
           />
           <Text style={styles.nickname}>{nickname}</Text>
           <Text style={styles.email}>{email}</Text>
-          {publicMode && <Timer sec={remaining} />}
         </View>
         <View style={styles.friendList}>
           <Text style={styles.addFriend}>

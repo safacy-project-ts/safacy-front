@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import { MaterialIcons, Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
 import { setTimer } from "../store/timerSlice";
-import { getSafacyMsg, updateSafacyMsg } from "../store/chatSlice";
 import { getCurrentSafacy } from "../store/safacySlice";
 import { createSafacy, getUserInfo } from "../store/userSlice";
 
@@ -17,15 +16,17 @@ import PublicSelection from "../common/components/PublicSelection";
 
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import SAFACY_BOT from "../common/constants/SAFACY_BOT";
 
-const PublicSettingScreen = ({ navigation }) => {
+const PublicSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
+
+  const { id: paramsId } = route.params;
 
   const [destination, setDestination] = useState("현재위치");
   const [radius, setRadius] = useState("");
   const [time, setTime] = useState("");
   const [invitedFriendList, setInvitedFriendList] = useState([]);
+  const [userDestination, setUserDestination] = useState([]);
 
   const initialTime = time * 60;
   const { id } = useSelector((state) => state.auth);
@@ -38,28 +39,27 @@ const PublicSettingScreen = ({ navigation }) => {
         radius,
         time,
         invitedFriendList,
+        userDestination,
       }),
     );
 
     await dispatch(setTimer({ sec: initialTime }));
     await dispatch(getCurrentSafacy(id));
     await dispatch(getUserInfo(id));
-    // await dispatch(clearMessage());
-    // await dispatch(updateSafacyMsg({ id, message: SAFACY_BOT.START }));
-    navigation.navigate("Public");
+    navigation.navigate("Public", { id });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.titleText}>
-          Public Mode{" "}
+          Public page{" "}
           <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
         </Text>
       </View>
 
       <View style={styles.map}>
-        <Map />
+        <Map id={id} />
       </View>
 
       <View style={styles.setting}>
@@ -71,6 +71,7 @@ const PublicSettingScreen = ({ navigation }) => {
             style={styles.search}
             destination={destination}
             setDestination={setDestination}
+            setUserDestination={setUserDestination}
           />
         </View>
         <View style={styles.others}>
@@ -101,6 +102,11 @@ export default PublicSettingScreen;
 
 PublicSettingScreen.propTypes = {
   navigation: PropTypes.objectOf(PropTypes.func).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }),
+  }).isRequired,
 };
 
 const styles = StyleSheet.create({

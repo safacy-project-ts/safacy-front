@@ -10,7 +10,7 @@ import { setUserDestination } from "../../store/locationSlice";
 import COLORS from "../constants/COLORS";
 import FONTS from "../constants/FONT";
 
-const SearchBar = ({ setDestination }) => {
+const SearchBar = ({ setDestination, setUserDestination }) => {
   const dispatch = useDispatch();
 
   const { userDestination } = useSelector((state) => state.location);
@@ -25,12 +25,10 @@ const SearchBar = ({ setDestination }) => {
       fetchDetails
       onPress={(data, details = null) => {
         setDestination(data.structured_formatting.main_text);
-        dispatch(
-          setUserDestination({
-            latitude: details.geometry.location.lat,
-            longitude: details.geometry.location.lng,
-          }),
-        );
+        setUserDestination({
+          latitude: details.geometry.location.lat,
+          longitude: details.geometry.location.lng,
+        });
       }}
       GooglePlacesSearchQuery={{
         rankby: "distance",
@@ -68,4 +66,5 @@ export default SearchBar;
 
 SearchBar.propTypes = {
   setDestination: PropTypes.func.isRequired,
+  setUserDestination: PropTypes.func.isRequired,
 };

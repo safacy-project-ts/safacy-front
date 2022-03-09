@@ -15,19 +15,16 @@ import FONTS from "../constants/FONT";
 const Timer = ({ sec, setIsStopped }) => {
   const dispatch = useDispatch();
 
-  const { id, publicMode } = useSelector((state) => state.user);
-  const { id: safacyId } = useSelector((state) => state.safacy);
   const { initial, remaining } = useSelector((state) => state.timer);
-
   const [second, setSecond] = useState(sec);
   const [delay, setDelay] = useState(1000);
 
   useEffect(async () => {
-    await dispatch(countDownTimer());
+    // await dispatch(countDownTimer());
+
     if (second === 0 && typeof setIsStopped === "function") {
       await setIsStopped(true);
     }
-    return () => console.log("stop");
   }, [second]);
 
   useInterval(
@@ -53,7 +50,6 @@ const useInterval = (remainingSecFunc, delay) => {
 
   useEffect(() => {
     savedCallback.current = remainingSecFunc;
-    return () => console.log("stop");
   }, [remainingSecFunc]);
 
   useEffect(() => {
@@ -61,7 +57,6 @@ const useInterval = (remainingSecFunc, delay) => {
       const timerId = setInterval(() => savedCallback.current(), delay);
       return () => clearInterval(timerId);
     }
-    return () => console.log("stop");
   }, [delay]);
 };
 
