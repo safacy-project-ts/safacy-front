@@ -13,6 +13,10 @@ const COLORS = {
   BLACK: "#000000",
   LIGHT_BLACK: "#444444",
   BLUE: "#75a9f9",
+  SWITCH_TRACK_TRUE: "#81b0ff",
+  SWITCH_TRACK_FALSE: "#767577",
+  SWITCH_THUMB_TRUE: "#fafafc",
+  SWITCH_THUMB_FALSE: "#f4f3f4",
 };
 
 export default COLORS;

@@ -1,16 +1,20 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import PropTypes from "prop-types";
-import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  FontAwesome5,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 
 import { getUserInfo } from "../store/userSlice";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import FriendSafacyModal from "../common/components/Modal/FriendSafacyModal";
+import footer from "../../assets/img/footer.png";
 
 const FriendListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -67,15 +71,18 @@ const FriendListScreen = ({ navigation }) => {
               <View>
                 <Text style={styles.nickname}>{item.nickname}'s Safacy</Text>
               </View>
+              <MaterialIcons
+                name="lock-open"
+                size={24}
+                color={COLORS.LIGHT_BLUE}
+                style={styles.lockIcon}
+              />
             </TouchableOpacity>
-            <FriendSafacyModal
-              safacyModalVisible={safacyModalVisible}
-              closeModal={closeModal}
-              nickname={item.nickname}
-              id={item._id}
-            />
           </View>
         ))}
+      </View>
+      <View style={styles.footer}>
+        <Image source={footer} />
       </View>
     </View>
   );
@@ -129,5 +136,13 @@ const styles = StyleSheet.create({
     fontSize: FONT.XL,
     color: COLORS.BLACK,
     paddingTop: 50,
+  },
+  lockIcon: {
+    paddingLeft: 90,
+  },
+  footer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    marginBottom: 15,
   },
 });

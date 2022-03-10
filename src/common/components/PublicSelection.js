@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, LogBox } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import SelectBox from "react-native-multi-selectbox";
 import { xorBy } from "lodash";
 
 import PropTypes from "prop-types";
 
 import TIME from "../constants/TIME";
+import FONT from "../constants/FONT";
 import RADIUS from "../constants/RADIUS";
 import COLORS from "../constants/COLORS";
 import FriendList from "./FriendList";
@@ -33,10 +34,6 @@ const PublicSelection = ({ setRadius, setTime, setInvitedFriendList }) => {
     setInvitedFriendList(selectedFriends.map((friend) => friend.id));
   }, [selectedTime, selectedRadius, selectedFriends]);
 
-  useEffect(() => {
-    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
-  }, []);
-
   return (
     <ScrollView contentContainerStyle={styles.container} horizontal>
       <View style={styles.radius}>
@@ -46,44 +43,63 @@ const PublicSelection = ({ setRadius, setTime, setInvitedFriendList }) => {
           value={selectedRadius}
           onChange={onChangeRadius}
           hideInputFilter={false}
+          searchIconColor={COLORS.BLUE}
           arrowIconColor={COLORS.LIGHT_BLUE}
-          optionsLabelStyle={{ fontSize: 13 }}
+          optionsLabelStyle={{ fontSize: 15 }}
           selectedItemStyle={{ fontSize: 13 }}
-          labelStyle={{ fontSize: 15, paddingBottom: 10, color: COLORS.BLACK }}
+          labelStyle={{
+            fontSize: 14,
+            paddingBottom: 10,
+            color: COLORS.LIGHT_BLACK,
+            fontFamily: FONT.BOLD_FONT,
+          }}
         />
       </View>
 
       <View style={styles.time}>
         <SelectBox
           label="Time"
-          labelStyle={{ fontSize: 15, paddingBottom: 10, color: COLORS.BLACK }}
-          optionsLabelStyle={{ fontSize: 13 }}
-          selectedItemStyle={{ fontSize: 13 }}
-          arrowIconColor={COLORS.LIGHT_BLUE}
           options={TIME}
           value={selectedTime}
           onChange={onChangeTime}
           hideInputFilter={false}
+          searchIconColor={COLORS.BLUE}
+          arrowIconColor={COLORS.LIGHT_BLUE}
+          optionsLabelStyle={{ fontSize: 15 }}
+          selectedItemStyle={{ fontSize: 13 }}
+          labelStyle={{
+            fontSize: 14,
+            paddingBottom: 10,
+            color: COLORS.LIGHT_BLACK,
+            fontFamily: FONT.BOLD_FONT,
+          }}
         />
       </View>
 
       <View style={styles.friends}>
         <SelectBox
-          arrowIconColor={COLORS.LIGHT_BLUE}
-          toggleIconColor={COLORS.LIGHT_BLUE}
-          searchIconColor={COLORS.LIGHT_BLUE}
-          labelStyle={{ fontSize: 15, paddingBottom: 10, color: COLORS.BLACK }}
-          optionsLabelStyle={{ fontSize: 13 }}
-          multiOptionContainerStyle={{
-            backgroundColor: COLORS.RED,
-          }}
-          selectedItemStyle={{ fontSize: 13 }}
           label="Friends"
           options={FriendList()}
           selectedValues={selectedFriends}
           onMultiSelect={onMultiChange}
           onTapClose={onMultiChange}
           isMulti
+          searchIconColor={COLORS.BLUE}
+          selectedItemStyle={{ fontSize: 13 }}
+          arrowIconColor={COLORS.LIGHT_BLUE}
+          toggleIconColor={COLORS.LIGHT_BLUE}
+          optionsLabelStyle={{ fontSize: 13 }}
+          multiOptionContainerStyle={{
+            backgroundColor: COLORS.RED,
+          }}
+          multiOptionsLabelStyle={{ fontSize: 11 }}
+          multiListEmptyLabelStyle={{ fontSize: 13 }}
+          labelStyle={{
+            fontSize: 14,
+            paddingBottom: 10,
+            color: COLORS.LIGHT_BLACK,
+            fontFamily: FONT.BOLD_FONT,
+          }}
         />
       </View>
     </ScrollView>

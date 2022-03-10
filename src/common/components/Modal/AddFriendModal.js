@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { addFriend } from "../../../store/userSlice";
 
 import CustomButton from "../CustomButton";
+import OTHERS from "../../constants/OTHERS";
 import COLORS from "../../constants/COLORS";
 import FONT from "../../constants/FONT";
 
@@ -23,17 +24,17 @@ const AddFriendModal = ({ inviteModalVisible, closeInviteModal }) => {
     await dispatch(addFriend({ id, email: invitedEmail }));
 
     if (error?.code === 400) {
-      alert("email이 올바르지 않습니다");
+      alert(OTHERS.NOT_VALID_EMAIL);
       return;
     }
 
     if (result === "Already in Friend List") {
-      alert("이미 친구입니다");
+      alert(OTHERS.ALREADY_FRIEND);
       return;
     }
 
     if (result === "Already Invited") {
-      alert("이미 초대된 유저입니다");
+      alert(OTHERS.ALREADY_INVITED);
       return;
     }
 

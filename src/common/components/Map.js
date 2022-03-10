@@ -25,6 +25,7 @@ import { setCurrentLocation } from "../../store/locationSlice";
 import calculateDistance from "../../utils/distanceController";
 import LoadingScreen from "../../screen/Auth/LoadingScreen";
 import COLORS from "../constants/COLORS";
+import OTHERS from "../constants/OTHERS";
 
 const Map = ({ setDistance, id, setSosLocation }) => {
   const dispatch = useDispatch();
@@ -67,11 +68,18 @@ const Map = ({ setDistance, id, setSosLocation }) => {
   }, [destinationLocation]);
 
   useEffect(() => {
+    setSosLocation({
+      latitude: location?.latitude,
+      longitude: location?.longitude,
+    });
+  }, [location]);
+
+  useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
+        alert(OTHERS.LOCATION_PERMISSION_DENIE);
         return;
       }
 
@@ -138,7 +146,7 @@ const Map = ({ setDistance, id, setSosLocation }) => {
   }, []);
 
   useEffect(() => {
-    return () => console.log("cleanUp");
+    return () => console.log(OTHERS.CLEAN_UP);
   }, []);
 
   return location ? (
@@ -168,19 +176,21 @@ const Map = ({ setDistance, id, setSosLocation }) => {
         });
       }}
     >
-      <Marker
-        coordinate={{
-          latitude:
-            originLocation?.length === 1
-              ? originLocation[0]?.latitude
-              : current[0],
-          longitude:
-            originLocation?.length === 1
-              ? originLocation[0]?.longitude
-              : current[1],
-        }}
-        title="start point"
-      />
+      {safacyPublicMode && (
+        <Marker
+          coordinate={{
+            latitude:
+              originLocation?.length === 1
+                ? originLocation[0]?.latitude
+                : current[0],
+            longitude:
+              originLocation?.length === 1
+                ? originLocation[0]?.longitude
+                : current[1],
+          }}
+          title="start point"
+        />
+      )}
       <Marker
         coordinate={{
           latitude: location?.latitude,

@@ -17,7 +17,7 @@ const SearchBar = ({ setDestination, setUserDestination }) => {
 
   return (
     <GooglePlacesAutocomplete
-      placeholder="Destination"
+      placeholder="Search your destination"
       minLength={2}
       debounce={150}
       isFocuse

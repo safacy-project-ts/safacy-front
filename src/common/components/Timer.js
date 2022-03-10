@@ -6,9 +6,6 @@ import { Text, StyleSheet } from "react-native";
 
 import PropTypes from "prop-types";
 
-import { getUserInfo, stopPublic } from "../../store/userSlice";
-import { countDownTimer } from "../../store/timerSlice";
-
 import COLORS from "../constants/COLORS";
 import FONTS from "../constants/FONT";
 

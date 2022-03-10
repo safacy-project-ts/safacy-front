@@ -57,8 +57,13 @@ const PrivateScreen = ({ navigation }) => {
         <Text style={styles.locationText}>Share my Location </Text>
         <Switch
           style={styles.locationSwitch}
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#fafafc" : "#f4f3f4"}
+          trackColor={{
+            true: COLORS.SWITCH_TRACK_TRUE,
+            false: COLORS.SWITCH_TRACK_FALSE,
+          }}
+          thumbColor={
+            isEnabled ? COLORS.SWITCH_THUMB_TRUE : COLORS.SWITCH_THUMB_FALSE
+          }
           ios_backgroundColor="#3e3e3e"
           onValueChange={toggleSwitch}
           value={isEnabled}
