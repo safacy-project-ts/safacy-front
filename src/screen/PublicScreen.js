@@ -66,11 +66,14 @@ const PublicScreen = ({ navigation, route }) => {
   }, []);
 
   useInterval(() => {
-    const currentDistance = totalDistance - (totalDistance * 30) / time;
-    if (distance + radius > currentDistance) {
-      socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
-    } else {
-      socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
+    if (time > 20) {
+      const currentDistance = totalDistance - (totalDistance * 20) / time;
+
+      if (distance + radius > currentDistance) {
+        socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
+      } else {
+        socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
+      }
     }
   }, 20 * 60 * 1000);
 
