@@ -1,5 +1,5 @@
 const SAFACY_BOT = {
-  START: "- Safacy started! 🚀",
+  START: "- Safacy start! 🚀",
   TIMEOVER_SAFE: "- 🔰 Time over in safe zone",
   STOPBTN_SAFE: "- 🔰 Stopped in safe zone",
   END_SAFE: "- Thanks for your help 👋",
@@ -8,7 +8,7 @@ const SAFACY_BOT = {
   DANGER_THREE: "- ⚠️ stopped outside border",
   END_DANGER: "- Abnormally stopped, please consider 🆘 ",
   MOVING_SAFE: "- Currently moving in safe zone",
-  MOVINg_DANGER: "- Currently moving ouside border",
+  MOVING_DANGER: "- Currently moving ouside border",
 };
 
 export default SAFACY_BOT;

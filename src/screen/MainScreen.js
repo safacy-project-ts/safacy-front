@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, AppState } from "react-native";
 
 import PropTypes from "prop-types";
 
-import { getUserInfo, stopPublic } from "../store/userSlice";
+import { getUserInfo } from "../store/userSlice";
 
 import CustomButton from "../common/components/CustomButton";
 import COLORS from "../common/constants/COLORS";
@@ -18,40 +18,9 @@ const MainScreen = ({ navigation }) => {
   const { id } = useSelector((state) => state.auth);
   const user = useSelector((state) => state.user);
   const { id: safacyId } = useSelector((state) => state.safacy);
-  const chat = useSelector((state) => state.chat);
 
   useEffect(async () => {
     await dispatch(getUserInfo(id));
-  }, []);
-
-  const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
-  useEffect(async () => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        console.log("App has come to the foreground!");
-      }
-
-      appState.current = nextAppState;
-      setAppStateVisible(appState.current);
-      if (appState.current === "inactive") {
-        dispatch(
-          stopPublic({
-            id,
-            safacyId,
-          }),
-        );
-      }
-      console.log("AppState", appState.current);
-    });
-
-    return () => {
-      subscription.remove();
-    };
   }, []);
 
   const handleMySafacy = () => {

@@ -16,13 +16,12 @@ import PublicSelection from "../common/components/PublicSelection";
 
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
+import OTHERS from "../common/constants/OTHERS";
 
 const PublicSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
-  const { id: paramsId } = route.params;
-
-  const [destination, setDestination] = useState("현재위치");
+  const [destination, setDestination] = useState(OTHERS.CURRENT_LOCATION);
   const [radius, setRadius] = useState("");
   const [time, setTime] = useState("");
   const [invitedFriendList, setInvitedFriendList] = useState([]);
@@ -53,19 +52,23 @@ const PublicSettingScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.titleText}>
-          Public page{" "}
+          Public setting{" "}
           <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
         </Text>
       </View>
 
       <View style={styles.map}>
-        <Map id={id} />
+        <Map
+          id={id}
+          setSosLocation={() => console.log(OTHERS.BEFORE_SETTING)}
+        />
       </View>
 
       <View style={styles.setting}>
         <View style={styles.destination}>
           <Text style={styles.Destinationtext}>
-            <FontAwesome5 name="map-pin" size={14} color="black" /> Destination
+            <FontAwesome5 name="map-pin" size={14} color={COLORS.BLACK} />{" "}
+            Destination
           </Text>
           <SearchBar
             style={styles.search}
@@ -76,7 +79,8 @@ const PublicSettingScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.others}>
           <Text style={styles.othersText}>
-            <Ionicons name="settings-outline" size={14} color="black" /> Setting
+            <Ionicons name="settings-outline" size={14} color={COLORS.BLACK} />{" "}
+            Setting
           </Text>
           <PublicSelection
             setRadius={setRadius}
@@ -161,6 +165,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "50%",
     overflow: "hidden",
+    borderTopColor: COLORS.LIGHT_BLACK,
   },
   othersText: {
     fontFamily: FONT.BOLD_FONT,

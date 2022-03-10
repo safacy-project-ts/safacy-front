@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { StyleSheet, Text, View, Switch, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Switch,
+  TouchableHighlight,
+} from "react-native";
 import * as SMS from "expo-sms";
 
 import PropTypes from "prop-types";
@@ -9,6 +15,7 @@ import {
   MaterialIcons,
   Ionicons,
 } from "@expo/vector-icons";
+import Tooltip from "react-native-walkthrough-tooltip";
 import { socket } from "../api/socket";
 
 import { getUserInfo, stopPublic } from "../store/userSlice";
@@ -18,6 +25,7 @@ import Map from "../common/components/Map";
 import Timer from "../common/components/Timer";
 import SafacyBot from "../common/components/SafacyBot";
 import CustomButton from "../common/components/CustomButton";
+import sosController from "../utils/sosController";
 
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
@@ -34,7 +42,9 @@ const PublicScreen = ({ navigation, route }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [isStopped, setIsStopped] = useState(false);
   const [sosLocation, setSosLocation] = useState([]);
+
   const [smsServiceAvailable, setSmsServiceAvailable] = useState(false);
+  const [toolTipVisible, setToolTipVisible] = useState(false);
 
   const { remaining } = useSelector((state) => state.timer);
   const { publicMode } = useSelector((state) => state.user);
@@ -84,10 +94,6 @@ const PublicScreen = ({ navigation, route }) => {
         }
         await dispatch(getCurrentSafacy(id));
         await dispatch(getUserInfo(id));
-
-        socket.emit("safacyBot", {
-          data: safacyBotMsg,
-        });
       }
     } catch (error) {
       setErrorMsg(error);
@@ -166,11 +172,12 @@ const PublicScreen = ({ navigation, route }) => {
     }
   };
 
-  const SOSMsg = `<SOS -  현재 친구 위치> 도와주세요!`;
-
   const onComposeSms = async () => {
     if (smsServiceAvailable) {
-      await SMS.sendSMSAsync("119", SOSMsg);
+      await SMS.sendSMSAsync(
+        "119",
+        sosController(sosLocation.latitude, sosLocation.longitude),
+      );
     }
   };
 
@@ -186,8 +193,13 @@ const PublicScreen = ({ navigation, route }) => {
       <View style={styles.location}>
         {isMine ? (
           <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={publicMode ? "#fafafc" : "#f4f3f4"}
+            trackColor={{
+              true: COLORS.SWITCH_TRACK_TRUE,
+              false: COLORS.SWITCH_TRACK_FALSE,
+            }}
+            thumbColor={
+              publicMode ? COLORS.SWITCH_THUMB_TRUE : COLORS.SWITCH_THUMB_FALSE
+            }
             ios_backgroundColor="#3e3e3e"
             onValueChange={toggleSwitch}
             value={publicMode}
@@ -220,16 +232,25 @@ const PublicScreen = ({ navigation, route }) => {
           <Text style={styles.friendsTitle}>Who are checking now : </Text>
         </View>
         {currentSafacy.invitedFriendList?.map((friend, index) => (
-          <View key={friend}>
-            <MaterialCommunityIcons
-              name="face"
-              size={24}
-              color="black"
-              onPress={() =>
-                console.log(currentSafacy.invitedFriendList[index])
-              }
-            />
-          </View>
+          <Tooltip
+            animated
+            backgroundColor="rgba(0,0,0,0.5)"
+            arrowSize={{ width: 5, height: 15 }}
+            isVisible={toolTipVisible}
+            content={<Text>{friend}</Text>}
+            placement="top"
+            onClose={() => setToolTipVisible(false)}
+            contentStyle={{ backgroundColor: COLORS.YELLOW }}
+          >
+            <TouchableHighlight
+              style={styles.touchable}
+              onPress={() => setToolTipVisible(true)}
+            >
+              <View key={friend}>
+                <MaterialCommunityIcons name="face" size={24} color="black" />
+              </View>
+            </TouchableHighlight>
+          </Tooltip>
         ))}
       </View>
 
@@ -403,6 +424,7 @@ const styles = StyleSheet.create({
   sosBtn: {
     width: 200,
     height: 40,
+    lineHeight: 35,
     backgroundColor: COLORS.SOS_RED,
   },
   sosText: {
