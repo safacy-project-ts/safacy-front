@@ -27,7 +27,7 @@ import LoadingScreen from "../../screen/Auth/LoadingScreen";
 import COLORS from "../constants/COLORS";
 import OTHERS from "../constants/OTHERS";
 
-const Map = ({ setDistance, id, setSosLocation }) => {
+const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
   const dispatch = useDispatch();
 
   const [isMine, setIsMine] = useState(false);
@@ -53,6 +53,7 @@ const Map = ({ setDistance, id, setSosLocation }) => {
         originLocation[0] ? originLocation[0].latitude : current[0],
         userDestination[0].longitude,
         userDestination[0].latitude,
+        setTotalDistance,
         setDestinationLocation,
       );
     }
@@ -253,6 +254,7 @@ const styles = StyleSheet.create({
 
 Map.propTypes = {
   setDistance: PropTypes.func,
+  setTotalDistance: PropTypes.func,
   setSosLocation: PropTypes.func,
   id: PropTypes.string,
 };
