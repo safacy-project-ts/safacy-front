@@ -45,7 +45,7 @@ const PublicSettingScreen = ({ navigation, route }) => {
     await dispatch(setTimer({ sec: initialTime }));
     await dispatch(getCurrentSafacy(id));
     await dispatch(getUserInfo(id));
-    navigation.navigate("Public", { id });
+    navigation.navigate("Public", { id, time, radius });
   };
 
   return (

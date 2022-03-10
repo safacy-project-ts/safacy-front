@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "safacy_frontend",
-    "slug": "safacy_frontend",
+    "name": "safacy",
+    "slug": "safacy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -9,8 +9,8 @@
       [
         "expo-notifications",
         {
-          "icon": "./local/assets/notification-icon.png",
-          "color": "#ffffff",
+          "icon": "./local/assets/icon.png",
+          "color": "#fafafc",
           "sounds": [
             "./local/assets/notification-sound.wav",
             "./local/assets/notification-sound-other.wav"
@@ -21,14 +21,14 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fafafc"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "host.exp.exponent",
+      "bundleIdentifier": "com..safacy",
       "config": {
         "googleMapsApiKey": "AIzaSyCsyO5XkV-EdhUDZqTWeYT5liY6f1K85QA"
       },
@@ -40,7 +40,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#fafafc"
       }
     },
     "web": {

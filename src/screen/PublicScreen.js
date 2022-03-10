@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   Switch,
   TouchableHighlight,
 } from "react-native";
+import useInterval from "use-interval";
 import * as SMS from "expo-sms";
 
 import PropTypes from "prop-types";
@@ -35,10 +36,11 @@ const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const { id } = useSelector((state) => state.auth);
-  const { id: paramsId } = route.params;
+  const { id: paramsId, time } = route.params;
 
   const [isMine, setIsMine] = useState(true);
   const [distance, setDistance] = useState(0);
+  const [totalDistance, setTotalDistance] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
   const [isStopped, setIsStopped] = useState(false);
   const [sosLocation, setSosLocation] = useState([]);
@@ -62,6 +64,15 @@ const PublicScreen = ({ navigation, route }) => {
     socket.emit("safacyBot", SAFACY_BOT.START);
     checkIfServiceAvailable();
   }, []);
+
+  useInterval(() => {
+    const currentDistance = totalDistance - (totalDistance * 30) / time;
+    if (distance + radius > currentDistance) {
+      socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
+    } else {
+      socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
+    }
+  }, 20 * 60 * 1000);
 
   useEffect(async () => {
     try {
@@ -221,8 +232,9 @@ const PublicScreen = ({ navigation, route }) => {
       <View style={styles.map}>
         <Map
           radius={radius}
-          setDistance={setDistance}
           id={paramsId}
+          setDistance={setDistance}
+          setTotalDistance={setTotalDistance}
           setSosLocation={setSosLocation}
         />
       </View>
@@ -241,12 +253,13 @@ const PublicScreen = ({ navigation, route }) => {
             placement="top"
             onClose={() => setToolTipVisible(false)}
             contentStyle={{ backgroundColor: COLORS.YELLOW }}
+            key={friend}
           >
             <TouchableHighlight
               style={styles.touchable}
               onPress={() => setToolTipVisible(true)}
             >
-              <View key={friend}>
+              <View>
                 <MaterialCommunityIcons name="face" size={24} color="black" />
               </View>
             </TouchableHighlight>
@@ -441,6 +454,8 @@ PublicScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,
+      time: PropTypes.number,
+      radius: PropTypes.number,
     }),
   }).isRequired,
 };

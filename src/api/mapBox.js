@@ -6,6 +6,7 @@ const mapBoxAPI = async (
   currentLat,
   destinationLng,
   destinationLat,
+  setTotalDistance,
   setDestinationLocation,
 ) => {
   try {
@@ -14,10 +15,12 @@ const mapBoxAPI = async (
     );
 
     const coords = res.data.routes[0].geometry.coordinates.map((item) => {
+      // console.log("===========", res.data.routes[0]);
       return { latitude: item[1], longitude: item[0] };
     });
 
     setDestinationLocation(coords);
+    setTotalDistance(res.data.routes[0].distance);
   } catch (error) {
     console.log(error);
   }
