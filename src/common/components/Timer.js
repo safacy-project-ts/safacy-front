@@ -17,8 +17,6 @@ const Timer = ({ sec, setIsStopped }) => {
   const [delay, setDelay] = useState(1000);
 
   useEffect(async () => {
-    // await dispatch(countDownTimer());
-
     if (second === 0 && typeof setIsStopped === "function") {
       await setIsStopped(true);
     }
@@ -56,18 +54,17 @@ const useInterval = (remainingSecFunc, delay) => {
     }
   }, [delay]);
 };
-
-const styles = StyleSheet.create({
-  text: {
-    fontFamily: FONTS.BOLD_FONT,
-    fontSize: FONTS.M,
-    color: COLORS.PINK,
-  },
-});
-
 export default Timer;
 
 Timer.propTypes = {
   sec: PropTypes.number.isRequired,
   setIsStopped: PropTypes.func,
 };
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: FONTS.M,
+    fontFamily: FONTS.BOLD_FONT,
+    color: COLORS.PINK,
+  },
+});

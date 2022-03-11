@@ -57,7 +57,7 @@ const SearchBar = ({ setDestination, setUserDestination }) => {
           zIndex: 20,
         },
         row: { height: 35 },
-        description: { fontSize: 10, color: "#5d5d5d" },
+        description: { fontSize: 10, color: COLORS.SEARCHBAR_DESCRIPRION },
       }}
     />
   );

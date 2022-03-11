@@ -16,23 +16,6 @@ const CustomButton = ({ title, disabled, onPress, style }) => {
 
 export default CustomButton;
 
-const styles = StyleSheet.create({
-  loginButton: {
-    width: 300,
-    height: 50,
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: COLORS.LIGHT_BLACK,
-    lineHeight: 40,
-    fontSize: FONT.L,
-    fontFamily: FONT.BOLD_FONT,
-    textAlign: "center",
-    color: COLORS.WHITE,
-    backgroundColor: COLORS.RED,
-    overflow: "hidden",
-  },
-});
-
 CustomButton.propTypes = {
   title: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
@@ -48,3 +31,20 @@ CustomButton.defaultProps = {
   disabled: true,
   style: {},
 };
+
+const styles = StyleSheet.create({
+  loginButton: {
+    width: 300,
+    height: 50,
+    overflow: "hidden",
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: COLORS.LIGHT_BLACK,
+    fontSize: FONT.L,
+    fontFamily: FONT.BOLD_FONT,
+    lineHeight: 40,
+    textAlign: "center",
+    color: COLORS.WHITE,
+    backgroundColor: COLORS.RED,
+  },
+});

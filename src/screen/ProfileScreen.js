@@ -25,9 +25,18 @@ const ProfileScreen = () => {
     setInviteModalVisible(false);
   };
 
-  const { id, nickname, email, publicMode, myFriendList, safacyHistory } =
-    useSelector((state) => state.user);
+  const {
+    id,
+    nickname,
+    email,
+    publicMode,
+    myFriendList,
+    safacyHistory,
+    friendInvitationList,
+  } = useSelector((state) => state.user);
+
   const { remaining } = useSelector((state) => state.timer);
+  const invitationCount = friendInvitationList.length;
 
   useEffect(async () => {
     await dispatch(getUserInfo(id));
@@ -37,7 +46,7 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.titleText}>
-          My Profile <AntDesign name="profile" size={24} color="black" />
+          My Profile <AntDesign name="profile" size={24} color={COLORS.BLACK} />
         </Text>
       </View>
       <View style={styles.information}>
@@ -46,10 +55,13 @@ const ProfileScreen = () => {
             style={styles.picture}
             name="face"
             size={80}
-            color="black"
+            color={COLORS.BLACK}
           />
           <Text style={styles.nickname}>{nickname}</Text>
           <Text style={styles.email}>{email}</Text>
+          <Text style={styles.invitation}>
+            {invitationCount === 0 ? "" : `Invitation : ${invitationCount}`}
+          </Text>
         </View>
         <View style={styles.friendList}>
           <Text style={styles.addFriend}>
@@ -57,14 +69,14 @@ const ProfileScreen = () => {
             <MaterialCommunityIcons
               name="plus-circle-outline"
               size={15}
-              color="black"
+              color={COLORS.BLACK}
               onPress={openInviteModal}
             />
           </Text>
           <ScrollView style={styles.friendScroll}>
             {myFriendList?.map((friend) => (
               <Text style={styles.friendName} key={friend._id}>
-                <AntDesign name="user" size={15} color="black" />
+                <AntDesign name="user" size={15} color={COLORS.BLACK} />
                 {"  "}
                 {friend.nickname}
               </Text>
@@ -100,70 +112,74 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.WHITE,
     alignItems: "center",
+    backgroundColor: COLORS.WHITE,
   },
   title: {
     flex: 0.8,
     width: 300,
     alignItems: "center",
-    borderBottomColor: COLORS.GREY,
     borderBottomWidth: 1,
+    borderBottomColor: COLORS.GREY,
   },
   titleText: {
-    fontFamily: FONT.BOLD_FONT,
+    paddingTop: 40,
     fontSize: FONT.XL,
     color: COLORS.BLACK,
-    paddingTop: 40,
+    fontFamily: FONT.BOLD_FONT,
   },
   information: {
     flex: 2,
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
   },
   profile: {
     width: "40%",
     height: "80%",
-    borderColor: COLORS.LIGHT_BLACK,
     alignItems: "center",
     borderWidth: 1,
     borderRadius: 15,
     padding: 10,
     margin: 10,
+    borderColor: COLORS.LIGHT_BLACK,
   },
   picture: {
     paddingTop: 15,
   },
   nickname: {
-    fontFamily: FONT.BOLD_FONT,
-    fontSize: FONT.M,
     paddingTop: 10,
+    fontSize: FONT.M,
+    fontFamily: FONT.BOLD_FONT,
   },
   email: {
-    fontSize: FONT.S,
     paddingTop: 5,
+    fontSize: FONT.S,
+  },
+  invitation: {
+    marginTop: 10,
+    fontSize: FONT.S,
+    color: COLORS.RED_HOVER,
+    fontFamily: FONT.REGULAR_FONT,
   },
   friendList: {
     width: "40%",
     height: "80%",
-    borderColor: COLORS.LIGHT_BLACK,
-    borderWidth: 1,
-    borderRadius: 15,
     padding: 10,
     margin: 10,
+    borderWidth: 1,
+    borderRadius: 15,
     alignItems: "center",
+    borderColor: COLORS.LIGHT_BLACK,
   },
   addFriend: {
-    fontFamily: FONT.BOLD_FONT,
-    fontSize: FONT.M,
     marginTop: 10,
     marginBottom: 10,
+    fontSize: FONT.M,
+    fontFamily: FONT.BOLD_FONT,
   },
-  friendScroll: {},
   friendName: {
-    fontFamily: FONT.REGULAR_FONT,
-
     margin: 3,
+    fontFamily: FONT.REGULAR_FONT,
   },
   history: {
     flex: 2,
@@ -171,9 +187,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   historyText: {
-    fontFamily: FONT.BOLD_FONT,
-    fontSize: FONT.L,
     paddingBottom: 10,
+    fontSize: FONT.L,
+    fontFamily: FONT.BOLD_FONT,
   },
   historyList: {
     width: "100%",
@@ -181,16 +197,16 @@ const styles = StyleSheet.create({
   historyDestination: {
     width: 300,
     height: 30,
-    backgroundColor: COLORS.LIGHT_BLUE,
+    margin: 5,
+    padding: 5,
     borderWidth: 1,
     borderRadius: 10,
     overflow: "hidden",
-    margin: 5,
-    padding: 5,
+    backgroundColor: COLORS.LIGHT_BLUE,
   },
   footer: {
     flex: 1,
-    justifyContent: "flex-end",
     marginBottom: 5,
+    justifyContent: "flex-end",
   },
 });

@@ -44,7 +44,7 @@ const FriendListScreen = ({ navigation }) => {
       <View style={styles.title}>
         <Text style={styles.titleText}>
           Friend List{" "}
-          <FontAwesome5 name="user-friends" size={24} color="black" />
+          <FontAwesome5 name="user-friends" size={24} color={COLORS.BLACK} />
         </Text>
       </View>
 
@@ -65,7 +65,7 @@ const FriendListScreen = ({ navigation }) => {
                 <MaterialCommunityIcons
                   name="face-outline"
                   size={24}
-                  color="black"
+                  color={COLORS.BLACK}
                 />
               </View>
               <View>
@@ -97,52 +97,52 @@ FriendListScreen.propTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.WHITE,
     alignItems: "center",
+    backgroundColor: COLORS.WHITE,
   },
   title: {
     flex: 0.8,
-    alignItems: "center",
     width: 300,
-    borderBottomColor: COLORS.GREY,
+    alignItems: "center",
     borderBottomWidth: 1,
+    borderBottomColor: COLORS.GREY,
   },
   friendList: {
     flex: 4,
-    alignItems: "center",
     paddingTop: 30,
+    alignItems: "center",
   },
   freinds: {
     width: 300,
     height: 50,
+    padding: 10,
     flexDirection: "row",
     justifyContent: "flex-start",
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: COLORS.LIGHT_BLACK,
-    padding: 10,
   },
   nickname: {
-    fontFamily: FONT.BOLD_FONT,
-    fontSize: FONT.M,
     paddingLeft: 20,
+    fontSize: FONT.M,
+    fontFamily: FONT.BOLD_FONT,
   },
   timer: {
     flex: 1,
     alignItems: "center",
   },
   titleText: {
-    fontFamily: FONT.BOLD_FONT,
+    paddingTop: 50,
     fontSize: FONT.XL,
     color: COLORS.BLACK,
-    paddingTop: 50,
+    fontFamily: FONT.BOLD_FONT,
   },
   lockIcon: {
     paddingLeft: 90,
   },
   footer: {
     flex: 1,
-    justifyContent: "flex-end",
     marginBottom: 15,
+    justifyContent: "flex-end",
   },
 });

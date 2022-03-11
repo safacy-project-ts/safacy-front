@@ -29,7 +29,7 @@ const DefaultHeaderOption = ({ navigation }) => ({
       style={{ paddingLeft: 15, paddingTop: 10 }}
       onPress={() => navigation.navigate("Main")}
     >
-      <MaterialCommunityIcons name="home" size={36} color="black" />
+      <MaterialCommunityIcons name="home" size={36} color={COLORS.BLACK} />
     </TouchableOpacity>
   ),
   headerRight: () => (
@@ -50,7 +50,7 @@ const ProfileHeaderOption = ({ navigation }) => ({
       style={{ paddingLeft: 15, paddingTop: 10 }}
       onPress={() => navigation.navigate("Main")}
     >
-      <MaterialCommunityIcons name="home" size={36} color="black" />
+      <MaterialCommunityIcons name="home" size={36} color={COLORS.BLACK} />
     </TouchableOpacity>
   ),
   headerRight: () => (
@@ -58,7 +58,11 @@ const ProfileHeaderOption = ({ navigation }) => ({
       style={{ paddingRight: 15, paddingTop: 10 }}
       onPress={() => navigation.navigate("Invitation")}
     >
-      <MaterialCommunityIcons name="bell-circle" size={39} color="black" />
+      <MaterialCommunityIcons
+        name="bell-circle"
+        size={39}
+        color={COLORS.BLACK}
+      />
     </TouchableOpacity>
   ),
   headerStyle: styles.optionStyle,
@@ -71,7 +75,7 @@ const InvitationHeaderOption = ({ navigation }) => ({
       style={{ paddingLeft: 15, paddingTop: 10 }}
       onPress={() => navigation.navigate("Profile")}
     >
-      <Ionicons name="ios-arrow-back-circle" size={36} color="black" />
+      <Ionicons name="ios-arrow-back-circle" size={36} color={COLORS.BLACK} />
     </TouchableOpacity>
   ),
 

@@ -199,7 +199,7 @@ const PublicScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.titleText}>
-          Public page{" "}
+          {isMine ? `Public Page` : `Friend safacy`}{" "}
           <MaterialIcons name="lock-open" size={24} color={COLORS.LIGHT_BLUE} />
         </Text>
       </View>
@@ -263,7 +263,11 @@ const PublicScreen = ({ navigation, route }) => {
               onPress={() => setToolTipVisible(true)}
             >
               <View>
-                <MaterialCommunityIcons name="face" size={24} color="black" />
+                <MaterialCommunityIcons
+                  name="face"
+                  size={24}
+                  color={COLORS.BLACK}
+                />
               </View>
             </TouchableHighlight>
           </Tooltip>
@@ -293,7 +297,7 @@ const PublicScreen = ({ navigation, route }) => {
         <View style={styles.safacy}>
           <Text style={styles.safacyTitle}>
             Safacy Bot{" "}
-            <Ionicons name="md-logo-android" size={17} color="black" />
+            <Ionicons name="md-logo-android" size={17} color={COLORS.BLACK} />
           </Text>
           <SafacyBot id={paramsId} />
         </View>
@@ -323,6 +327,20 @@ const PublicScreen = ({ navigation, route }) => {
       </View>
     </View>
   );
+};
+
+export default PublicScreen;
+
+PublicScreen.propTypes = {
+  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      time: PropTypes.number,
+      radius: PropTypes.number,
+      nickname: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -449,16 +467,3 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
 });
-
-export default PublicScreen;
-
-PublicScreen.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.func).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      time: PropTypes.number,
-      radius: PropTypes.number,
-    }),
-  }).isRequired,
-};
