@@ -28,7 +28,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "com..safacy",
+      "bundleIdentifier": "com.exp.safacy",
+      "buildNumber": "1.0.0",
       "config": {
         "googleMapsApiKey": "AIzaSyCsyO5XkV-EdhUDZqTWeYT5liY6f1K85QA"
       },
@@ -38,6 +39,8 @@
       }
     },
     "android": {
+      "package": "com.exp.safacy",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#fafafc"

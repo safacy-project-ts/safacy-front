@@ -39,13 +39,12 @@ const App = () => {
     </Provider>
   );
 };
+export default App;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.WHITE,
     justifyContent: "center",
+    backgroundColor: COLORS.WHITE,
   },
 });
-
-export default App;

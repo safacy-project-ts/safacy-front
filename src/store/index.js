@@ -3,7 +3,6 @@ import authReducer from "./authSlice";
 import userReducer from "./userSlice";
 import safacyReducer from "./safacySlice";
 import timerReducer from "./timerSlice";
-import chatReducer from "./chatSlice";
 import locationReducer from "./locationSlice";
 
 const store = configureStore({
@@ -12,7 +11,6 @@ const store = configureStore({
     user: userReducer,
     safacy: safacyReducer,
     timer: timerReducer,
-    chat: chatReducer,
     location: locationReducer,
   },
   middleware: (getDefaultMiddleware) =>

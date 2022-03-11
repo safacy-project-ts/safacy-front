@@ -78,22 +78,22 @@ const MainScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.WHITE,
     alignItems: "center",
+    backgroundColor: COLORS.WHITE,
   },
   title: {
     flex: 1,
     width: 300,
-    borderBottomColor: COLORS.GREY,
-    borderBottomWidth: 1,
     alignItems: "center",
     paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.GREY,
   },
   titleText: {
-    fontFamily: FONT.BOLD_FONT,
+    paddingTop: 50,
     fontSize: FONT.XL,
     color: COLORS.BLACK,
-    paddingTop: 50,
+    fontFamily: FONT.BOLD_FONT,
   },
   button: {
     flex: 4,
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
     flex: 3,
     alignItems: "center",
   },
-
   mySafacyBtn: {
     paddingTop: 50,
   },
@@ -126,21 +125,21 @@ const styles = StyleSheet.create({
   lock: {
     width: 100,
     height: 100,
-    overflow: "visible",
     marginTop: 30,
     marginBottom: 20,
+    overflow: "visible",
   },
   timer: {
-    fontFamily: FONT.REGULAR_FONT,
     paddingTop: 20,
+    fontFamily: FONT.REGULAR_FONT,
   },
   privacy: {
-    fontFamily: FONT.BOLD_FONT,
     color: COLORS.RED,
+    fontFamily: FONT.BOLD_FONT,
   },
   public: {
-    fontFamily: FONT.BOLD_FONT,
     color: COLORS.BLUE,
+    fontFamily: FONT.BOLD_FONT,
   },
 });
 

@@ -245,16 +245,16 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
 
 export default Map;
 
-const styles = StyleSheet.create({
-  map: {
-    width: 350,
-    height: 180,
-  },
-});
-
 Map.propTypes = {
   setDistance: PropTypes.func,
   setTotalDistance: PropTypes.func,
   setSosLocation: PropTypes.func,
   id: PropTypes.string,
 };
+
+const styles = StyleSheet.create({
+  map: {
+    width: 350,
+    height: 180,
+  },
+});

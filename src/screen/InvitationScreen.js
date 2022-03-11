@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Button,
-} from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import PropTypes from "prop-types";
@@ -33,7 +26,8 @@ const InvitationScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.titleText}>
-          Invitation <MaterialIcons name="mail" size={24} color="black" />
+          Invitation{" "}
+          <MaterialIcons name="mail" size={24} color={COLORS.BLACK} />
         </Text>
       </View>
 
@@ -44,7 +38,7 @@ const InvitationScreen = ({ navigation }) => {
               <MaterialCommunityIcons
                 name="human-greeting"
                 size={30}
-                color="black"
+                color={COLORS.BLACK}
                 style={{ paddingRight: 10 }}
               />
 
@@ -86,10 +80,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleText: {
-    fontFamily: FONT.BOLD_FONT,
+    paddingTop: 40,
     fontSize: FONT.XL,
     color: COLORS.BLACK,
-    paddingTop: 40,
+    fontFamily: FONT.BOLD_FONT,
   },
   invitation: {
     flex: 4,
@@ -97,35 +91,35 @@ const styles = StyleSheet.create({
   },
   invitationContainer: {
     width: "90%",
-    borderColor: COLORS.LIGHT_BLACK,
+    padding: 20,
     borderWidth: 1,
     borderRadius: 15,
-    padding: 20,
+    borderColor: COLORS.LIGHT_BLACK,
   },
   invitationInfo: {
-    flexDirection: "row",
     marginBottom: 5,
+    flexDirection: "row",
   },
   friendText: {
-    fontFamily: FONT.BOLD_FONT,
-    fontSize: FONT.M,
     paddingTop: 5,
+    fontSize: FONT.M,
+    fontFamily: FONT.BOLD_FONT,
   },
   addBtn: {
     width: "100%",
     height: "50%",
-    fontSize: FONT.M,
-    lineHeight: 10,
     padding: 10,
     marginLeft: 7,
+    lineHeight: 10,
+    fontSize: FONT.M,
     justifyContent: "center",
     color: COLORS.LIGHT_BLACK,
     backgroundColor: COLORS.WHITE,
   },
   footer: {
     flex: 1,
+    paddingBottom: 10,
     alignItems: "center",
     justifyContent: "flex-end",
-    paddingBottom: 10,
   },
 });

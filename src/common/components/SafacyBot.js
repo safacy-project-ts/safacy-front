@@ -79,16 +79,16 @@ SafacyBot.propTypes = {
 const styles = StyleSheet.create({
   container: {
     width: 180,
-    borderWidth: 1,
-    borderColor: COLORS.BLACK,
-    backgroundColor: COLORS.GREY,
-    borderRadius: 9,
     padding: 5,
     overflow: "hidden",
+    borderWidth: 1,
+    borderRadius: 9,
+    borderColor: COLORS.BLACK,
+    backgroundColor: COLORS.GREY,
   },
   safacyInfo: {
     margin: 2,
-    fontFamily: FONT.REGULAR_FONT,
     fontSize: FONT.S,
+    fontFamily: FONT.REGULAR_FONT,
   },
 });
