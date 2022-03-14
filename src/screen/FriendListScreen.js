@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
     padding: 10,
+    marginBottom: 20,
     flexDirection: "row",
     justifyContent: "flex-start",
     borderRadius: 20,
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.BOLD_FONT,
   },
   lockIcon: {
-    paddingLeft: 90,
+    paddingLeft: 85,
   },
   footer: {
     flex: 1,

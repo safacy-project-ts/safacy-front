@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
@@ -36,7 +36,7 @@ const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const { id } = useSelector((state) => state.auth);
-  const { id: paramsId, time } = route.params;
+  const { id: paramsId, time: setTime } = route.params;
 
   const [isMine, setIsMine] = useState(true);
   const [distance, setDistance] = useState(0);
@@ -51,7 +51,7 @@ const PublicScreen = ({ navigation, route }) => {
   const { remaining } = useSelector((state) => state.timer);
   const { publicMode } = useSelector((state) => state.user);
   const currentSafacy = useSelector((state) => state.safacy);
-  const { radius, id: safacyId, safacyBotMsg } = currentSafacy;
+  const { radius, id: safacyId } = currentSafacy;
 
   useEffect(async () => {
     if (id !== paramsId) {
@@ -66,14 +66,12 @@ const PublicScreen = ({ navigation, route }) => {
   }, []);
 
   useInterval(() => {
-    if (time > 20) {
-      const currentDistance = totalDistance - (totalDistance * 20) / time;
+    const currentDistance = totalDistance - (totalDistance * 20) / setTime;
 
-      if (distance + radius > currentDistance) {
-        socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
-      } else {
-        socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
-      }
+    if (distance + radius <= currentDistance && currentDistance !== 0) {
+      socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
+    } else {
+      socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
     }
   }, 20 * 60 * 1000);
 

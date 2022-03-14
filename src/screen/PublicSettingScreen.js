@@ -61,6 +61,7 @@ const PublicSettingScreen = ({ navigation, route }) => {
         <Map
           id={id}
           setSosLocation={() => console.log(OTHERS.BEFORE_SETTING)}
+          setTotalDistance={() => console.log(OTHERS.BEFORE_SETTING)}
         />
       </View>
 

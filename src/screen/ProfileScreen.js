@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   invitation: {
     marginTop: 10,
     fontSize: FONT.S,
-    color: COLORS.RED_HOVER,
+    color: COLORS.INVITATION,
     fontFamily: FONT.REGULAR_FONT,
   },
   friendList: {
