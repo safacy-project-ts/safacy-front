@@ -104,7 +104,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
       const newLocation = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
-          timeInterval: 10000,
+          timeInterval: 1000,
           distanceInterval: 1000,
         },
         (position) => {
@@ -117,6 +117,13 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
               latitude: positionData.coords.latitude,
               longitude: positionData.coords.longitude,
             });
+            setLocations([
+              ...locations,
+              {
+                latitude: positionData.coords.latitude,
+                longitude: positionData.coords.longitude,
+              },
+            ]);
           });
 
           if (userDestination[0] && typeof setDistance === "function") {
@@ -128,14 +135,6 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
             );
             setDistance(distance);
           }
-
-          setLocations([
-            ...locations,
-            {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            },
-          ]);
         },
 
         (error) => console.log(error),
@@ -208,7 +207,6 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
           latitude: location.latitude,
           longitude: location.longitude,
         }}
-        fillColor={COLORS.YELLOW}
         radius={150}
         strokeWidth={1}
         strokeColor={COLORS.GREY}

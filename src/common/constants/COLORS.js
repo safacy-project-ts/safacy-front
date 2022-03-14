@@ -18,6 +18,7 @@ const COLORS = {
   SWITCH_THUMB_TRUE: "#fafafc",
   SWITCH_THUMB_FALSE: "#f4f3f4",
   SEARCHBAR_DESCRIPRION: "#5d5d5d",
+  INVITATION: "#ef5350",
 };
 
 export default COLORS;

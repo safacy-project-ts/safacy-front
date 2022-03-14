@@ -1,6 +1,6 @@
 # SAFACY 🔐 - safe + privacy
 
-<img src = "./assets/splash.png" width="500" height="200">
+<img src = "./assets/splash.png" width="500" height="250">
 
 ✅ Safe하고 싶지만, 나의 Privacy도 중요한 유저를 위한 앱
 
@@ -83,29 +83,69 @@ Safety(안심)과 Privacy(개인정보)를 모두 충족시킬 수 있는 서비
 
 **FrontEnd**
 
-- 프로젝트 root 디렉토리에 .env.local파일을 생성한 후, 아래 형식에 맞게 환경변수 값 설정
-
-  ```(javascript)
-  will be updated soon
-  ```
-
-**BackEnd**
+> https://gitlab.com/choisy_9619/safacy-frontend
 
 - 프로젝트 root 디렉토리에 .env파일을 생성한 후, 아래 형식에 맞게 환경변수 값 설정
 
   ```(javascript)
-  will be updated soon
+  BASE_URI={LOCALHOST_URI}
+  GOOGLE_IOS_CLIENT_ID={GOOGLE_IOS_CLIENT_ID}
+  GOOGLE_MAP_API={GOOGLE_MAP_API}
+  MAPBOX_ACCESS_TOKEN={MAPBOX_ACCESS_TOKEN}
+  ```
+
+**BackEnd**
+
+> https://gitlab.com/choisy_9619/safacy-backend
+
+- 프로젝트 root 디렉토리에 .env파일을 생성한 후, 아래 형식에 맞게 환경변수 값 설정
+
+  ```(javascript)
+  MONGODB_URI={MONGODB_URI}
   ```
 
 #
 
 ### `💡 My Topics`
 
-- <U>React native</U>
-- <U>React native - Navigation</U>
-- <U>Redux-thunk</U>
-- <U>지도 구현 & location sharing</U>
-- <U>custom hook & component</U>
+<details>
+  <summary><U>React native</U></summary>
+  <div markdown="1">
+- Navigation & Axios 비동기 처리
+
+Axios 비동기 처리를 진행하고 바로 navigation으로 해당 screen으로 이동했을 때, 아직 pending 상태에서 화면이동이 발생하여 pending동안은 이전 데이터를 갖고 있는 화면이 렌더링되고, fulfilled 되었을 때 원하는 업데이트된 화면이 렌더링 되는 현상이 지속되었습니다. 네트워크 환경이 원활한 경우 이런 현상이 적었지만, 항상 좋은 환경에서만 구동되는 것은 아니기 때문에 대책이 필요했습니다.
+
+- 첫번째 방법 > React Native Debugger를 활용하여 pending, fulfilled 상태 변화를 확인했고, 그 경우에 따라 state에 다른 status(상태)를 부여해주었습니다. status에 따라 다음 screen 렌더링을 분기처리 해주었습니다.
+
+- 두번째 방법 > Axios 비동기 처리가 fulfilled 되었을 경우에만 navigation이 일어나도록 핸들링해주었습니다.
+
+React native는 리액트(Web)의 접근방법을 모바일(App)으로 확장한 FACEBOOK 오픈소스 프로젝트입니다. 따라서 공통점과 차이점이 존재했고, 가장 크게 느껴졌던 차이점은 Router방식을 사용하는 React와 달리 screen 이동시 사용되는 Navigation 방법이었습니다. 특히 저는 Stack Navigation을 사용했고, stack구조로 screen이 쌓여가면서 예상하지 못한 화면 전환 에러를 만나게 되었습니다. 화면 전환 시 기존의 데이터가 남아있는 현상을 해결하기 위해, re-rendering방법을 많이 생각하게 되었고, 특히 비동기 처리와 함께 진행되는 스크린 전환이 많았던 제 프로젝트에서는 비동기처리가 모두 완료된 후 screen이동을 진행하고, 이 때 state변화를 통해 re-rendering을 시켜줬습니다.
+
+리액트 네이티브 개발을 시작하며 마주친 가장 첫 문제였고, 꼭 알아야되는 개념이기에 이 문제를 차근차근 해결해나가는 과정이 리액트 네이티브와 더욱 가까워지는 계기가 되었습니다.
+
+</div>
+</details>
+
+<details>
+  <summary><U>Location & SafacyBot sharing</U></summary>
+  <div markdown="1">
+친구와 공유하게 될 부분인 Map, safacyBot message 데이터를 server쪽에서 다루지 않고, state로 관리해서, 로그인한 유저에 따라 분기처리하여 보여주려다보니 굉장히 복잡하게 코드를 작성하여 데이터 처리가 너무너무 어려웠습니다. 이를 위해서 저는 변하지 않는 정보는 따로 server에 저장하고, 실시간으로 변화하는 부분(user의 이동, 이동에 따른 safacyBot의 메시지)은 웹소켓 통신으로 구현하였습니다. 기획단계에서 미처 생각하지 못한 부분이어서 개발 중간에 서버구조를 대폭 변경하는 시간이 필요했지만, 데이터를 처리하는 방법에 대해 배울 수 있는 계기가 되었습니다.
+</div>
+</details>
+
+<details>
+  <summary><U>Redux-thunk</U></summary>
+  <div markdown="1">
+이전 팀프로젝트에서 사용한 React Query와 달리 저는 이번에 Redux-toolkit의 createAsyncThunk를 활용하여 비동기를 처리했습니다.
+
+- Redux-thunk를 선정한 이유: 접해보지 못한 redux thunk를 사용해보고 싶었고, Redux toolkit 내부적으로 thunk 기능을 갖고 있으며 createAsncThunk로 컴포넌트 외부에서 비동기처리를 하여 관심사 분리에 용이하다는 공식문서의 내용을 보았기 때문이었습니다. 사용하면서 react query와 달리 간단하게 관심사를 분리할 수 있었고, 비동기 처리에 대한 status 또한 확실히 분리할 수 있어서 debugging에 편리함을 느낄 수 있었습니다.
+
+React query는 redux-thunk와 다른 의미로 관심사를 분리하는 메소드라고 생각합니다. 자세히보면 redux 자체는 global state라는 공통된 저장소를 만들어 모든 컴포넌트들이 데이터를 접근 사용할 수 있는 기능을 갖고 있는데, redux에게 비동기처리 업무까지 맡긴다는 건 관심사가 확실히 분리되지 않는다고 볼 수 있습니다. 따라서 비동기 처리를 react의 useQuery를 사용하여 구현하는 것이 좋게 보여질 수 있을 것이라 생각했습니다. 하지만 직접 redux-thunk를 다뤄본 후, 읽기 좋은 코드가 좋은 코드라고 생각하는 저의 관점에서 Redux-thunk를 사용하였을 때 가독성과 데이터처리가 수월하게 느껴지기도 했다. 특히 비동기요청을 취소하는 등의 추가적인 기능이 가능한 점에서 만족도가 높았습니다.
+
+Redux-thunk & React-query 서로 장단점이 있기 때문에 상황에 맞게 사용하는 것이 Best가 될 것이라 생각합니다.
+
+</div>
+</details>
 
 #
 
@@ -117,10 +157,10 @@ Safety(안심)과 Privacy(개인정보)를 모두 충족시킬 수 있는 서비
 
 **개발단계 - 험난했지만, 벽을 부수는 만족감, 그래도 해보자!**
 
-역시나 기획단계부터 예상했던 많은 난관이 있었습니다. 혼자서 해결해야 한다는 책임감과 함께 구현하지 못했을 때의 걱정이 반복되었습니다. 어려움을 겪을 때마다 켄님, 멘토님들, 팀프로젝트 팀원들이 많은 힘을 주었던 것이 생각났고, 마음이 약해지는 시기가 있었습니다.
+역시나 기획단계부터 예상했던 많은 난관이 있었습니다. 혼자서 해결해야 한다는 책임감과 함께 구현하지 못했을 때의 걱정이 반복되었습니다. 어려움을 겪을 때마다 켄님, 멘토님들, 팀프로젝트 팀원들이 많은 힘을 주었던 것이 생각났고, 마음이 약해지는 시기가 있었습니다. 하지만 “그래도 해보자!"라는 생각으로 차근차근 해나갔습니다. 그리고 Task라는 벽을 깨부순다는 느낌이 들어서 만족감도 크게 느껴졌습니다. 한단계 나갈때마다 큰 벽이 있었지만, 그동안 바닐라코딩의 부트캠프 기간동안 배웠던 지식, 문제 해결 능력이 적극 발휘되는 시기였다고 생각합니다.
 
-하지만 “그래도 해보자!"라는 생각으로 차근차근 해나갔습니다. 그리고 Task라는 벽을 깨부순다는 느낌이 들어서 만족감도 크게 느껴졌습니다. 한단계 나갈때마다 큰 벽이 있었지만, 그동안 바닐라코딩의 부트캠프 기간동안 배웠던 지식, 문제 해결 능력이 적극 발휘되는 시기였다고 생각합니다.
+**완성도를 향해**
 
-**아쉬움**
+이번 프로젝트에서 저의 목표는 **완성도** 였습니다. 이를 위해 기획에 많은 노력을 들였습니다. 하지만 생각하지 못한 다양한 기술적, 기획적 변수들이 존재했고, 유저들의 입장에서 불편함을 느낄 수 있는 여러 에러들이 발생했습니다. 그렇게 Schema 구조가 처음 기획에서 달라지고, 백엔드를 전반적으로 수정해야하는 일이 발생했습니다. 예상하지 못한 기획변경으로 소요된 시간이 많았고, 세밀한 에러 핸들링이 되지 않은 점에 아쉬움이 남습니다. 하지만 이런 경험이 다음 프로젝트 기획단계에서 미리 고려할 항목이 될 것이라 생각합니다.
 
-이번 프로젝트에서 저의 목표는 **완성도** 였습니다. 그래서 기획에 많은 노력을 들였습니다. 하지만 생각하지 못한 다양한 기술적, 기획적 변수들이 존재했고, 유저들의 입장에서 불편함을 느낄 수 있는 여러 에러들이 발생했습니다. 그렇게 Schema 구조가 처음 기획에서 달라지고, 백엔드를 전반적으로 수정해야하는 일이 발생했습니다. 예상하지 못한 기획변경으로 소요된 시간이 많았고, 세밀한 에러 핸들링이 되지 않은 점에 아쉬움이 남습니다. 하지만 이런 경험이 다음 프로젝트 기획단계에서 미리 고려할 항목이 될 것이라 생각합니다.
+바닐라코딩 부트캠프 시간동안 정말 많은 분들께 도움을 받았습니다. 이 도움을 발판으로 새로운 환경에서 새로운 프로젝트를 진행할 때 하루하루 발전하는 개발자가 되겠습니다.
