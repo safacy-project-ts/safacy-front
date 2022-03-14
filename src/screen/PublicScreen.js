@@ -19,6 +19,7 @@ import {
 import Tooltip from "react-native-walkthrough-tooltip";
 import { socket } from "../api/socket";
 
+import { updateCount } from "../store/locationSlice";
 import { getUserInfo, stopPublic } from "../store/userSlice";
 import { getCurrentSafacy, updateSafacyMsg } from "../store/safacySlice";
 
@@ -48,6 +49,7 @@ const PublicScreen = ({ navigation, route }) => {
   const [smsServiceAvailable, setSmsServiceAvailable] = useState(false);
   const [toolTipVisible, setToolTipVisible] = useState(false);
 
+  const { count } = useSelector((state) => state.location);
   const { remaining } = useSelector((state) => state.timer);
   const { publicMode } = useSelector((state) => state.user);
   const currentSafacy = useSelector((state) => state.safacy);
@@ -65,15 +67,19 @@ const PublicScreen = ({ navigation, route }) => {
     checkIfServiceAvailable();
   }, []);
 
-  useInterval(() => {
-    const currentDistance = totalDistance - (totalDistance * 20) / setTime;
+  useInterval(async () => {
+    if (id === paramsId) {
+      dispatch(updateCount());
+      const currentDistance =
+        totalDistance - (totalDistance * 30 * count) / setTime;
 
-    if (distance + radius <= currentDistance && currentDistance !== 0) {
-      socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
-    } else {
-      socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
+      if (distance + radius <= currentDistance && currentDistance !== 0) {
+        socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
+      } else {
+        socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
+      }
     }
-  }, 20 * 60 * 1000);
+  }, 30 * 60 * 1000);
 
   useEffect(async () => {
     try {
@@ -120,6 +126,7 @@ const PublicScreen = ({ navigation, route }) => {
           safacyId,
         }),
       );
+
       if (distance > radius) {
         await dispatch(
           updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),

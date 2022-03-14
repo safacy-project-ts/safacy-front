@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable react/require-default-props */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -75,6 +76,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
     });
   }, [location]);
 
+  console.log(location);
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -100,32 +102,18 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
       }
 
       await dispatch(setCurrentLocation(coords));
+      setLocation({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
 
       const newLocation = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
-          timeInterval: 1000,
-          distanceInterval: 1000,
+          timeInterval: 10,
+          distanceInterval: 0.5,
         },
         (position) => {
-          socket.emit("position", {
-            data: position,
-          });
-
-          socket.on("myposition", (positionData) => {
-            setLocation({
-              latitude: positionData.coords.latitude,
-              longitude: positionData.coords.longitude,
-            });
-            setLocations([
-              ...locations,
-              {
-                latitude: positionData.coords.latitude,
-                longitude: positionData.coords.longitude,
-              },
-            ]);
-          });
-
           if (userDestination[0] && typeof setDistance === "function") {
             const distance = calculateDistance(
               position.coords.latitude,
@@ -135,10 +123,31 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
             );
             setDistance(distance);
           }
+          if (isMine) {
+            socket.emit("position", {
+              data: position,
+            });
+
+            socket.on("myposition", (positionData) => {
+              setLocation({
+                latitude: positionData.coords.latitude,
+                longitude: positionData.coords.longitude,
+              });
+            });
+          }
+
+          setLocations([
+            ...locations,
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            },
+          ]);
         },
 
         (error) => console.log(error),
       );
+
       return () => {
         newLocation.remove();
       };
@@ -166,8 +175,8 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
           originLocation?.length === 1
             ? originLocation[0]?.longitude
             : current[1],
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02,
+        latitudeDelta: 0.012,
+        longitudeDelta: 0.012,
       }}
       onRegionChangeComplete={(region) => {
         setLocation({
@@ -191,6 +200,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
           title="start point"
         />
       )}
+
       <Marker
         coordinate={{
           latitude: location?.latitude,

@@ -5,6 +5,7 @@ const locationSlice = createSlice({
   initialState: {
     current: [],
     userDestination: [],
+    count: 1,
   },
   reducers: {
     setCurrentLocation: (state, action) => {
@@ -18,10 +19,17 @@ const locationSlice = createSlice({
     clearDestination: (state, action) => {
       state.userDestination = [];
     },
+    updateCount: (state, action) => {
+      state.count += 1;
+    },
   },
   extraReducers: {},
 });
 
-export const { setCurrentLocation, setUserDestination, clearDestination } =
-  locationSlice.actions;
+export const {
+  setCurrentLocation,
+  setUserDestination,
+  clearDestination,
+  updateCount,
+} = locationSlice.actions;
 export default locationSlice.reducer;

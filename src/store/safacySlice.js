@@ -78,7 +78,7 @@ const safacySlice = createSlice({
       state.safacyBotMsg = [];
       state.originLocation = [];
       state.desLocation = [];
-      state.userDestination = "";
+      state.userDestination = [];
     },
   },
   extraReducers: {

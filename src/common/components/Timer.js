@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Text, StyleSheet } from "react-native";
-
 import PropTypes from "prop-types";
+import { countDownTimer } from "../../store/timerSlice";
 
 import COLORS from "../constants/COLORS";
 import FONTS from "../constants/FONT";
@@ -17,6 +17,7 @@ const Timer = ({ sec, setIsStopped }) => {
   const [delay, setDelay] = useState(1000);
 
   useEffect(async () => {
+    // await dispatch(countDownTimer());
     if (second === 0 && typeof setIsStopped === "function") {
       await setIsStopped(true);
     }
