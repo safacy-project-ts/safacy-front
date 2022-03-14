@@ -119,7 +119,6 @@ const userSlice = createSlice({
       state.status = "success";
     },
     [addFriend.fulfilled]: (state, action) => {
-      // state.error = action.payload.error;
       state.result = action.payload.result;
       state.status = "success";
     },
