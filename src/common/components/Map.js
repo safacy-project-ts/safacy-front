@@ -76,7 +76,6 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
     });
   }, [location]);
 
-  console.log(location);
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
