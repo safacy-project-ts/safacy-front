@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
   },
   nickname: {
     paddingLeft: 20,
+    paddingTop: 3,
     fontSize: FONT.M,
     fontFamily: FONT.BOLD_FONT,
   },
