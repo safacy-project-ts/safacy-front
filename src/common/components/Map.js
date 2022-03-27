@@ -28,7 +28,7 @@ import LoadingScreen from "../../screen/Auth/LoadingScreen";
 import COLORS from "../constants/COLORS";
 import OTHERS from "../constants/OTHERS";
 
-const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
+const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
   const dispatch = useDispatch();
 
   const [isMine, setIsMine] = useState(false);
@@ -110,7 +110,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
         {
           accuracy: Location.Accuracy.High,
           timeInterval: 10,
-          distanceInterval: 0.5,
+          distanceInterval: 0.05,
         },
         (position) => {
           if (userDestination[0] && typeof setDistance === "function") {
@@ -122,6 +122,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
             );
             setDistance(distance);
           }
+
           if (isMine) {
             socket.emit("position", {
               data: position,
@@ -216,7 +217,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation }) => {
           latitude: location.latitude,
           longitude: location.longitude,
         }}
-        radius={150}
+        radius={100 || radius}
         strokeWidth={1}
         strokeColor={COLORS.GREY}
       />
@@ -257,6 +258,7 @@ Map.propTypes = {
   setTotalDistance: PropTypes.func,
   setSosLocation: PropTypes.func,
   id: PropTypes.string,
+  radius: PropTypes.number,
 };
 
 const styles = StyleSheet.create({

@@ -1,5 +1,4 @@
 const TIME = [
-  { item: "TEST", id: "0.1" },
   { item: "0.5 hour", id: "30" },
   { item: "1 hour", id: "60" },
   { item: "1.5 hour", id: "90" },

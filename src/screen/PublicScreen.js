@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import useInterval from "use-interval";
 import * as SMS from "expo-sms";
+import dayjs from "dayjs";
 
 import PropTypes from "prop-types";
 import {
@@ -60,8 +61,12 @@ const PublicScreen = ({ navigation, route }) => {
       setIsMine(false);
     }
     await dispatch(getCurrentSafacy(paramsId));
+
     await dispatch(
-      updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.START }),
+      updateSafacyMsg({
+        id: safacyId,
+        message: dayjs().format("hh:mm A") + SAFACY_BOT.START,
+      }),
     );
     socket.emit("safacyBot", SAFACY_BOT.START);
     checkIfServiceAvailable();
@@ -71,15 +76,21 @@ const PublicScreen = ({ navigation, route }) => {
     if (id === paramsId) {
       dispatch(updateCount());
       const currentDistance =
-        totalDistance - (totalDistance * 30 * count) / setTime;
+        totalDistance - (totalDistance * 3 * count) / setTime;
 
       if (distance + radius <= currentDistance && currentDistance !== 0) {
-        socket.emit("safacyBot", SAFACY_BOT.MOVING_SAFE);
+        socket.emit(
+          "safacyBot",
+          dayjs().format("hh:mm A") + SAFACY_BOT.MOVING_SAFE,
+        );
       } else {
-        socket.emit("safacyBot", SAFACY_BOT.MOVING_DANGER);
+        socket.emit(
+          "safacyBot",
+          dayjs().format("hh:mm A") + SAFACY_BOT.MOVING_DANGER,
+        );
       }
     }
-  }, 30 * 60 * 1000);
+  }, 2 * 60 * 1000);
 
   useEffect(async () => {
     try {
@@ -93,22 +104,46 @@ const PublicScreen = ({ navigation, route }) => {
 
         if (distance > radius) {
           await dispatch(
-            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+            updateSafacyMsg({
+              id: safacyId,
+              message: dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
+            }),
           );
-          socket.emit("safacyBot", SAFACY_BOT.DANGER_THREE);
+          socket.emit(
+            "safacyBot",
+            dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
+          );
           await dispatch(
-            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+            updateSafacyMsg({
+              id: safacyId,
+              message: dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
+            }),
           );
-          socket.emit("safacyBot", SAFACY_BOT.END_DANGER);
+          socket.emit(
+            "safacyBot",
+            dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
+          );
         } else {
           await dispatch(
-            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+            updateSafacyMsg({
+              id: safacyId,
+              message: dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
+            }),
           );
-          socket.emit("safacyBot", SAFACY_BOT.STOPBTN_SAFE);
+          socket.emit(
+            "safacyBot",
+            dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
+          );
           await dispatch(
-            updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+            updateSafacyMsg({
+              id: safacyId,
+              message: dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE,
+            }),
           );
-          socket.emit("safacyBot", SAFACY_BOT.END_SAFE);
+          socket.emit(
+            "safacyBot",
+            dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE,
+          );
         }
         await dispatch(getCurrentSafacy(id));
         await dispatch(getUserInfo(id));
@@ -129,22 +164,46 @@ const PublicScreen = ({ navigation, route }) => {
 
       if (distance > radius) {
         await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+          updateSafacyMsg({
+            id: safacyId,
+            message: dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
+          }),
         );
-        socket.emit("safacyBot", SAFACY_BOT.DANGER_THREE);
+        socket.emit(
+          "safacyBot",
+          dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
+        );
         await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+          updateSafacyMsg({
+            id: safacyId,
+            message: dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
+          }),
         );
-        socket.emit("safacyBot", SAFACY_BOT.END_DANGER);
+        socket.emit(
+          "safacyBot",
+          dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
+        );
       } else {
         await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+          updateSafacyMsg({
+            id: safacyId,
+            message: dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
+          }),
         );
-        socket.emit("safacyBot", SAFACY_BOT.STOPBTN_SAFE);
+        socket.emit(
+          "safacyBot",
+          dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
+        );
         await dispatch(
-          updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+          updateSafacyMsg({
+            id: safacyId,
+            message: dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE,
+          }),
         );
-        socket.emit("safacyBot", SAFACY_BOT.END_SAFE);
+        socket.emit(
+          "safacyBot",
+          dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE,
+        );
       }
       await dispatch(getCurrentSafacy(id));
       await dispatch(getUserInfo(id));
@@ -163,22 +222,43 @@ const PublicScreen = ({ navigation, route }) => {
 
     if (distance > radius) {
       await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.DANGER_THREE }),
+        updateSafacyMsg({
+          id: safacyId,
+          message: dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
+        }),
       );
-      socket.emit("safacyBot", SAFACY_BOT.DANGER_THREE);
+      socket.emit(
+        "safacyBot",
+        dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
+      );
       await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_DANGER }),
+        updateSafacyMsg({
+          id: safacyId,
+          message: dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
+        }),
       );
-      socket.emit("safacyBot", SAFACY_BOT.END_DANGER);
+      socket.emit(
+        "safacyBot",
+        dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
+      );
     } else {
       await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.STOPBTN_SAFE }),
+        updateSafacyMsg({
+          id: safacyId,
+          message: dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
+        }),
       );
-      socket.emit("safacyBot", SAFACY_BOT.STOPBTN_SAFE);
+      socket.emit(
+        "safacyBot",
+        dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
+      );
       await dispatch(
-        updateSafacyMsg({ id: safacyId, message: SAFACY_BOT.END_SAFE }),
+        updateSafacyMsg({
+          id: safacyId,
+          message: dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE,
+        }),
       );
-      socket.emit("safacyBot", SAFACY_BOT.END_SAFE);
+      socket.emit("safacyBot", dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE);
     }
     await dispatch(getCurrentSafacy(id));
     await dispatch(getUserInfo(id));
