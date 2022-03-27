@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     fontSize: FONT.M,
+    color: COLORS.LIGHT_BLACK,
     fontFamily: FONT.BOLD_FONT,
   },
   friendName: {
