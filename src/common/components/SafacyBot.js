@@ -36,16 +36,16 @@ const SafacyBot = ({ id }) => {
     });
   }, []);
 
-  useEffect(async () => {
-    await schedulePushNotification(safacyMsg[safacyMsg.length - 1]);
+  // useEffect(async () => {
+  //   await schedulePushNotification(safacyMsg[safacyMsg.length - 1]);
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current,
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, [safacyMsg]);
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(
+  //       notificationListener.current,
+  //     );
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //   };
+  // }, [safacyMsg]);
 
   return (
     <ScrollView style={styles.container}>
