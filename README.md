@@ -60,7 +60,7 @@ Safety(안심)과 Privacy(개인정보)를 모두 충족시킬 수 있는 서비
 
 </br>
 
-> ### 🔗 **[SAFACY APP DEMO 영상 ](https://safacy.s3.ap-northeast-2.amazonaws.com/Demo_safacy.mp4)**
+#### 🔗 **[SAFACY APP DEMO 영상 ](https://safacy.s3.ap-northeast-2.amazonaws.com/Demo_safacy.mp4)** 🔗
 
 </br>
 
