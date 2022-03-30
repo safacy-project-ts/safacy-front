@@ -58,7 +58,11 @@ Safety(안심)과 Privacy(개인정보)를 모두 충족시킬 수 있는 서비
 
 ### `📌 프로젝트 설명`
 
-**Private & Public Mode로 구성되어 있습니다.**
+</br>
+
+> ### 🔗 **[SAFACY APP DEMO 영상 ](https://safacy.s3.ap-northeast-2.amazonaws.com/Demo_safacy.mp4)**
+
+</br>
 
 <img src = "./assets/img/README/private.png" width="100" height="200">
 <img src = "./assets/img/README/public setting.png" width="100" height="200">
@@ -111,10 +115,7 @@ Safety(안심)과 Privacy(개인정보)를 모두 충족시킬 수 있는 서비
 
 ### `💡 My Topics`
 
-<details>
-  <summary><U>React native</U></summary>
-  <div markdown="1">
-- Navigation & Axios 비동기 처리
+<h3><U>1. React native - Navigation & Axios 비동기 처리</U></h3>
 
 Axios 비동기 처리를 진행하고 바로 navigation으로 해당 screen으로 이동했을 때, 아직 pending 상태에서 화면이동이 발생하여 pending동안은 이전 데이터를 갖고 있는 화면이 렌더링되고, fulfilled 되었을 때 원하는 업데이트된 화면이 렌더링 되는 현상이 지속되었습니다. 네트워크 환경이 원활한 경우 이런 현상이 적었지만, 항상 좋은 환경에서만 구동되는 것은 아니기 때문에 대책이 필요했습니다.
 
@@ -122,33 +123,25 @@ Axios 비동기 처리를 진행하고 바로 navigation으로 해당 screen으�
 
 - 두번째 방법 > Axios 비동기 처리가 fulfilled 되었을 경우에만 navigation이 일어나도록 핸들링해주었습니다.
 
-React native는 리액트(Web)의 접근방법을 모바일(App)으로 확장한 FACEBOOK 오픈소스 프로젝트입니다. 따라서 공통점과 차이점이 존재했고, 가장 크게 느껴졌던 차이점은 screen 이동시 Router방식을 사용하는 React와 달리 리액트 네이티브는 Navigation 방법을 사용해야 했습니다. 저는 Stack Navigation을 사용했고, stack구조로 screen이 쌓여가면서 예상하지 못한 에러를 만나게 되었습니다. 그중에서 화면 전환 시 기존의 데이터가 남아있는 현상을 해결하기 위해, re-rendering방법을 생각하게 되었고, 특히 비동기 처리 후 스크린 전환이 많았던 제 프로젝트에서는 이에 대한 대책이 꼭 필요했습니다. 이를 위해 저는 비동기 처리가 모두 완료된 후 screen이동을 진행했고, 이 때 state 변화를 통해 re-rendering을 시켜줬습니다.
+React native는 리액트(Web)의 접근방법을 모바일(App)으로 확장한 FACEBOOK 오픈소스 프로젝트입니다. 따라서 공통점과 차이점이 존재했고, 가장 크게 느껴졌던 차이점은 screen 이동시 Router방식을 사용하는 React와 달리 리액트 네이티브는 Navigation 방법을 사용해야 했습니다. 저는 Stack Navigation을 사용했고, stack구조로 screen이 쌓여가면서 예상하지 못한 에러를 만나게 되었습니다. 그중에서 화면 전환 시 기존의 데이터가 남아있는 현상을 해결하기 위해, re-rendering 방법을 생각하게 되었고, 특히 비동기 처리 후 스크린 전환이 많았던 제 프로젝트에서는 이에 대한 대책이 꼭 필요했습니다. 이를 위해 저는 비동기 처리가 모두 완료된 후 screen이동을 진행했고, 이 때 state 변화를 통해 re-rendering을 시켜주어 네트워크 환경에 구애받지 않는 APP을 구현하였습니다.
 
 리액트 네이티브 개발을 시작하며 마주친 가장 첫 문제였고, 꼭 알아야되는 개념이기에 이 문제를 차근차근 해결해나가는 과정이 리액트 네이티브에 더욱 익숙해질 수 있었습니다.
 
-</div>
-</details>
+</br>
 
-<details>
-  <summary><U>Location & SafacyBot sharing</U></summary>
-  <div markdown="1">
-저의 초기 기획과 개발단계에서 친구와 공유하게 될 부분인 Map, safacyBot message 데이터를 server쪽에서 다루지 않고, state로 관리하면서 로그인한 유저에 따라 분기처리하여 보여주려했습니다. 하지만 이 방법은 코드를 굉장히 복잡하게 만들었고, 엄청난 에러가 발생하며 데이터 처리가 어려웠습니다. 이를 위해서 저는 변하지 않는 정보 (Safacy setting시 결정하는 destination, radius, time 등)는 따로 server에 저장하고, 실시간으로 변화하는 부분(user의 이동, 이동에 따른 safacyBot의 메시지)은 웹소켓 통신으로 구현하였습니다. 기획단계에서 미처 생각하지 못한 부분이어서 개발 중간에 서버구조를 대폭 변경하는 시간이 필요했지만, 데이터를 처리하는 방법에 대해 배울 수 있는 계기가 되었습니다.
-</div>
-</details>
+<h3><U>2. Location & SafacyBot sharing</U></h3>
+저의 초기 기획과 개발단계에서 친구와 공유하게 될 부분인 Map, safacyBot message 데이터를 server쪽에서 다루지 않고, state로 관리하면서 로그인한 유저에 따라 분기처리하여 보여주려했습니다. 하지만 이 방법은 코드를 굉장히 복잡하게 만들었고, 특히 위치 정보에 혼선이 생겨 엄청난 에러가 발생했습니다. 이를 위해서 저는 지정된 정보 (Safacy setting시 결정하는 destination, radius, time 등)는 따로 server에 저장하고, 실시간으로 변화하는 부분(user의 이동, 이동에 따른 safacyBot의 메시지)은 Socket.io 통신으로 구현하였습니다. 기획단계에서 미처 생각하지 못한 부분이어서 개발 중간에 서버구조를 대폭 변경하는 시간이 필요했지만, 데이터를 처리하는 방법에 대해 배울 수 있는 계기가 되었습니다.
 
-<details>
-  <summary><U>Redux-thunk</U></summary>
-  <div markdown="1">
+</br>
+
+<h3><U>3. Redux-thunk</U></h3>
 이전 팀프로젝트에서 사용한 React Query와 달리 저는 이번에 Redux-toolkit의 createAsyncThunk를 활용하여 비동기를 처리했습니다.
 
-- Redux-thunk를 선정한 이유: 접해보지 못한 redux thunk를 사용해보고 싶었고, Redux toolkit 내부적으로 thunk 기능을 갖고 있으며 createAsncThunk로 컴포넌트 외부에서 비동기처리를 하여 관심사 분리에 용이하다는 공식문서의 내용을 보았기 때문이었습니다. 사용하면서 react query와 달리 간단하게 관심사를 분리할 수 있었고, 비동기 처리에 대한 status 또한 확실히 분리할 수 있어서 debugging에 편리함을 느낄 수 있었습니다.
+- Redux-thunk를 선정한 이유: 접해보지 못한 redux thunk를 사용해보고 싶었고, Redux toolkit 내부적으로 thunk 기능을 갖고 있으며 createAsncThunk로 컴포넌트 외부에서 비동기처리를 하여 관심사 분리에 용이하다는 공식문서의 내용을 보았기 때문이었습니다. 사용하면서 react query와 달리 간단하게 관심사를 분리할 수 있었고, 비동기 처리에 대한 status 또한 확실히 분리할 수 있어서 debugging에 편리함을 느낄 수 있었습니다. 그리고 결과적으로 개발 속도가 향상되었습니다.
 
 React query는 redux-thunk와 다른 의미로 관심사를 분리하는 메소드라고 생각합니다. 자세히보면 redux 자체는 global state라는 공통된 저장소를 만들어 모든 컴포넌트들이 데이터를 접근 사용할 수 있는 기능을 갖고 있는데, redux에게 비동기처리 업무까지 맡긴다는 건 관심사가 확실히 분리되지 않는다고 볼 수 있습니다. 따라서 비동기 처리를 react의 useQuery를 사용하여 구현하는 것이 좋게 보여질 수 있을 것이라 생각했습니다. 하지만 직접 redux-thunk를 다뤄본 후, 읽기 좋은 코드가 좋은 코드라고 생각하는 저의 관점에서 Redux-thunk를 사용하였을 때 가독성과 데이터처리가 수월하게 느껴지기도 했다. 특히 비동기요청을 취소하는 등의 추가적인 기능이 가능한 점에서 만족도가 높았습니다.
 
 Redux-thunk & React-query 서로 장단점이 있기 때문에 상황에 맞게 사용하는 것이 Best가 될 것이라 생각하게 되었습니다.
-
-</div>
-</details>
 
 #
 
