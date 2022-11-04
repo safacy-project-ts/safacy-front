@@ -2,41 +2,25 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Modal, Text, TextInput, StyleSheet } from "react-native";
 
-import PropTypes from "prop-types";
-
 import { addFriend } from "../../../store/userSlice";
 
 import CustomButton from "../CustomButton";
 import OTHERS from "../../constants/OTHERS";
 import COLORS from "../../constants/COLORS";
 import FONT from "../../constants/FONT";
+import { RootState } from "../../../store";
 
 const AddFriendModal = ({ inviteModalVisible, closeInviteModal }) => {
   const dispatch = useDispatch();
   const [invitedEmail, setInvitedEmail] = useState("");
-  const { id, result, error } = useSelector((state) => state.user);
+  const userInfo = useSelector((state: RootState) => state.user);
 
   const handleEmailInput = (email) => {
     setInvitedEmail(email);
   };
 
   const handleAddFriend = async () => {
-    await dispatch(addFriend({ id, email: invitedEmail }));
-
-    if (error?.code === 400) {
-      alert(OTHERS.NOT_VALID_EMAIL);
-      return;
-    }
-
-    if (result === "Already in Friend List") {
-      alert(OTHERS.ALREADY_FRIEND);
-      return;
-    }
-
-    if (result === "Already Invited") {
-      alert(OTHERS.ALREADY_INVITED);
-      return;
-    }
+    await dispatch(addFriend({ id: userInfo.id, email: invitedEmail }));
 
     setInvitedEmail("");
     closeInviteModal();
@@ -72,11 +56,6 @@ const AddFriendModal = ({ inviteModalVisible, closeInviteModal }) => {
 };
 
 export default AddFriendModal;
-
-AddFriendModal.propTypes = {
-  inviteModalVisible: PropTypes.bool.isRequired,
-  closeInviteModal: PropTypes.func.isRequired,
-};
 
 const styles = StyleSheet.create({
   emailInputContainer: {

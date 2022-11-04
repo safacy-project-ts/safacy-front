@@ -9,18 +9,17 @@ import { getUserInfo } from "../store/userSlice";
 import CustomButton from "../common/components/CustomButton";
 import COLORS from "../common/constants/COLORS";
 import FONT from "../common/constants/FONT";
-import PRIVACY_LOCK from "../../assets/img/privacy.png";
-import PUBLIC_LOCK from "../../assets/img/public.png";
+import { RootState } from "../store";
 
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { id } = useSelector((state) => state.auth);
-  const user = useSelector((state) => state.user);
-  const { id: safacyId } = useSelector((state) => state.safacy);
+  const { id } = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.user);
+  const { id: safacyId } = useSelector((state: RootState) => state.safacy);
 
-  useEffect(async () => {
-    await dispatch(getUserInfo(id));
+  useEffect(() => {
+    dispatch(getUserInfo(id));
   }, []);
 
   const handleMySafacy = () => {
@@ -62,12 +61,12 @@ const MainScreen = ({ navigation }) => {
         {!user.publicMode ? (
           <View>
             <Text style={styles.privacy}>PRIVACY MODE</Text>
-            <Image style={styles.lock} source={PRIVACY_LOCK} />
+            <Image style={styles.lock} source="../../assets/img/privacy.png" />
           </View>
         ) : (
           <View>
             <Text style={styles.public}>PUBLIC MODE</Text>
-            <Image style={styles.lock} source={PUBLIC_LOCK} />
+            <Image style={styles.lock} source="../../assets/img/public.png" />
           </View>
         )}
       </View>

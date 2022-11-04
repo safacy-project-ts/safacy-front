@@ -12,9 +12,9 @@ import {
 } from "@expo/vector-icons";
 
 import { getUserInfo } from "../store/userSlice";
+import { RootState } from "../store";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import footer from "../../assets/img/footer.png";
 
 const FriendListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -29,15 +29,19 @@ const FriendListScreen = ({ navigation }) => {
     setSafacyModalVisible(false);
   };
 
-  useEffect(async () => {
+  const fetchUserInfo = async () => {
     await dispatch(getUserInfo(id));
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
     return () => console.log("stop");
   }, []);
 
   const { safacyInvitationList, publicMode, id } = useSelector(
-    (state) => state.user,
+    (state: RootState) => state.user,
   );
-  const { remaining } = useSelector((state) => state.timer);
+  const { remaining } = useSelector((state: RootState) => state.timer);
 
   return (
     <View style={styles.container}>
@@ -82,7 +86,7 @@ const FriendListScreen = ({ navigation }) => {
         ))}
       </View>
       <View style={styles.footer}>
-        <Image source={footer} />
+        <Image source="../../assets/img/footer.png" />
       </View>
     </View>
   );

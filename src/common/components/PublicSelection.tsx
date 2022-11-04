@@ -9,11 +9,12 @@ import TIME from "../constants/TIME";
 import FONT from "../constants/FONT";
 import RADIUS from "../constants/RADIUS";
 import COLORS from "../constants/COLORS";
+
 import FriendList from "./FriendList";
 
 const PublicSelection = ({ setRadius, setTime, setInvitedFriendList }) => {
-  const [selectedTime, setSelectedTime] = useState({});
-  const [selectedRadius, setSelectedRadius] = useState({});
+  const [selectedTime, setSelectedTime] = useState<{ id: string }>();
+  const [selectedRadius, setSelectedRadius] = useState<{ id: string }>();
   const [selectedFriends, setSelectedFriends] = useState([]);
 
   const onMultiChange = (friend) => {

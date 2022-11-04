@@ -33,30 +33,36 @@ import sosController from "../utils/sosController";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
 import SAFACY_BOT from "../common/constants/SAFACY_BOT";
+import { RootState } from "../store";
+
+interface LocationProps {
+  latitude: number;
+  longitude: number;
+}
 
 const PublicScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
-  const { id } = useSelector((state) => state.auth);
+  const { id } = useSelector((state: RootState) => state.auth);
   const { id: paramsId, time: setTime } = route.params;
 
-  const [isMine, setIsMine] = useState(true);
-  const [distance, setDistance] = useState(0);
-  const [totalDistance, setTotalDistance] = useState(0);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [isStopped, setIsStopped] = useState(false);
-  const [sosLocation, setSosLocation] = useState([]);
+  const [isMine, setIsMine] = useState<boolean>(true);
+  const [distance, setDistance] = useState<number>(0);
+  const [totalDistance, setTotalDistance] = useState<number>(0);
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [isStopped, setIsStopped] = useState<boolean>(false);
+  const [sosLocation, setSosLocation] = useState<LocationProps>();
 
   const [smsServiceAvailable, setSmsServiceAvailable] = useState(false);
   const [toolTipVisible, setToolTipVisible] = useState(false);
 
-  const { count } = useSelector((state) => state.location);
-  const { remaining } = useSelector((state) => state.timer);
-  const { publicMode } = useSelector((state) => state.user);
-  const currentSafacy = useSelector((state) => state.safacy);
+  const { count } = useSelector((state: RootState) => state.location);
+  const { remaining } = useSelector((state: RootState) => state.timer);
+  const { publicMode } = useSelector((state: RootState) => state.user);
+  const currentSafacy = useSelector((state: RootState) => state.safacy);
   const { radius, id: safacyId } = currentSafacy;
 
-  useEffect(async () => {
+  const handeSafacyInfo = async () => {
     if (id !== paramsId) {
       setIsMine(false);
     }
@@ -68,6 +74,10 @@ const PublicScreen = ({ navigation, route }) => {
         message: dayjs().format("hh:mm A") + SAFACY_BOT.START,
       }),
     );
+  };
+
+  useEffect(() => {
+    handeSafacyInfo();
     socket.emit("safacyBot", SAFACY_BOT.START);
     checkIfServiceAvailable();
   }, []);
@@ -78,7 +88,10 @@ const PublicScreen = ({ navigation, route }) => {
       const currentDistance =
         totalDistance - (totalDistance * 3 * count) / setTime;
 
-      if (distance + radius <= currentDistance && currentDistance !== 0) {
+      if (
+        distance + Number(radius) <= currentDistance &&
+        currentDistance !== 0
+      ) {
         socket.emit(
           "safacyBot",
           dayjs().format("hh:mm A") + SAFACY_BOT.MOVING_SAFE,
@@ -92,18 +105,18 @@ const PublicScreen = ({ navigation, route }) => {
     }
   }, 2 * 60 * 1000);
 
-  useEffect(async () => {
+  useEffect(() => {
     try {
       if (isStopped) {
-        await dispatch(
+        dispatch(
           stopPublic({
             id,
             safacyId,
           }),
         );
 
-        if (distance > radius) {
-          await dispatch(
+        if (distance > Number(radius)) {
+          dispatch(
             updateSafacyMsg({
               id: safacyId,
               message: dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
@@ -113,7 +126,7 @@ const PublicScreen = ({ navigation, route }) => {
             "safacyBot",
             dayjs().format("hh:mm A") + SAFACY_BOT.DANGER_THREE,
           );
-          await dispatch(
+          dispatch(
             updateSafacyMsg({
               id: safacyId,
               message: dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
@@ -124,7 +137,7 @@ const PublicScreen = ({ navigation, route }) => {
             dayjs().format("hh:mm A") + SAFACY_BOT.END_DANGER,
           );
         } else {
-          await dispatch(
+          dispatch(
             updateSafacyMsg({
               id: safacyId,
               message: dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
@@ -134,7 +147,7 @@ const PublicScreen = ({ navigation, route }) => {
             "safacyBot",
             dayjs().format("hh:mm A") + SAFACY_BOT.STOPBTN_SAFE,
           );
-          await dispatch(
+          dispatch(
             updateSafacyMsg({
               id: safacyId,
               message: dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE,
@@ -145,8 +158,8 @@ const PublicScreen = ({ navigation, route }) => {
             dayjs().format("hh:mm A") + SAFACY_BOT.END_SAFE,
           );
         }
-        await dispatch(getCurrentSafacy(id));
-        await dispatch(getUserInfo(id));
+        dispatch(getCurrentSafacy(id));
+        dispatch(getUserInfo(id));
       }
     } catch (error) {
       setErrorMsg(error);
@@ -162,7 +175,7 @@ const PublicScreen = ({ navigation, route }) => {
         }),
       );
 
-      if (distance > radius) {
+      if (distance > Number(radius)) {
         await dispatch(
           updateSafacyMsg({
             id: safacyId,
@@ -220,7 +233,7 @@ const PublicScreen = ({ navigation, route }) => {
       }),
     );
 
-    if (distance > radius) {
+    if (distance > Number(radius)) {
       await dispatch(
         updateSafacyMsg({
           id: safacyId,
@@ -333,7 +346,6 @@ const PublicScreen = ({ navigation, route }) => {
         </View>
         {currentSafacy.invitedFriendList?.map((friend, index) => (
           <Tooltip
-            animated
             backgroundColor="rgba(0,0,0,0.5)"
             arrowSize={{ width: 5, height: 15 }}
             isVisible={toolTipVisible}

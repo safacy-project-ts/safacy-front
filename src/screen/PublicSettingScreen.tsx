@@ -17,18 +17,21 @@ import PublicSelection from "../common/components/PublicSelection";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
 import OTHERS from "../common/constants/OTHERS";
+import { RootState } from "../store";
 
 const PublicSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
-  const [destination, setDestination] = useState(OTHERS.CURRENT_LOCATION);
-  const [radius, setRadius] = useState("");
-  const [time, setTime] = useState("");
+  const [destination, setDestination] = useState<string>(
+    OTHERS.CURRENT_LOCATION,
+  );
+  const [radius, setRadius] = useState<number>();
+  const [time, setTime] = useState<number>();
   const [invitedFriendList, setInvitedFriendList] = useState([]);
   const [userDestination, setUserDestination] = useState([]);
 
   const initialTime = time * 60;
-  const { id } = useSelector((state) => state.auth);
+  const { id } = useSelector((state: RootState) => state.auth);
 
   const handleCreateSafacy = async () => {
     await dispatch(
@@ -71,7 +74,7 @@ const PublicSettingScreen = ({ navigation, route }) => {
             <FontAwesome5 name="map-pin" size={14} color={COLORS.BLACK} />{" "}
             Destination
           </Text>
-          <SearchBar
+          <View
             style={styles.search}
             destination={destination}
             setDestination={setDestination}

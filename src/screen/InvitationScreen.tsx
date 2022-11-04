@@ -8,13 +8,15 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { acceptInvitation, getUserInfo } from "../store/userSlice";
 
 import CustomButton from "../common/components/CustomButton";
-import footer from "../../assets/img/footer.png";
 import COLORS from "../common/constants/COLORS";
 import FONT from "../common/constants/FONT";
+import { RootState } from "../store";
 
 const InvitationScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { friendInvitationList, id } = useSelector((state) => state.user);
+  const { friendInvitationList, id } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   const handleFriendList = async (email) => {
     await dispatch(acceptInvitation({ id, email }));
@@ -58,7 +60,7 @@ const InvitationScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.footer}>
-        <Image source={footer} />
+        <Image source="../../assets/img/footer.png" />
       </View>
     </View>
   );

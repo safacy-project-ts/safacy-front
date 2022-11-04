@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { BASE_URI, TEST_URI } from "@env";
 
 export const getCurrentSafacy = createAsyncThunk(
   "user/getCurrentSafacy",
-  async (id) => {
-    const safacy = await axios.get(`${TEST_URI}/user/current/${id}`);
+  async (id: string) => {
+    const safacy = await axios.get(
+      `${process.env.REACT_APP_TEST_URI}/user/current/${id}`,
+    );
 
     return safacy.data;
   },
@@ -13,9 +14,9 @@ export const getCurrentSafacy = createAsyncThunk(
 
 export const updateSafacyMsg = createAsyncThunk(
   "safacy/updateSafacyMsg",
-  async ({ id, message }) => {
+  async ({ id, message }: { id: string; message: string }) => {
     const updatedSafacyMsg = await axios.put(
-      `${TEST_URI}/safacy/${id}/message/update`,
+      `${process.env.REACT_APP_TEST_URI}/safacy/${id}/message/update`,
       {
         message,
       },
@@ -27,9 +28,9 @@ export const updateSafacyMsg = createAsyncThunk(
 
 export const updateOriginLocation = createAsyncThunk(
   "safacy/updateOriginLocation",
-  async ({ id, location }) => {
+  async ({ id, location }: { id: string; location: string }) => {
     const updatedSafacyMsg = await axios.put(
-      `${TEST_URI}/safacy/${id}/location/update`,
+      `${process.env.REACT_APP_TEST_URI}/safacy/${id}/location/update`,
       {
         location,
       },
@@ -41,9 +42,9 @@ export const updateOriginLocation = createAsyncThunk(
 
 export const updateDeslocation = createAsyncThunk(
   "safacy/updateDeslocation",
-  async ({ id, deslocation }) => {
+  async ({ id, deslocation }: { id: string; deslocation: string }) => {
     const updatedSafacyMsg = await axios.put(
-      `${TEST_URI}/safacy/${id}/deslocation/update`,
+      `${process.env.REACT_APP_TEST_URI}/safacy/${id}/deslocation/update`,
       {
         deslocation,
       },
@@ -59,20 +60,21 @@ const safacySlice = createSlice({
     id: "",
     user: "",
     destination: [],
-    radius: "",
+    radius: 0,
     time: "",
     invitedFriendList: [],
     safacyBotMsg: [],
     originLocation: [],
     desLocation: [],
     userDestination: [],
+    status: "",
   },
   reducers: {
-    clearCurrentSafacy: (state, action) => {
+    clearCurrentSafacy: (state) => {
       state.id = "";
       state.user = "";
       state.destination = [];
-      state.radius = "";
+      state.radius = 0;
       state.time = "";
       state.invitedFriendList = [];
       state.safacyBotMsg = [];
@@ -82,7 +84,7 @@ const safacySlice = createSlice({
     },
   },
   extraReducers: {
-    [getCurrentSafacy.fulfilled]: (state, action) => {
+    [getCurrentSafacy.fulfilled]: (state, { payload }) => {
       const {
         _id,
         user,
@@ -95,7 +97,7 @@ const safacySlice = createSlice({
         originLocation,
         desLocation,
         userDestination,
-      } = action.payload;
+      } = payload;
 
       state.id = _id;
       state.user = user;
@@ -110,8 +112,8 @@ const safacySlice = createSlice({
       state.userDestination = userDestination;
       state.status = "success";
     },
-    [updateSafacyMsg.fulfilled]: (state, action) => {
-      state.safacyBotMsg = action.payload.safacyBotMsg;
+    [updateSafacyMsg.fulfilled]: (state, { payload }) => {
+      state.safacyBotMsg = payload.safacyBotMsg;
       state.status = "success";
     },
     [updateDeslocation.fulfilled]: (state, action) => {

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { View, Text, Button, StyleSheet, Image } from "react-native";
 
-import { GOOGLE_IOS_CLIENT_ID } from "@env";
 import * as Google from "expo-google-app-auth";
 
 import { signIn } from "../../store/authSlice";
@@ -10,10 +9,9 @@ import { signIn } from "../../store/authSlice";
 import CustomButton from "../../common/components/CustomButton";
 import FONTS from "../../common/constants/FONT";
 import COLORS from "../../common/constants/COLORS";
-import LOGO from "../../../assets/img/logo.png";
 
 const config = {
-  iosClientId: GOOGLE_IOS_CLIENT_ID,
+  iosClientId: process.env.REACT_APP_GOOGLE_IOS_CLIENT_ID,
   scopes: ["profile", "email"],
 };
 
@@ -22,7 +20,7 @@ const SignInScreen = () => {
 
   const signInWithGoogleAsync = async () => {
     try {
-      const { type, accessToken, user } = await Google.logInAsync(config);
+      const { type, user } = await Google.logInAsync(config);
 
       if (type === "success") {
         const { email, givenName: nickname } = user;
@@ -38,7 +36,7 @@ const SignInScreen = () => {
     <View style={styles.container}>
       <View style={styles.header} />
       <View style={styles.main}>
-        <Image style={styles.logo} source={LOGO} />
+        <Image style={styles.logo} source="../../../assets/img/logo.png" />
         <Text style={styles.title}>Safacy</Text>
         <Text style={styles.description}>for your safety & privacy</Text>
       </View>

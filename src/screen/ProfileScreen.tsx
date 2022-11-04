@@ -11,7 +11,7 @@ import { getUserInfo } from "../store/userSlice";
 import AddFriendModal from "../common/components/Modal/AddFriendModal";
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import footer from "../../assets/img/footer.png";
+import { RootState } from "../store";
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -33,13 +33,13 @@ const ProfileScreen = () => {
     myFriendList,
     safacyHistory,
     friendInvitationList,
-  } = useSelector((state) => state.user);
+  } = useSelector((state: RootState) => state.user);
 
-  const { remaining } = useSelector((state) => state.timer);
+  const { remaining } = useSelector((state: RootState) => state.timer);
   const invitationCount = friendInvitationList.length;
 
-  useEffect(async () => {
-    await dispatch(getUserInfo(id));
+  useEffect(() => {
+    dispatch(getUserInfo(id));
   }, []);
 
   return (
@@ -101,7 +101,7 @@ const ProfileScreen = () => {
         </ScrollView>
       </View>
       <View style={styles.footer}>
-        <Image source={footer} />
+        <Image source="../../assets/img/footer.png" />
       </View>
     </View>
   );

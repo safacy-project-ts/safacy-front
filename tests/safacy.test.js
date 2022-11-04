@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import axios from "axios";
 import reducer, { clearCurrentSafacy } from "../src/store/safacySlice";
 

@@ -8,18 +8,18 @@ const locationSlice = createSlice({
     count: 1,
   },
   reducers: {
-    setCurrentLocation: (state, action) => {
-      const { latitude, longitude } = action.payload;
+    setCurrentLocation: (state, { payload }) => {
+      const { latitude, longitude } = payload;
       state.current = [latitude, longitude];
     },
-    setUserDestination: (state, action) => {
-      const { latitude, longitude } = action.payload;
+    setUserDestination: (state, { payload }) => {
+      const { latitude, longitude } = payload;
       state.userDestination = [latitude, longitude];
     },
-    clearDestination: (state, action) => {
+    clearDestination: (state) => {
       state.userDestination = [];
     },
-    updateCount: (state, action) => {
+    updateCount: (state) => {
       state.count += 1;
     },
   },

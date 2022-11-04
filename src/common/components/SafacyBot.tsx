@@ -36,8 +36,8 @@ const SafacyBot = ({ id }) => {
     });
   }, []);
 
-  useEffect(async () => {
-    await schedulePushNotification(safacyMsg[safacyMsg.length - 1]);
+  useEffect(() => {
+    schedulePushNotification(safacyMsg[safacyMsg.length - 1]);
 
     return () => {
       Notifications.removeNotificationSubscription(
@@ -65,7 +65,6 @@ const schedulePushNotification = async (message) => {
       body: message,
       data: { data: "goes here" },
     },
-    to: ["01033399619"],
     trigger: { seconds: 1 },
   });
 };

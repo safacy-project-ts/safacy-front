@@ -1,15 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import axios from "axios";
-import { BASE_URI, TEST_URI } from "@env";
+
+interface SignInProps {
+  email: string;
+  nickname: string;
+}
 
 export const signIn = createAsyncThunk(
   "auth/signIn",
-  async ({ email, nickname }) => {
-    const auth = await axios.post(`${TEST_URI}/auth/signIn`, {
-      email,
-      nickname,
-    });
+  async ({ email, nickname }: SignInProps) => {
+    const auth = await axios.post(
+      `${process.env.REACT_APP_TEST_URI}/auth/signIn`,
+      {
+        email,
+        nickname,
+      },
+    );
 
     return auth.data;
   },
@@ -21,14 +28,15 @@ const authSlice = createSlice({
     id: null,
     email: null,
     nickname: null,
+    status: "",
   },
 
   extraReducers: {
     [signIn.pending]: (state, action) => {
       state.status = "loading";
     },
-    [signIn.fulfilled]: (state, action) => {
-      const { id, email, nickname } = action.payload;
+    [signIn.fulfilled]: (state, { payload }) => {
+      const { id, email, nickname } = payload;
       state.id = id;
       state.email = email;
       state.nickname = nickname;
@@ -38,6 +46,7 @@ const authSlice = createSlice({
       state.status = "failed";
     },
   },
+  reducers: undefined,
 });
 
 export default authSlice.reducer;

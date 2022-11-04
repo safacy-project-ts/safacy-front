@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import COLORS from "../../common/constants/COLORS";
 

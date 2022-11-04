@@ -7,13 +7,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import FONT from "../common/constants/FONT";
 import COLORS from "../common/constants/COLORS";
-import PRIVACY_LOCK from "../../assets/img/privacy.png";
-import PUBLIC_LOCK from "../../assets/img/public.png";
+import { RootState } from "../store";
 
 const PrivateScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { id } = useSelector((state) => state.auth);
+  const { id } = useSelector((state: RootState) => state.auth);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const toggleSwitch = () => {
@@ -72,11 +71,11 @@ const PrivateScreen = ({ navigation }) => {
       <View style={styles.status}>
         {!isEnabled ? (
           <View>
-            <Image source={PRIVACY_LOCK} />
+            <Image source="../../assets/img/privacy.png" />
           </View>
         ) : (
           <View>
-            <Image source={PUBLIC_LOCK} />
+            <Image source="../../assets/img/public.png" />
           </View>
         )}
       </View>

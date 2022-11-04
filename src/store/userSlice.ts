@@ -1,25 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { BASE_URI, TEST_URI } from "@env";
 
-export const getUserInfo = createAsyncThunk("user/getUserInfo", async (id) => {
-  const user = await axios.get(`${TEST_URI}/user/${id}`);
+export const getUserInfo = createAsyncThunk(
+  "user/getUserInfo",
+  async (id: string) => {
+    const user = await axios.get(
+      `${process.env.REACT_APP_TEST_URI}/user/${id}`,
+    );
 
-  return user.data;
-});
+    return user.data;
+  },
+);
 
 export const startPublic = createAsyncThunk("user/startPublic", async (id) => {
-  const publicMode = await axios.put(`${TEST_URI}/user/${id}/public`);
+  const publicMode = await axios.put(
+    `${process.env.REACT_APP_TEST_URI}/user/${id}/public`,
+  );
 
   return publicMode.data;
 });
 
 export const stopPublic = createAsyncThunk(
   "user/stopPublic",
-  async ({ id, safacyId }) => {
-    const privacyMode = await axios.put(`${TEST_URI}/user/${id}/privacy`, {
-      safacyId,
-    });
+  async ({ id, safacyId }: { id: string; safacyId: string }) => {
+    const privacyMode = await axios.put(
+      `${process.env.REACT_APP_TEST_URI}/user/${id}/privacy`,
+      {
+        safacyId,
+      },
+    );
 
     return privacyMode.data;
   },
@@ -34,14 +43,24 @@ export const createSafacy = createAsyncThunk(
     time,
     invitedFriendList,
     userDestination,
+  }: {
+    id: string;
+    destination: string;
+    radius: number;
+    time: number;
+    invitedFriendList: string[];
+    userDestination: string[];
   }) => {
-    const newSafacy = await axios.post(`${TEST_URI}/user/${id}/new`, {
-      destination,
-      radius,
-      time,
-      invitedFriendList,
-      userDestination,
-    });
+    const newSafacy = await axios.post(
+      `${process.env.REACT_APP_TEST_URI}/user/${id}/new`,
+      {
+        destination,
+        radius,
+        time,
+        invitedFriendList,
+        userDestination,
+      },
+    );
 
     return newSafacy.data;
   },
@@ -49,10 +68,13 @@ export const createSafacy = createAsyncThunk(
 
 export const addFriend = createAsyncThunk(
   "user/addFriend",
-  async ({ id, email }) => {
-    const newFriend = await axios.put(`${TEST_URI}/user/${id}/friend/new`, {
-      email,
-    });
+  async ({ id, email }: { id: string; email: string }) => {
+    const newFriend = await axios.put(
+      `${process.env.REACT_APP_TEST_URI}/user/${id}/friend/new`,
+      {
+        email,
+      },
+    );
 
     return newFriend.data;
   },
@@ -60,9 +82,9 @@ export const addFriend = createAsyncThunk(
 
 export const acceptInvitation = createAsyncThunk(
   "user/acceptInvitation",
-  async ({ id, email }) => {
+  async ({ id, email }: { id: string; email: string }) => {
     const newFriendList = await axios.put(
-      `${TEST_URI}/user/${id}/friend/invitation`,
+      `${process.env.REACT_APP_TEST_URI}/user/${id}/friend/invitation`,
       {
         email,
       },
@@ -75,7 +97,7 @@ export const acceptInvitation = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    _id: null,
+    id: null,
     email: null,
     nickname: null,
     publicMode: null,
@@ -83,6 +105,7 @@ const userSlice = createSlice({
     friendInvitationList: null,
     safacyHistory: null,
     safacyInvitationList: null,
+    status: "",
   },
 
   extraReducers: {
@@ -108,24 +131,25 @@ const userSlice = createSlice({
       state.safacyInvitationList = safacyInvitationList;
       state.status = "success";
     },
-    [startPublic.fulfilled]: (state, action) => {
-      const { publicMode } = action.payload;
+    [startPublic.fulfilled]: (state, { payload }) => {
+      const { publicMode } = payload;
       state.publicMode = publicMode;
     },
-    [createSafacy.fulfilled]: (state, action) => {
+    [createSafacy.fulfilled]: (state) => {
       state.status = "success";
     },
-    [stopPublic.fulfilled]: (state, action) => {
+    [stopPublic.fulfilled]: (state) => {
       state.status = "success";
     },
-    [addFriend.fulfilled]: (state, action) => {
-      state.result = action.payload.result;
+    [addFriend.fulfilled]: (state, { payload }) => {
+      state.result = payload.result;
       state.status = "success";
     },
-    [acceptInvitation.fulfilled]: (state, action) => {
+    [acceptInvitation.fulfilled]: (state) => {
       state.status = "success";
     },
   },
+  reducers: undefined,
 });
 
 export default userSlice.reducer;

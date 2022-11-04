@@ -1,8 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const FriendList = () => {
-  const { myFriendList } = useSelector((state) => state.user);
+  const { myFriendList } = useSelector((state: RootState) => state.user);
 
   const friendListConstants = [];
 

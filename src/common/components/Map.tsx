@@ -10,7 +10,6 @@ import MapView, {
   Polyline,
 } from "react-native-maps";
 
-import PropTypes from "prop-types";
 import * as Location from "expo-location";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 
@@ -27,6 +26,7 @@ import calculateDistance from "../../utils/distanceController";
 import LoadingScreen from "../../screen/Auth/LoadingScreen";
 import COLORS from "../constants/COLORS";
 import OTHERS from "../constants/OTHERS";
+import { RootState } from "../../store";
 
 const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
   const dispatch = useDispatch();
@@ -36,20 +36,19 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
   const [location, setLocation] = useState(null);
   const [destinationLocation, setDestinationLocation] = useState([]);
 
-  const { id: userId } = useSelector((state) => state.auth);
-  const { publicMode } = useSelector((state) => state.user);
-  const { current } = useSelector((state) => state.location);
+  const { id: userId } = useSelector((state: RootState) => state.auth);
+  const { publicMode } = useSelector((state: RootState) => state.user);
+  const { current } = useSelector((state: RootState) => state.location);
   const {
     id: safacyId,
     userDestination,
     originLocation,
     desLocation,
-    publicMode: safacyPublicMode,
-  } = useSelector((state) => state.safacy);
+  } = useSelector((state: RootState) => state.safacy);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (publicMode && isMine) {
-      await mapBoxAPI(
+      mapBoxAPI(
         originLocation[0] ? originLocation[0].longitude : current[1],
         originLocation[0] ? originLocation[0].latitude : current[0],
         userDestination[0].longitude,
@@ -60,12 +59,12 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
     }
   }, [isMine]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (destinationLocation?.length !== 0) {
-      await dispatch(
+      dispatch(
         updateDeslocation({ id: safacyId, deslocation: destinationLocation }),
       );
-      await dispatch(getCurrentSafacy(id));
+      dispatch(getCurrentSafacy(id));
     }
   }, [destinationLocation]);
 
@@ -81,7 +80,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        alert(OTHERS.LOCATION_PERMISSION_DENIE);
+        alert(OTHERS.LOCATION_PERMISSION_DENIED);
         return;
       }
 
@@ -144,8 +143,6 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
             },
           ]);
         },
-
-        (error) => console.log(error),
       );
 
       return () => {
@@ -160,11 +157,9 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
 
   return location ? (
     <MapView
-      style={styles.map}
       provider={PROVIDER_GOOGLE}
       showsUserLocation
       zoomControlEnabled
-      ScrollEnabled
       showsMyLocationButton
       initialRegion={{
         latitude:
@@ -185,7 +180,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
         });
       }}
     >
-      {safacyPublicMode && (
+      {publicMode && (
         <Marker
           coordinate={{
             latitude:
@@ -226,7 +221,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
         strokeWidth={2}
         strokeColor={COLORS.RED}
       />
-      {safacyPublicMode && (
+      {publicMode && (
         <Polyline
           coordinates={desLocation?.length ? desLocation : destinationLocation}
           strokeWidth={3}
@@ -234,7 +229,7 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
         />
       )}
 
-      {safacyPublicMode && userDestination && (
+      {publicMode && userDestination && (
         <Marker
           coordinate={{
             latitude: userDestination[0]?.latitude,
@@ -252,14 +247,6 @@ const Map = ({ setDistance, setTotalDistance, id, setSosLocation, radius }) => {
 };
 
 export default Map;
-
-Map.propTypes = {
-  setDistance: PropTypes.func,
-  setTotalDistance: PropTypes.func,
-  setSosLocation: PropTypes.func,
-  id: PropTypes.string,
-  radius: PropTypes.number,
-};
 
 const styles = StyleSheet.create({
   map: {
